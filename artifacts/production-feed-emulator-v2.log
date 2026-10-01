@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/Users/e_wijaya_ap/Desktop/kasugabus-pebble/tools/verify_production_feed.py", line 261, in <module>
+    main()
+    ~~~~^^
+  File "/Users/e_wijaya_ap/Desktop/kasugabus-pebble/tools/verify_production_feed.py", line 253, in main
+    result = verify(args)
+  File "/Users/e_wijaya_ap/Desktop/kasugabus-pebble/tools/verify_production_feed.py", line 222, in verify
+    before = emulator.restart()
+  File "/Users/e_wijaya_ap/Desktop/kasugabus-pebble/tools/verify_production_feed.py", line 193, in restart
+    self.wait(lambda e: e.get("kind") == "AppRunStateStop")
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/e_wijaya_ap/Desktop/kasugabus-pebble/tools/verify_production_feed.py", line 183, in wait
+    raise TimeoutError("Production emulator evidence timed out")
+TimeoutError: Production emulator evidence timed out

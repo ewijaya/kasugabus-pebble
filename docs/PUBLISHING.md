@@ -168,3 +168,27 @@ The controlled evidence does not establish physical-phone HTTPS/XHR, GPS
 behavior or seven-day acceptance. Live GitHub Pages headers and exact payloads
 were subsequently verified; see [hosting evidence](../hosting/README.md).
 Actual companion and physical-device checks remain separately identified.
+
+## Production feed verification
+
+After the reviewed current-only production feed is live, the installed PBW's
+actual pypkjs worker can be observed without injecting a fetcher, updater or
+AppMessage. Restore bundled data on the test emulator first and turn automatic
+checks off natively so the manual-check path is unambiguous. The default point
+must open Home. Then run:
+
+```sh
+python3 tools/verify_production_feed.py \
+  --pbw path/to/the-exact-installed.pbw \
+  --sha256 THE_EXACT_SHA256 \
+  --expect-version 2 --sdk-version 4.33.1 \
+  --output path/to/new-production-proof.json
+```
+
+The observer checks the emulator's cached PBW digest, uses the shipped worker's
+real HTTPS/XHR, triggers Data status through native buttons, reconstructs the
+observed bounded chunks, checks native acknowledgements and commit, and proves
+active-version/success-timestamp persistence after restart. It never installs
+a PBW or sends its own HELLO, settings or update messages. Its focused current-
+only proof does not replace controlled future/recovery scenarios or actual
+Android/iOS companion tests.

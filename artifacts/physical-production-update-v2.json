@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "observedAt": "2026-10-01T07:21:48.926732+00:00",
+  "environment": "physical",
+  "model": "Pebble Time 2",
+  "firmware": "4.38.4",
+  "phone": "Poco F4",
+  "android": "14 (UKQ1.231207.002)",
+  "companion": "1.14.0.1",
+  "installedPbwSha256": "2bddb0b092d51c7cdab6944c56a11bb377f4a97932643ee37541450bfc8bdb09",
+  "feed": "https://ewijaya.github.io/kasugabus-pebble/timetables/manifest.json",
+  "activeDataset": 2,
+  "userReport": "Active dataset v2 and a feed-success time",
+  "timetableOnly": true,
+  "pbwReinstalledForUpdate": false,
+  "nativeLog": "artifacts/physical-production-update-v2.log",
+  "limits": [
+    "No physical future-activation or interrupted-transfer recovery demonstrated",
+    "Broader GPS/settings/outdoor/battery/seven-day checks remain outstanding",
+    "This observation is bound to the preceding installed development PBW, not the pending final release candidate"
+  ],
+  "screenshot": "artifacts/screenshots/physical_production_v2_details.png",
+  "screenshotNote": "Actual physical departure-details capture after the user reported v2; the version and feed timestamp are user-reported, not visible in this image."
+}

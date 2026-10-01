@@ -18,6 +18,14 @@ and may delay visibility of a newly published revision. Payload filenames are
 immutable and all prior files remain available. Actual companion transfer and
 phone CORS behavior are separate checks.
 
+The current feed is **v2**, deployed through
+[workflow 36827817760](https://github.com/ewijaya/kasugabus-pebble/actions/runs/36827817760).
+This is a reviewed delivery-verification reissue: only the dataset release
+number changes; all 1,411 departures and every calendar/source date are
+unchanged. [Live v2 responses](../artifacts/hosting-v2-http.json) prove the
+current payload and retained v1 bytes. [Reconciliation](../docs/DATA_RELEASE_2.md)
+explains the reissue; the bundled app remains v1 for offline recovery.
+
 ## What the manual workflow does
 
 `.github/workflows/timetables.yml` has only `workflow_dispatch`. Its default

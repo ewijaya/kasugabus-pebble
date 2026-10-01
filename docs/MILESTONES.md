@@ -17,3 +17,13 @@ The pre-icon `466df8dd…` PBW retains its 29-scenario native suite, including o
 Pages/GitHub remain unpublished. The local project has no initialized Git repository, the intended remote cannot be viewed with current authentication, and [authenticated discovery](../artifacts/store-discovery-final.json) still found no KasugaBus listing. No version bump, commit, registration or publication occurred. All ten original icon concepts and their [gallery](../artifacts/icon-options/index.html) are retained.
 
 Initial state: only user-authored PRD.md and PLAN.md; no Git repository or AGENTS.md. Original PLAN text is preserved, with implementation status appended separately.
+
+## Initial-publication scope accepted
+
+The owner authorized an initial 1.0.0 release with the unperformed physical
+and seven-day checks stated as limitations. GitHub source and the dedicated
+Pages v2 feed are live, and the owner confirmed a real Poco F4 / Time 2
+timetable-only update to v2. See docs/VERIFICATION.md for the exact preceding
+PBW and evidence. Final build/freeze, exact physical/listing approval and
+publication are the remaining initial-release steps; the full personal-use
+milestone is not declared complete.

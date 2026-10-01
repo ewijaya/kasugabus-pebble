@@ -1,9 +1,11 @@
 # Timetable v2 — prepared delivery-verification reissue
 
-Prepared locally on **1 October 2026**. Neither v1 nor v2 is claimed deployed
-by this preparation. The lead will publish and verify v1 first; v2 then tests
-a genuine timetable-only download to a watch holding the bundled v1, without
-changing the app version or reinstalling its PBW.
+Prepared locally on **1 October 2026**. The lead subsequently deployed and
+verified v1 in workflow **36827444799**;
+[HTTP evidence](../artifacts/hosting-v1-http.json) records HTTPS 200 without
+redirects, exact hashes, CORS `*` and `max-age=600`. V2 is still only prepared
+by this work. It tests a genuine timetable-only download to a watch holding
+the bundled v1, without changing the app version or reinstalling its PBW.
 
 Only `release_version` changes from **1 to 2**. The editable app baseline
 `data/timetable.json` and the prepared v1 `hosting/public` are untouched.

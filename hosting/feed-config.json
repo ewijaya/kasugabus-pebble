@@ -1,6 +1,8 @@
 {
-  "status": "LIVE HTTPS / COMPANION VERIFICATION IN PROGRESS",
+  "status": "LIVE HTTPS / PHYSICAL V2 UPDATE USER-CONFIRMED",
   "manifestUrl": "https://ewijaya.github.io/kasugabus-pebble/timetables/manifest.json",
   "destination": "GitHub Pages: ewijaya/kasugabus-pebble",
-  "reason": "The owner-authorized dedicated GitHub Pages site serves the reviewed feed. Exact HTTPS bytes, MIME types and wildcard CORS headers passed live checks on 2026-10-01. Cache-Control is max-age=600; actual phone behavior is recorded separately."
+  "reason": "The owner-authorized dedicated GitHub Pages site serves the reviewed feed. Exact HTTPS bytes, MIME types and wildcard CORS headers passed live checks on 2026-10-01. Cache-Control is max-age=600; actual phone behavior is recorded separately. The owner confirmed active dataset v2 and a successful feed-check time after a manual check on Poco F4 / Time 2; emulator SDK compatibility verification is recorded separately.",
+  "currentVersion": 2,
+  "deploymentWorkflow": "https://github.com/ewijaya/kasugabus-pebble/actions/runs/36827817760"
 }

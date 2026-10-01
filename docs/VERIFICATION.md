@@ -1,7 +1,7 @@
 # KasugaBus verification — 1 October 2026
 
 The six-stop application, selected **Neon Express** launcher icon, timetable
-publishing tools and app-release workflow are implemented. The final PBW below
+publishing tools and app-release workflow are implemented. The development PBW below
 passed fresh automated and native emulator checks and was installed on the
 owner's Time 2. The owner confirmed the identical bus icon on the preceding
 Neon Express package; that observation retains its original digest.
@@ -12,10 +12,12 @@ physical and seven-day release checks remain open.
 All ten [icon concepts](../artifacts/icon-options/index.html), generation prompts
 and final 25 × 25 asset are retained. The final source audit includes first-time
 registration/recovery, existing-listing adoption and the SDK clean-output fix.
-No version bump, Git commit,
-tag, push, store registration or publication was performed.
+Those development checks preceded source publication. The owner later authorized
+an initial release with named limitations; see the publication section below.
+GitHub source and the timetable feed are now live. Store registration and
+exact release-candidate approval are separate steps.
 
-## Exact acceptance artifact
+## Development acceptance artifact (before release freeze)
 
 | Item | Observed result |
 | --- | --- |
@@ -38,8 +40,8 @@ tag, push, store registration or publication was performed.
 [exact-artifact install receipt](../artifacts/runtime-workflow-acceptance.log.install.json)
 bind measurements to this PBW. Static linker free RAM, 91,902 bytes, is not a
 runtime allocation measurement. The known SDK linker RWX warning is nonfatal.
-No SDK/compiler was replaced. No version bump, commit, tag, push or publication
-was performed.
+No SDK/compiler was replaced. This historical audit predates the later
+authorized source/feed publication and final release-candidate freeze.
 
 ## Automated coverage
 
@@ -211,3 +213,52 @@ icon or broader physical QA; the complete final runtime audit is from the emulat
 - Obtain explicit physical approval of the exact frozen final PBW SHA-256 and
   named publication destinations. The owner's navigation/icon confirmation is not
   release-publication approval.
+
+## Initial publication scope — 1 October 2026
+
+The owner explicitly chose “Publish an initial release with the limitations
+stated.” This permits the initial 1.0.0 release while broader physical
+GPS/settings/update recovery, outdoor/glance readability, battery and seven-day
+use remain outstanding. It does not mark those PRD acceptance checks passed.
+Source publication and production timetable hosting are complete. The final
+candidate is being prepared from committed source. Exact physical approval remains a separate gate.
+
+### Live source and timetable publication
+
+The public source repository is `ewijaya/kasugabus-pebble`, branch `main`.
+The owner-selected dedicated GitHub Pages site was created with Actions and
+HTTPS, and its deployment environment permits only `main`. The reviewed v1
+baseline and then version-only v2 reissue both deployed successfully. V2 changes
+no departures, calendars, coordinates or source dates. Both immutable payloads
+remain live; HTTPS 200 without redirects, exact lengths/SHA-256/CRC, JSON/binary
+MIME types and wildcard CORS passed. Pages applies `max-age=600`, an accepted
+ten-minute propagation/cache delay for this feed. See
+[host evidence](../artifacts/hosting-v2-http.json) and
+[data re-review](DATA_RELEASE_2.md). These checks do not claim physical-phone
+HTTPS or seven-day acceptance.
+
+### Actual Poco F4 / Time 2 timetable update
+
+The owner opened KasugaBus Data status, performed a manual check, and reported
+“Active dataset v2 and a feed-success time.” This establishes the actual phone
+to watch timetable-only update on the previously installed development PBW
+`2bddb0b092d51c7cdab6944c56a11bb377f4a97932643ee37541450bfc8bdb09`;
+no app reinstall was performed for that update. See the
+[physical observation record](../artifacts/physical-production-update-v2.json).
+The limited native log captured launch only; it is not claimed as chunk/commit
+trace evidence. The owner's displayed v2/success result is the physical evidence.
+Future activation, interrupted-transfer recovery, GPS/settings behavior, outdoor
+readability, battery and seven-day use on this device remain outstanding.
+
+### SDK binary-response compatibility correction
+
+The deployed manifest and payload passed independent HTTPS/SHA/CRC checks, but
+the first actual pypkjs worker attempt rejected a zero-length payload before
+BEGIN. Two independent actual-SDK probes traced this to repeated reads of the
+XHR response getter. The corrected adapter caches the binary response once;
+the actual installed XHR regression now preserves all 24,320 arbitrary fixture
+bytes and retains the size guard, without using the unsafe text fallback. All
+nine production-observer/SDK regression tests pass. The final candidate will be
+clean-built from this correction and must repeat the live native transfer.
+The earlier global emulator firmware stall is documented separately in
+[the diagnosis](../artifacts/production-feed-emulator-stall.md).

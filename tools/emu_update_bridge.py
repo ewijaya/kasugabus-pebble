@@ -10,8 +10,11 @@ Default screenshots read the monitor's 200x228 display as rendered (including
 backlight dimming); rawRGB requests use the watch screenshot protocol.
 Only the project's already-installed UUID is addressed. Never prints account
 configuration, process arguments or emulator OAuth information.
+--observe-production requires --expected-pbw and adds passive envelope/log
+events. It never replaces or evaluates the installed PBW's JavaScript.
 """
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -27,6 +30,10 @@ from libpebble2.communication.transports.websocket import WebsocketTransport
 from libpebble2.communication.transports.qemu.protocol import QemuBluetoothConnection, QemuButton, QemuTimeFormat
 from libpebble2.protocol.apps import AppRunState, AppRunStateStart, AppRunStateStop
 from libpebble2.protocol.appmessage import AppMessage, AppMessageACK
+from libpebble2.protocol.base import PebblePacket
+from libpebble2.protocol.logs import AppLogMessage, AppLogShippingControl
+from libpebble2.communication.transports.websocket import MessageTargetPhone
+from libpebble2.communication.transports.websocket.protocol import WebSocketRelayToWatch, WebSocketPhoneAppLog
 from libpebble2.protocol.system import TimeMessage, SetUTC
 from libpebble2.protocol.screenshots import ScreenshotRequest, ScreenshotResponse
 from libpebble2.services.appmessage import AppMessageService, ByteArray, Int32, Uint32
@@ -34,6 +41,7 @@ from libpebble2.services.screenshot import Screenshot
 from pebble_tool.commands.emucontrol import send_data_to_qemu
 from pebble_tool.commands.screenshot import ScreenshotCommand
 from pebble_tool.sdk.emulator import get_all_emulator_info
+from pebble_tool.util import get_persist_dir
 
 ROOT = Path(__file__).resolve().parents[1]
 KEYS = {"TYPE": 0, "SESSION": 1, "SEQ": 2, "VERSION": 3, "LENGTH": 4,
@@ -57,7 +65,7 @@ def existing_emulator(version=None):
         try:
             os.kill(info["qemu"]["pid"], 0)
             os.kill(info["pypkjs"]["pid"], 0)
-            candidates.append(info)
+            candidates.append(dict(info, sdkVersion=sdk))
         except (OSError, KeyError):
             continue
     if len(candidates) != 1:
@@ -221,15 +229,71 @@ class RelayMessageConnection:
         return self.connection.send_packet(packet, *args, **kwargs)
 
 
+class ProductionObserver:
+    """Decode relay copies only. Never dispatch packets or acknowledge them."""
+    def __init__(self, app_uuid, callback):
+        self.app_uuid, self.callback, self.pending = app_uuid, callback, b""
+
+    def receive(self, packet):
+        data = self.pending + bytes(packet.payload)
+        while len(data) >= 4:
+            length = int.from_bytes(data[:2], "big") + 4
+            if length > 4096:
+                raise ValueError("Observed relay packet exceeds bound")
+            if len(data) < length:
+                break
+            decoded, used = PebblePacket.parse_message(data[:length])
+            if used != length:
+                raise ValueError("Observed relay framing mismatch")
+            data = data[length:]
+            if not isinstance(decoded, AppMessage) or getattr(decoded.data, "uuid", None) != self.app_uuid:
+                continue
+            values = {}
+            for item in decoded.data.dictionary:
+                if item.type in (2, 3):
+                    values[str(item.key)] = int.from_bytes(item.data, "little", signed=item.type == 3) & 0xffffffff
+                elif item.type == 0 and item.key == 6:
+                    values["6"] = list(item.data)
+            # Exclude settings/location/personal state. CHUNK contains public
+            # reviewed timetable bytes, used only for a bounded digest proof.
+            if values.get("0") in (1, 4, 5, 6, 7):
+                if values.get("0") != 6:
+                    values.pop("6", None)
+                self.callback({"event": "phoneappmessage", "message": values})
+        self.pending = data
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--sdk-version")
+    parser.add_argument("--observe-production", action="store_true", help="Passively observe shipped worker envelopes and native logs")
+    parser.add_argument("--expected-pbw", type=Path, help="Require the relay's cached PBW to match these exact bytes")
     args = parser.parse_args()
     app_uuid = uuid.UUID(json.loads((ROOT / "package.json").read_text())["pebble"]["uuid"])
     emulator = existing_emulator(args.sdk_version)
+    proof = {}
+    if args.observe_production:
+        if not args.expected_pbw:
+            raise ValueError("Production observation requires --expected-pbw")
+        cached = Path(get_persist_dir()) / emulator["sdkVersion"] / "emery" / "app_cache" / (str(app_uuid) + ".pbw")
+        expected = hashlib.sha256(args.expected_pbw.read_bytes()).hexdigest()
+        if not cached.is_file() or hashlib.sha256(cached.read_bytes()).hexdigest() != expected:
+            raise ValueError("Emulator cached PBW differs from the exact expected artifact; do not substitute JavaScript")
+        proof = {"cachedPbwSha256": expected, "sdkVersion": emulator["sdkVersion"], "observer": "installed-pypkjs-worker"}
     connection = PebbleConnection(WebsocketTransport(f"ws://127.0.0.1:{emulator['pypkjs']['port']}/"))
     connection.qemu_monitor_port = emulator["qemu"].get("monitor")
     connection.connect()
+    if args.observe_production:
+        observer = ProductionObserver(app_uuid, emit)
+        def outbound(packet):
+            try:
+                observer.receive(packet)
+            except Exception as error:
+                emit({"event": "error", "fatal": True, "source": "production-observer", "message": error_text(error)})
+        connection.register_transport_endpoint(MessageTargetPhone, WebSocketRelayToWatch, outbound)
+        connection.register_transport_endpoint(MessageTargetPhone, WebSocketPhoneAppLog, lambda packet: emit({"event": "phonelog", "message": str(packet.payload)[:4000]}))
+        connection.register_endpoint(AppLogMessage, lambda packet: emit({"event": "watchlog", "filename": packet.filename, "message": packet.message}))
+        connection.send_packet(AppLogShippingControl(enable=True))
     messages = AppMessageService(RelayMessageConnection(connection))
 
     def received(transaction, target, data):
@@ -245,7 +309,7 @@ def main():
     stopping, ended = threading.Event(), threading.Event()
     reader = threading.Thread(target=reader_loop, args=(connection, stopping, ended), daemon=True)
     reader.start()
-    emit({"event": "ready", "uuid": str(app_uuid)})
+    emit(dict(event="ready", uuid=str(app_uuid), **proof))
     try:
         for line in sys.stdin:
             op = None

@@ -1,0 +1,30 @@
+{
+  "validated": true,
+  "baseUrl": "https://ewijaya.github.io/kasugabus-pebble/timetables",
+  "validationDate": "2026-10-01",
+  "manifestSha256": "2ed6750483ea73e5f33ef6248d6c073dea99b49b4e4b866d7b9b91e5420856da",
+  "currentVersion": 2,
+  "upcomingVersion": null,
+  "liveChecked": true,
+  "firstDeployment": false,
+  "sourceProofs": {
+    "releases/1-cb75a4f850d74c45.bin": "exact_reviewed_source",
+    "releases/2-5c7adc806702a76e.bin": "exact_reviewed_source"
+  },
+  "inventory": {
+    "schema": 1,
+    "coverage": "minami-kasugaoka-v1",
+    "files": [
+      {
+        "path": "releases/1-cb75a4f850d74c45.bin",
+        "bytes": 24203,
+        "sha256": "cb75a4f850d74c45db26f62f569737e0d9346b4817ba502777608ff7a5ed56b8"
+      },
+      {
+        "path": "releases/2-5c7adc806702a76e.bin",
+        "bytes": 24203,
+        "sha256": "5c7adc806702a76ea4e97e35fc41227c1b1bcf6ca6daec28ca7a0b1d24cbff61"
+      }
+    ]
+  }
+}

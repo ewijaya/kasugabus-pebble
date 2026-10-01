@@ -1,0 +1,72 @@
+{
+  "checkedAt": "2026-10-01T07:02:51.681566+00:00",
+  "workflow": "https://github.com/ewijaya/kasugabus-pebble/actions/runs/36827817760",
+  "responses": [
+    {
+      "url": "https://ewijaya.github.io/kasugabus-pebble/timetables/manifest.json",
+      "status": 200,
+      "bytes": 565,
+      "sha256": "2ed6750483ea73e5f33ef6248d6c073dea99b49b4e4b866d7b9b91e5420856da",
+      "crc32": 3137753187,
+      "headers": {
+        "Content-Type": "application/json; charset=utf-8",
+        "Content-Length": "565",
+        "Cache-Control": "max-age=600",
+        "Access-Control-Allow-Origin": "*",
+        "ETag": "\"6abe053d-235\"",
+        "Age": "89",
+        "Last-Modified": "Thu, 01 Oct 2026 07:01:17 GMT"
+      }
+    },
+    {
+      "url": "https://ewijaya.github.io/kasugabus-pebble/timetables/inventory.json",
+      "status": 200,
+      "bytes": 406,
+      "sha256": "8f16f07b36b2779151741028a5d87131cec542f99c177bd9b1043cf2705d645a",
+      "crc32": 3695890129,
+      "headers": {
+        "Content-Type": "application/json; charset=utf-8",
+        "Content-Length": "406",
+        "Cache-Control": "max-age=600",
+        "Access-Control-Allow-Origin": "*",
+        "ETag": "\"6abe053d-196\"",
+        "Age": "0",
+        "Last-Modified": "Thu, 01 Oct 2026 07:01:17 GMT"
+      }
+    },
+    {
+      "url": "https://ewijaya.github.io/kasugabus-pebble/timetables/releases/1-cb75a4f850d74c45.bin",
+      "status": 200,
+      "bytes": 24203,
+      "sha256": "cb75a4f850d74c45db26f62f569737e0d9346b4817ba502777608ff7a5ed56b8",
+      "crc32": 1478585781,
+      "headers": {
+        "Content-Type": "application/octet-stream",
+        "Content-Length": "24203",
+        "Cache-Control": "max-age=600",
+        "Access-Control-Allow-Origin": "*",
+        "ETag": "\"6abe053d-5e8b\"",
+        "Age": "0",
+        "Last-Modified": "Thu, 01 Oct 2026 07:01:17 GMT"
+      }
+    },
+    {
+      "url": "https://ewijaya.github.io/kasugabus-pebble/timetables/releases/2-5c7adc806702a76e.bin",
+      "status": 200,
+      "bytes": 24203,
+      "sha256": "5c7adc806702a76ea4e97e35fc41227c1b1bcf6ca6daec28ca7a0b1d24cbff61",
+      "crc32": 4116084579,
+      "headers": {
+        "Content-Type": "application/octet-stream",
+        "Content-Length": "24203",
+        "Cache-Control": "max-age=600",
+        "Access-Control-Allow-Origin": "*",
+        "ETag": "\"6abe053d-5e8b\"",
+        "Age": "66",
+        "Last-Modified": "Thu, 01 Oct 2026 07:01:17 GMT"
+      }
+    }
+  ],
+  "priorPayloadRetained": true,
+  "physicalCompanionObserved": false
+}

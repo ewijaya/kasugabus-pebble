@@ -1,12 +1,13 @@
-# KasugaBus initial store listing — local preparation
+# KasugaBus initial store listing
 
 Prepared on 1 October 2026. KasugaBus is not registered or published. This
 document inventories reviewable local text and assets; it does not authorize
 registration, upload or publication. On this date the lead inspected the
 official authenticated API and the frontend source for the
 [New App submission flow](https://developer.repebble.com/dashboard/submit).
-Browser automation was unavailable; this was source/API inspection, not a
-visual walkthrough. The current account's app collection had no match for
+Browser automation was unavailable during setup. During actual release
+preparation, the authenticated Edge Dashboard and its New/PBW-upload step were
+also inspected visually; no upload or Submit has occurred yet. The current account's app collection had no match for
 KasugaBus's UUID or intended repository. No Orationes listing ID or artwork is
 reused. Daily was selected for KasugaBus's commuting use from the current
 category choices.
@@ -21,15 +22,15 @@ category choices.
 | Version | 1.0.0; no version bump performed |
 | UUID | `d7ba77b0-d528-4cc8-b35c-7052798152c9` |
 | Selected design | 1 — Neon Express; keep the selected bus identity |
-| Description | [store-description.txt](releases/store-description.txt), customer-facing draft with explicit coverage and unavailable online updates |
+| Description | [store-description.txt](releases/store-description.txt), customer-facing text with explicit coverage, online updates and initial-release limitations |
 | Initial notes | [1.0.0.md](releases/1.0.0.md), unpublished draft with release limitations |
-| Source destination | Intended `ewijaya/kasugabus-pebble`; repository access and public source URL are unverified |
-| Website | No live website is verified; do not submit the configured feed URL as a functioning homepage |
+| Source destination | [`ewijaya/kasugabus-pebble`](https://github.com/ewijaya/kasugabus-pebble), verified live |
+| Website | Unset; the timetable-only Pages site is not used as a product homepage |
 | Category | Recommend **Daily**, key `daily`, observed in the current API/frontend choices; the app serves a commuting routine |
 | Companion entries | Clay settings use the Pebble companion; no separate KasugaBus Android/iOS app is supplied |
 | Store ID / public listing URL | Both remain unset until KasugaBus registration; no existing account listing matched during inspection |
 
-The intended release artifact is
+The preceding development acceptance artifact is
 [KasugaBus-1.0.0-emery.pbw](../artifacts/KasugaBus-1.0.0-emery.pbw),
 **817,565 bytes**, SHA-256
 `2bddb0b092d51c7cdab6944c56a11bb377f4a97932643ee37541450bfc8bdb09`.
@@ -107,13 +108,13 @@ local inventory do not alone authorize public registration or asset upload.
   listing icons and optional banner. Complete the owner's metadata/assets
   review before public submission.
 - Verify the public source/homepage destinations before listing them as live.
-  GitHub Pages is configured locally but has not been deployed or checked live.
+  The source repository and GitHub Pages feed are live; HTTP checks are recorded in hosting/README.md.
 - Complete or explicitly scope the pending physical release checks and obtain
   exact-artifact publication approval before a public first release.
 
 Do not claim live arrivals, bus locations, delays, automatic walking-time
 estimates, verified Kintetsu pole coordinates, coverage after 27 December 2026,
-a working production update feed, support for other Pebble hardware, a
+support for other Pebble hardware, a
 separate phone app, completed seven-day use, or full physical update/GPS
 acceptance. The text is specific to six stop groups around Minami-kasugaoka;
 it does not imply citywide or Japan-wide timetable coverage.
@@ -121,3 +122,11 @@ it does not imply citywide or Japan-wide timetable coverage.
 The Orationes publishing/listing skills were read as reference material. Their
 existing-app update workflow preserves another app's metadata; it does not
 define KasugaBus first-registration fields or authorize any external action.
+
+## Authorized initial-release scope
+
+On 1 October 2026 the owner authorized first registration and publication,
+then explicitly accepted an initial release with the listed physical and
+seven-day limitations. The proposed description now states those limitations
+and the live timetable feed. Exact-PBW and listing approval is still required
+before Dashboard New submits the initial release.

@@ -17,8 +17,11 @@ function xhrFetch(url, maxBytes, binaryResponse, timeout, callback) {
       var value;
       if(binaryResponse){
         value=[];
-        if(xhr.response&&typeof xhr.response!=='string'&&typeof Uint8Array!=='undefined'){
-          var bytes=new Uint8Array(xhr.response);for(var i=0;i<bytes.length;i+=1)value.push(bytes[i]);
+        // Some SDK hosts change the ArrayBuffer proxy on a repeated getter.
+        // Keep the first response object for both detection and extraction.
+        var rawResponse=xhr.response;
+        if(rawResponse&&typeof rawResponse!=='string'&&typeof Uint8Array!=='undefined'){
+          var bytes=new Uint8Array(rawResponse);for(var i=0;i<bytes.length;i+=1)value.push(bytes[i]);
         }else{var response=xhr.responseText||'';for(i=0;i<response.length;i+=1)value.push(response.charCodeAt(i)&255);}
       }else value=xhr.responseText;
       if(value.length>maxBytes)return finish(new Error('Response exceeds size limit'));

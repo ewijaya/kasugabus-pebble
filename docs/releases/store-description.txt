@@ -8,4 +8,6 @@ Bus times and service dates use Japan time; the large clock follows your watch's
 
 Optional Nearby requests one phone location fix and ranks six verified Hankyu boarding poles by approximate straight-line distance. Kintetsu boarding points remain available through manual selection. Nearby does not estimate walking time or give roadside guidance.
 
-The initial bundled timetable covers 1 October–27 December 2026. Source review is due 1 November; later service dates remain unconfirmed. Online timetable updates are not yet available. The bundled timetable remains usable offline.
+The initial bundled timetable covers 1 October–27 December 2026. Source review is due 1 November; later service dates remain unconfirmed. Reviewed timetable revisions download through your connected phone without reinstalling the app. Automatic checks run daily when the app opens; Data status also offers a manual check. The bundled timetable remains usable offline. A successful feed check does not certify operator source freshness.
+
+Initial release: broader physical GPS/settings/update-recovery checks, outdoor readability, battery observations and seven days of use remain outstanding. Basic Time 2 navigation and the bus icon have been observed; emulator and automated results are documented in the source repository.

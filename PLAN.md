@@ -99,3 +99,24 @@ The original plan above is preserved as the starting record. Current status:
 - Pages/GitHub remain unpublished; the local project has no initialized Git repository, the intended remote cannot be viewed with current authentication, and authenticated `artifacts/store-discovery-final.json` still found no KasugaBus listing. No version bump, commit, registration or publication occurred.
 
 Current evidence and remaining checks are documented in `docs/PLATFORM.md`, `docs/MILESTONES.md`, `docs/DATA_RECONCILIATION.md`, `docs/PUBLISHING.md`, and the physical verification records. The rebuilt package has fresh local acceptance and successful physical installation; owner navigation/icon observations remain bound to earlier packages with unchanged application code. Remaining field checks and production deployment/publication are separate open steps.
+
+## Authorized initial release — 1 October 2026
+
+The owner subsequently requested “publish this new app everywhere” and accepted
+an initial release with named physical/seven-day limitations. The historical
+setup status above is superseded for source and hosting: `main` is committed
+and public at `ewijaya/kasugabus-pebble`; the dedicated GitHub Pages feed is
+live. V2 is a reviewed version-only reissue with unchanged departures, dates
+and source evidence, and retained v1 recovery bytes. Exact live HTTPS checks
+passed; the owner confirmed active v2 and a feed-success time after a manual
+check on the Poco F4 / Time 2 without app reinstallation.
+
+The actual SDK worker exposed a repeated-XHR-response getter compatibility
+issue that Node mocks did not catch. The adapter now retains one response
+object; actual installed-SDK regressions verify exact arbitrary binary bytes
+and preserved validation. The final 1.0.0 candidate is being clean-built from
+committed source. Its physical approval remains the final gate before creating
+the initial store listing and publishing the exact same PBW on both stores.
+No release tag, GitHub Release or RePebble listing has been created at this
+preparation stage. Broader physical GPS/settings/recovery, outdoor/battery and
+seven-day use remain explicitly outstanding.

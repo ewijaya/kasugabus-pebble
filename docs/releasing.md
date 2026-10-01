@@ -1,11 +1,13 @@
 # KasugaBus release workflow
 
-This workflow is prepared and tested locally. Version **1.0.0** has not been
-bumped, committed, tagged, pushed or published by this setup task. The intended
-GitHub destination is `ewijaya/kasugabus-pebble`; there is no initialized local
-Git repository. GitHub Pages is configured locally and remains undeployed.
-KasugaBus has no saved store App ID. Authenticated read-only checks on
-2026-10-01 found no Dashboard listing matching its UUID or repository.
+The owner authorized initial publication on 1 October 2026, retaining version
+**1.0.0**, with the outstanding physical and seven-day checks explicitly stated.
+The source repository is `ewijaya/kasugabus-pebble`; `main` is configured locally
+and on GitHub. Source pushes and the selected dedicated GitHub Pages feed are
+release preparation. App registration, release tags and PBW uploads follow
+approval of the exact frozen candidate. The verified store ID is recorded in
+`release-config.json` immediately after registration; do not infer it from this
+procedure or the package UUID.
 
 The package/PBW UUID and store App ID are different identities. Package UUID
 `d7ba77b0-d528-4cc8-b35c-7052798152c9` is known now; RePebble assigns its own App
