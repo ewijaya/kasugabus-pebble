@@ -1,0 +1,16 @@
+{
+  "checked_at": "2026-10-01T04:28:52.956757+00:00",
+  "transport": "Pebble Cloud developer connection",
+  "watch_platform": "emery",
+  "watch_firmware": "v4.38.4",
+  "hardware_revision": "OBELIX_PVT",
+  "phone_model_user_reported": "Poco F4",
+  "phone_os_family": "Android",
+  "android_version": null,
+  "companion_version_user_reported": "1.14.0.1",
+  "previous_confirmed_firmware": "v4.36.2",
+  "update_method": "Owner opened official normal_obelix_pvt_v4.38.4.pbz in Pebble companion",
+  "official_bundle_url": "https://github.com/coredevices/PebbleOS/releases/download/v4.38.4/normal_obelix_pvt_v4.38.4.pbz",
+  "official_bundle_sha256": "e945a7b86f19b62db3ff7a68b70ced6b4c53a717d312e614bb11bed89efdb936",
+  "app_installed_by_this_check": false
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Publish KasugaBus"
+  short_description: "Prepare and publish one approved KasugaBus release"
+  default_prompt: "Use $kasugabus-publish-release for the requested KasugaBus workflow."

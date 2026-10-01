@@ -1,0 +1,195 @@
+..................................................Registration intent saved before UI submission. Use Dashboard New once with the frozen PBW/listing/assets; immediately record the returned App ID. This command never submits or uploads.
+....Assigned listing recorded: bbbbbbbbbbbbbbbbbbbbbbbb https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb
+.Assigned listing recorded: bbbbbbbbbbbbbbbbbbbbbbbb https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb
+.....{
+  "uuid": "d7ba77b0-d528-4cc8-b35c-7052798152c9",
+  "github_repo": "fixture-owner/kasugabus",
+  "app_id": "bbbbbbbbbbbbbbbbbbbbbbbb",
+  "listing_url": "https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb",
+  "public_verification": "not checked",
+  "releases": []
+}
+{
+  "uuid": "d7ba77b0-d528-4cc8-b35c-7052798152c9",
+  "github_repo": "fixture-owner/kasugabus",
+  "app_id": "bbbbbbbbbbbbbbbbbbbbbbbb",
+  "listing_url": "https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb",
+  "public_verification": "not checked",
+  "releases": [],
+  "saved_locally": true
+}
+Assigned listing recorded: bbbbbbbbbbbbbbbbbbbbbbbb https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb
+..Candidate frozen: /var/folders/5r/5wgy3x_d64z4dm3n0d6g6zq80000gn/T/kasugabus-release-fixtures-e0ozrziz/.release/1.0.0 {"sha256": "4b32907b4ec84720c4bae502dff5fe187e7fc090d234d983e586b591ad268e1a", "bytes": 567}
+Installation is recorded. Explicit physical approval of this SHA-256 and these destinations is still required.
+..Registration intent saved before UI submission. Use Dashboard New once with the frozen PBW/listing/assets; immediately record the returned App ID. This command never submits or uploads.
+.Assigned listing recorded: bbbbbbbbbbbbbbbbbbbbbbbb https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb
+.Registration intent saved before UI submission. Use Dashboard New once with the frozen PBW/listing/assets; immediately record the returned App ID. This command never submits or uploads.
+Assigned listing recorded: bbbbbbbbbbbbbbbbbbbbbbbb https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb
+.Registration intent saved before UI submission. Use Dashboard New once with the frozen PBW/listing/assets; immediately record the returned App ID. This command never submits or uploads.
+Assigned listing recorded: bbbbbbbbbbbbbbbbbbbbbbbb https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb
+.Registration intent saved before UI submission. Use Dashboard New once with the frozen PBW/listing/assets; immediately record the returned App ID. This command never submits or uploads.
+Assigned listing recorded: bbbbbbbbbbbbbbbbbbbbbbbb https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb
+.....Registration intent saved before UI submission. Use Dashboard New once with the frozen PBW/listing/assets; immediately record the returned App ID. This command never submits or uploads.
+Assigned listing recorded: bbbbbbbbbbbbbbbbbbbbbbbb https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb
+Assigned listing recorded: bbbbbbbbbbbbbbbbbbbbbbbb https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb
+..Registration intent saved before UI submission. Use Dashboard New once with the frozen PBW/listing/assets; immediately record the returned App ID. This command never submits or uploads.
+Assigned listing recorded: bbbbbbbbbbbbbbbbbbbbbbbb https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb
+.Registration intent saved before UI submission. Use Dashboard New once with the frozen PBW/listing/assets; immediately record the returned App ID. This command never submits or uploads.
+Assigned listing recorded: bbbbbbbbbbbbbbbbbbbbbbbb https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb
+.Registration intent saved before UI submission. Use Dashboard New once with the frozen PBW/listing/assets; immediately record the returned App ID. This command never submits or uploads.
+{
+  "uuid": "d7ba77b0-d528-4cc8-b35c-7052798152c9",
+  "github_repo": "fixture-owner/kasugabus",
+  "app_id": "bbbbbbbbbbbbbbbbbbbbbbbb",
+  "listing_url": "https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb",
+  "public_verification": "not checked",
+  "releases": []
+}
+Assigned listing recorded: bbbbbbbbbbbbbbbbbbbbbbbb https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb
+..Registration intent saved before UI submission. Use Dashboard New once with the frozen PBW/listing/assets; immediately record the returned App ID. This command never submits or uploads.
+.Registration intent saved before UI submission. Use Dashboard New once with the frozen PBW/listing/assets; immediately record the returned App ID. This command never submits or uploads.
+Assigned listing recorded: bbbbbbbbbbbbbbbbbbbbbbbb https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb
+.Registration intent saved before UI submission. Use Dashboard New once with the frozen PBW/listing/assets; immediately record the returned App ID. This command never submits or uploads.
+Assigned listing recorded: bbbbbbbbbbbbbbbbbbbbbbbb https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb
+Assigned listing recorded: bbbbbbbbbbbbbbbbbbbbbbbb https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb
+Assigned listing recorded: bbbbbbbbbbbbbbbbbbbbbbbb https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb
+....................Runtime log captured: /private/var/folders/5r/5wgy3x_d64z4dm3n0d6g6zq80000gn/T/kasugabus-release-fixtures-ci1q9o0z/artifacts/capture-fixture.log receipt: /private/var/folders/5r/5wgy3x_d64z4dm3n0d6g6zq80000gn/T/kasugabus-release-fixtures-ci1q9o0z/artifacts/capture-fixture.log.install.json PBW: 208ff2ac731517873f8894b038b7a2d21970454c8d0fca85f3749cb47e76f7fc
+usage: python3.13 -m unittest [-h]
+                              {plan,prepare,publish,verify,begin-registration,record-registration,reconcile-registration,discover-registration} ...
+
+Freeze, publish and verify one approved KasugaBus PBW. Never auto-register.
+Imports and help are offline and unauthenticated. Publication is a separate,
+explicit command and never builds or rewrites its approved artifact.
+
+positional arguments:
+  {plan,prepare,publish,verify,begin-registration,record-registration,reconcile-registration,discover-registration}
+    plan                Read-only release/version context; no build, bump or
+                        publication
+    prepare             Freeze an already audited exact PBW and install it
+                        physically; no public mutation
+    publish             Explicitly publish the frozen artifact; no build or
+                        auto-registration
+    verify              Read-only bounded verification, preserving partial
+                        status
+    begin-registration  Approve frozen first listing and journal intent before
+                        Dashboard New; never submit/upload
+    record-registration
+                        Immediately persist assigned ID, verify
+                        ownership/UUID, and record optional listing read-back
+    reconcile-registration
+                        Discover a possibly created owned UUID; never resubmit
+                        Dashboard New
+    discover-registration
+                        Read-only owned UUID/repository/release preflight;
+                        optional verified local ID adoption, never creation
+
+options:
+  -h, --help            show this help message and exit
+Candidate frozen: /var/folders/5r/5wgy3x_d64z4dm3n0d6g6zq80000gn/T/kasugabus-release-fixtures-_6bgq7ln/.release/1.0.0 {"sha256": "208ff2ac731517873f8894b038b7a2d21970454c8d0fca85f3749cb47e76f7fc", "bytes": 567}
+Installation is recorded. Explicit physical approval of this SHA-256 and these destinations is still required.
+..........Verification attempt 1 {"github": {"state": "verified", "details": {"fixture": "ok"}}, "appstore": {"state": "pending verification", "reason": "fixture propagation"}}
+Verification attempt 2 {"github": {"state": "verified", "details": {"fixture": "ok"}}, "appstore": {"state": "pending verification", "reason": "fixture propagation"}}
+..
+----------------------------------------------------------------------
+Ran 113 tests in 24.256s
+
+OK
+PASS protocol preserves unsigned words through signed PebbleKit tuples
+PASS shared sender waits for transport callback after an early application ACK
+PASS shared sender bounds FIFO and handles NACK without concurrent transactions
+PASS shared sender timeout blocks new transactions until callback or reconnect
+PASS shared sender reports immediate SDK exceptions once
+PASS standard CRC32 and SHA256 vectors
+PASS valid complete binary and manifest agree
+PASS reject malformed dates, versions, hosts, lengths, compatibility and future current
+PASS binary rejects corrupt payload, references, sort, flags, time and UTF8
+PASS fixed80B atomic preference roundtrip, explicit unset versus zero
+PASS startup Nearby requires startup location while None default remains valid
+PASS invalid duplicate/unknown/outofrange/padded preferences reject
+PASS Nearby good, stale, poor, outside, missing and stable uncertainty ties
+PASS Nearby stale and poor fixes retain real bounded metadata without ranking rows
+PASS Nearby denied, unavailable, timeout, missing/throwing API and NaN fix use explicit error states
+PASS one-shot geolocation timeout and obsolete request suppression
+PASS transfer ignores old session/sequence, acknowledges chunks, retries same bytes
+PASS transfer gives up after bounded retries without COMMIT
+PASS unconfigured feed never makes network attempt or successful stamp
+PASS watch-owned one-inflight and no downgrade/rewrite
+PASS transfer requires the explicit watch request including zero
+PASS Restore during manifest or payload download aborts once and suppresses obsolete callbacks
+PASS Restore during transfer rejects old ACKs after a new check and binds BEGIN to its request
+PASS Restore between future and current downloads prevents the remaining current transfer
+PASS synchronous fetch completion cannot retain an obsolete abort handle
+25 phone unit scenarios passed
+PASS Clay page prevents duplicate, invalid and excessive walking preferences
+PASS phone configuration cancellation, invalid responses, atomic confirmation and reconnect handshake
+PASS phone Nearby respects location opt-in independently of startup
+PASS disabling location suppresses an in-flight result
+PASS Restore STATE cancels downloading and permits a new explicit check
+{"testOnly": true, "origin": "http://127.0.0.1:60843", "manifest": "http://127.0.0.1:60843/manifest.json", "fixtures": "/var/folders/5r/5wgy3x_d64z4dm3n0d6g6zq80000gn/T/kasugabus-test-feed-fn0zqdp8"}
+PASS controlled HTTP current + future staged before current; commits 3,2
+PASS controlled HTTP corrupt checksum; commits 
+PASS controlled HTTP incompatible schema; commits 
+PASS controlled HTTP interrupted HTTP payload; commits 
+PASS controlled HTTP lost ACK bounded transfer; commits 
+5 real HTTP integration scenarios passed; production endpoint unchanged
+preferences/control: atomic banks, torn writes/checksums, durable uint32 requests, retained timestamps/settings, KBW2/KBW1/KBP1 compatibility and precedence, two-read load, generation/flags PASS
+automatic eligibility: offline defer, disabled, busy, rolling24h, backward clock PASS
+storage: transfer/recovery, 7 lazy-validation regressions, and 6 atomic-directory/migration suites PASS
+All local KasugaBus test suites passed
+'distclean' finished successfully (0.071s)
+
+up to date, audited 2 packages in 880ms
+
+found 0 vulnerabilities
+
+up to date, audited 2 packages in 662ms
+
+found 0 vulnerabilities
+Setting top to                           : /Users/e_wijaya_ap/Desktop/kasugabus-pebble 
+Setting out to                           : /Users/e_wijaya_ap/Desktop/kasugabus-pebble/build 
+Checking for program 'webpack'           : /Users/e_wijaya_ap/Library/Application Support/Pebble SDK/SDKs/current/node_modules/.bin/webpack 
+Found Pebble SDK for emery in:           : /Users/e_wijaya_ap/Library/Application Support/Pebble SDK/SDKs/current/sdk-core/pebble/emery 
+Checking for program 'gcc, cc'           : arm-none-eabi-gcc 
+Checking for program 'ar'                : arm-none-eabi-ar 
+'configure' finished successfully (0.222s)
+Waf: Entering directory `/Users/e_wijaya_ap/Desktop/kasugabus-pebble/build'
+[1/3] Creating message_key_json:  -> build/js/message_keys.json
+[2/3] Creating message_key_definitions:  -> build/src/message_keys.auto.c
+[3/3] Creating message_key_header:  -> build/include/message_keys.auto.h
+[ 4/24] Compiling emery | reso: resources/images/kasugabus-menu-icon.png -> build/emery/resources/images/kasugabus-menu-icon.png.MENU_ICON.reso
+[ 5/24] Compiling emery | reso: resources/fonts/NotoSansJP-Regular.ttf -> build/emery/resources/fonts/NotoSansJP-Regular.ttf.JP_16.reso
+[ 6/24] Compiling emery | reso: resources/timetable.bin -> build/emery/resources/timetable.bin.TIMETABLE.reso
+[ 7/24] Creating emery | /Users/e_wijaya_ap/Desktop/kasugabus-pebble/build/emery/appinfo.auto.c:  -> build/emery/appinfo.auto.c
+[ 8/24] Compiling emery | subst: ../../Library/Application Support/Pebble SDK/SDKs/current/sdk-core/pebble/common/pebble_app.ld.template -> build/emery/pebble_app.ld.auto
+[ 9/24] Compiling emery | c: src/c/engine.c -> build/src/c/engine.c.9.o
+[10/24] Compiling emery | c: build/src/message_keys.auto.c -> build/src/message_keys.auto.c.9.o
+[11/24] Compiling emery | c: src/c/storage.c -> build/src/c/storage.c.9.o
+[12/24] Compiling emery | c: src/c/policies.c -> build/src/c/policies.c.9.o
+[13/24] Compiling emery | c: src/c/preferences.c -> build/src/c/preferences.c.9.o
+[14/24] Creating emery | /Users/e_wijaya_ap/Desktop/kasugabus-pebble/build/appinfo.json:  -> build/appinfo.json
+[15/24] Processing emery | resource_ball: build/emery/resources/timetable.bin.TIMETABLE.reso build/emery/resources/fonts/NotoSansJP-Regular.ttf.JP_16.reso build/emery/resources/images/kasugabus-menu-icon.png.MENU_ICON.reso -> build/emery/system_resources.resball
+[16/24] Compiling emery | generate_resource_id_definitions: build/emery/system_resources.resball -> build/emery/src/resource_ids.auto.c
+[17/24] Compiling emery | generate_pbpack: build/emery/system_resources.resball -> build/emery/app_resources.pbpack
+[18/24] Compiling emery | generate_resource_id_header: build/emery/system_resources.resball -> build/emery/src/resource_ids.auto.h
+[19/24] Compiling emery | c: build/emery/src/resource_ids.auto.c -> build/emery/src/resource_ids.auto.c.9.o
+[20/24] Compiling emery | c: src/c/ui.c -> build/src/c/ui.c.9.o
+[21/24] Compiling emery | c: src/c/main.c -> build/src/c/main.c.9.o
+[22/24] Compiling emery | c: build/emery/appinfo.auto.c -> build/emery/appinfo.auto.c.9.o
+[23/24] Linking emery | cprogram: build/src/c/engine.c.9.o build/src/c/main.c.9.o build/src/c/policies.c.9.o build/src/c/preferences.c.9.o build/src/c/storage.c.9.o build/src/c/ui.c.9.o build/emery/appinfo.auto.c.9.o build/emery/src/resource_ids.auto.c.9.o build/src/message_keys.auto.c.9.o -> build/emery/pebble-app.elf
+/Users/e_wijaya_ap/Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/14.2.1/../../../../arm-none-eabi/bin/ld: warning: /Users/e_wijaya_ap/Desktop/kasugabus-pebble/build/emery/pebble-app.elf has a LOAD segment with RWX permissions
+
+[24/24] Processing emery | memory_usage_report: build/emery/pebble-app.elf build/emery/app_resources.pbpack
+-------------------------------------------------------
+EMERY APP MEMORY USAGE
+Total size of resources:        30178 bytes / 256.0KB
+Total footprint in RAM:         39170 bytes / 128.0KB
+Free RAM available (heap):      91902 bytes
+------------------------------------------------------- 
+[25/28] Compiling emery | /Users/e_wijaya_ap/Desktop/kasugabus-pebble/build/emery/pebble-app.raw.bin: build/emery/pebble-app.elf -> build/emery/pebble-app.raw.bin
+[26/28] Processing merge_js: src/pkjs/binary.js src/pkjs/catalog.json src/pkjs/checksums.js src/pkjs/clay-config.js src/pkjs/custom-clay.js src/pkjs/feed-config.js src/pkjs/index.js src/pkjs/manifest.js src/pkjs/nearby.js src/pkjs/protocol.js src/pkjs/sender.js src/pkjs/settings.js src/pkjs/transfer.js src/pkjs/updater.js -> build/pebble-js-app.js build/pebble-js-app.js.map
+[27/28] Processing emery | inject-metadata: build/emery/pebble-app.raw.bin build/emery/pebble-app.elf build/emery/app_resources.pbpack -> build/emery/pebble-app.bin
+[28/28] Creating app_bundle:  -> build/kasugabus-pebble.pbw
+Waf: Leaving directory `/Users/e_wijaya_ap/Desktop/kasugabus-pebble/build'
+'build' finished successfully (3.806s)
+
+Static audit passed: {"resources": 30178, "static_ram": 39170, "linker_free_ram": 91902, "native_binary": 31428, "pbw": 817565, "timetable": 24203} PBW SHA-256: 2bddb0b092d51c7cdab6944c56a11bb377f4a97932643ee37541450bfc8bdb09

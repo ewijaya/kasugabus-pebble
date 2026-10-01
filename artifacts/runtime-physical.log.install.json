@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "artifact": {
+    "sha256": "466df8dd233cb2886171eb44fe23f1188fd1b3f68bc1d872249be3262a8dff5b",
+    "bytes": 817151
+  },
+  "environment": "physical",
+  "command": [
+    "pebble",
+    "install",
+    "--cloudpebble",
+    "--logs",
+    "/Users/e_wijaya_ap/Desktop/kasugabus-pebble/build/kasugabus-pebble.pbw"
+  ],
+  "started_at": "2026-10-01T04:36:52.039764+00:00",
+  "finished_at": "2026-10-01T04:37:36.104469+00:00",
+  "log_sha256": "28722a59989386a323bf2db6f57b1512e9feaf9bf948feb1c14bbb79bacdab33"
+}

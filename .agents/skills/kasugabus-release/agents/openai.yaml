@@ -1,0 +1,4 @@
+interface:
+  display_name: "KasugaBus Release"
+  short_description: "Freeze, publish and verify a KasugaBus candidate"
+  default_prompt: "Use $kasugabus-release for the requested KasugaBus workflow."

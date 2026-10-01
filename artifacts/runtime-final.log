@@ -1,0 +1,25 @@
+Installing app...
+App install succeeded.
+[12:36:01] main.c:560> READY init_ms=1033 storage=1048576 heap=35352 message=0
+[12:36:01] ui.c:501> UI screen0 render_ms11 heap35352
+[12:36:01] ui.c:501> UI screen0 render_ms7 heap35432
+[12:36:02] ui.c:501> UI screen0 render_ms12 heap35432
+[12:36:02] ocess_manager.c:487> Heap Usage for App <KasugaBus>: Total Size <94848B> Used <59496B> Still allocated <0B>
+[12:36:03] main.c:560> READY init_ms=966 storage=1048576 heap=35352 message=0
+[12:36:03] ui.c:501> UI screen0 render_ms10 heap35352
+[12:36:03] ui.c:501> UI screen0 render_ms7 heap35432
+[12:36:04] ui.c:501> UI screen0 render_ms1008 heap35432
+[12:36:04] ui.c:501> UI screen1 render_ms10 heap35432
+[12:36:04] ui.c:501> UI screen1 render_ms16 heap35432
+[12:36:04] main.c:373> Update begin v11 bytes24203 status0
+[12:36:04] ui.c:501> UI screen1 render_ms9 heap35432
+[12:36:15] main.c:398> Update commit session810011 status4 heap35432
+[12:36:15] ui.c:501> UI screen1 render_ms11 heap35432
+[12:36:15] main.c:373> Update begin v10 bytes24198 status0
+[12:36:15] ui.c:501> UI screen1 render_ms11 heap35432
+[12:36:28] main.c:398> Update commit session810010 status3 heap35432
+[12:36:28] ui.c:501> UI screen1 render_ms11 heap35432
+[12:36:28] ui.c:501> UI screen1 render_ms11 heap35432
+[12:36:29] ui.c:501> UI screen1 render_ms1015 heap35432
+[12:36:40] ui.c:501> UI screen1 render_ms1012 heap35432
+[12:37:00] ui.c:501> UI screen1 render_ms19 heap35432

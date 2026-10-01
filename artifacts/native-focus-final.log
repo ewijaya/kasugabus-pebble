@@ -1,0 +1,34 @@
+Captured artifacts/screenshots/emery_26_focus_before_fixture.png
+Traceback (most recent call last):
+  File "/Users/e_wijaya_ap/Desktop/kasugabus-pebble/tools/verify_emulator.py", line 273, in main
+    focus_removal(emu, args.current, args.future)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/e_wijaya_ap/Desktop/kasugabus-pebble/tools/verify_emulator.py", line 253, in focus_removal
+    emu.screenshot("emery_27_focus_removed_fixture")
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/e_wijaya_ap/Desktop/kasugabus-pebble/tools/verify_emulator.py", line 94, in screenshot
+    result = self.action("screenshot", path=str(target))
+  File "/Users/e_wijaya_ap/Desktop/kasugabus-pebble/tools/verify_emulator.py", line 78, in action
+    return self.wait(lambda e: e.get("event") == "command" and e.get("op") == op)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/e_wijaya_ap/Desktop/kasugabus-pebble/tools/verify_emulator.py", line 42, in wait
+    raise RuntimeError(event["message"])
+RuntimeError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/e_wijaya_ap/Desktop/kasugabus-pebble/tools/verify_emulator.py", line 284, in <module>
+    main()
+    ~~~~^^
+  File "/Users/e_wijaya_ap/Desktop/kasugabus-pebble/tools/verify_emulator.py", line 279, in main
+    emu.restart()
+    ~~~~~~~~~~~^^
+  File "/Users/e_wijaya_ap/Desktop/kasugabus-pebble/tools/verify_emulator.py", line 69, in restart
+    self.wait(lambda e: e.get("kind") == "AppRunStateStop")
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/e_wijaya_ap/Desktop/kasugabus-pebble/tools/verify_emulator.py", line 40, in wait
+    event = self.events.get(timeout=max(.01, end-time.monotonic()))
+  File "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/queue.py", line 212, in get
+    raise Empty
+_queue.Empty

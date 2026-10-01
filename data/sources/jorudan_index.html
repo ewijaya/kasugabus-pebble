@@ -1,0 +1,594 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    
+<title>時刻表検索トップ | 近鉄バス </title>
+
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    
+    <link rel="shortcut icon" href="https://kintetsu-bus.jorudan.biz//static/images/fabcon.ico"  type="image/x-icon" media="all" >
+    <link href="./static/images/touch-icon-ipad.png" rel="apple-touch-icon-precomposed">
+    <link href="./static/images/touch-icon-ipad.png" rel="apple-touch-icon-precomposed" sizes="76x76">
+    <link href="./static/images/touch-icon-ipad-retina.png" rel="apple-touch-icon-precomposed" sizes="120x120">
+    <link href="./static/images/touch-icon-iphone-retina.png" rel="apple-touch-icon-precomposed" sizes="152x152">
+    
+    <link rel="stylesheet" href="./static/css/libs/jquery-ui.min.css?ver=20261001020032">
+    
+
+
+    
+    
+<link rel="stylesheet" href="./static/css/b_diagram.min.css?ver=20261001020032">
+
+
+    <script src="./static/js/libs/jquery-3.7.1.min.js?ver=20261001020032"></script>
+    <script src="./static/js/libs/jquery-ui.min.js?ver=20261001020032"></script>
+    <script src="./static/js/libs/jtruncsubstr-1.0rc.js?ver=20261001020032"></script>
+    <script src="./static/js/libs/slick.min.js?ver=20261001020032"></script>
+    <script src="./static/js/libs/jquery.balloon.js?ver=20261001020032"></script>
+    <script src="./static/js/libs/jquery.ui.touch-punch.min.js?ver=20261001020032"></script>
+    <script src="./static/js/libs/moment.js?ver=20261001020032"></script>
+    
+<script type="module" src="./static/js/b_diagram.min.js?ver=20261001020032" async></script>
+<script src="./static/js/libs/datepicker-ja.js?ver=20261001020032"></script>
+
+
+    
+    <!-- GA4対応 -->
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HRR4WG0YP0"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-HRR4WG0YP0');
+    </script>
+    
+</head>
+<body id="index" class="route">
+    
+    <input id="analytics_id" name="analytics_id" type="hidden" value="UA-96283594-1">
+    
+
+    <div id="mov-wrap">
+
+        
+    <header class="pc">
+	<h1><a href="https://www.kintetsu-bus.co.jp/"><img src="./static/images/logo.svg" alt="近鉄バス株式会社"></a></h1>
+	<nav>
+        
+		<ul id="header-hnav">
+            
+            <li>
+                <a href="https://job-gear.net/kintetsubus/">採用情報</a>
+            </li>
+            
+            <li>
+                <a href="https://www.kintetsu-bus.co.jp/company/">会社情報</a>
+            </li>
+            
+            <li>
+                <a href="https://www.kintetsu-bus.co.jp/inquiry/">よくあるご質問</a>
+            </li>
+            
+		</ul>
+        
+		<dl id="header-lang">
+			<dt>LANGUAGE</dt>
+			<dd>
+                <a href="./chglng?page=diagram&mode=0&amp;tosk=&amp;dt=202610011050&amp;p=0%2C8" class="imgalpha">日本語</a>
+                <a href="./en/chglng?page=diagram&mode=0&amp;tosk=&amp;dt=202610011050&amp;p=0%2C8" class="imgalpha">English</a>
+            </dd>
+		</dl>
+	</nav>
+</header>
+
+<!-- ==================== mov-contents ==================== -->
+
+
+<!-- ==================== mov-header ==================== -->
+<header class="mov-header noprint sp">
+    <div class="mov-inner">
+        <h1 class="logoArea"><a href="https://www.kintetsu-bus.co.jp/"><img src="./static/images/logo.png" class="logoImg " alt=""></a></h1>
+
+        <div class="mov-gnav">
+            <nav id="menuList">
+                <ul class="hideMenu">
+                    <li class="gnavHead">メニュー</li>
+
+                    
+
+                    <li class="menuObjPc ">
+                        
+                        <a href="https://job-gear.net/kintetsubus/" target="self" class="menuObj hideMenuList">採用情報</a>
+                        
+
+
+                    </li>
+
+                    
+
+                    <li class="menuObjPc ">
+                        
+                        <a href="https://www.kintetsu-bus.co.jp/company/" target="self" class="menuObj hideMenuList">会社情報</a>
+                        
+
+
+                    </li>
+
+                    
+
+                    <li class="menuObjPc ">
+                        
+                        <a href="https://www.kintetsu-bus.co.jp/inquiry/" target="self" class="menuObj hideMenuList">よくあるご質問</a>
+                        
+
+
+                    </li>
+
+                    
+
+                </ul>
+            </nav><!-- /#menuList -->
+
+        </div>
+    </div>
+</header>
+
+<!-- ==================== locHeader ==================== -->
+<div class="locHeader noprint sp">
+    <div class="mov-inner">
+
+        <ul class="mov-locnav">
+            
+            <li class="mov-locnav-first"><a href="javascript:void(0);" class="btnNav">使い方ガイド</a></li>
+            
+            <li class="mov-locnav-first locnavObjPc haschild">
+                <a href="#locMenu1" class="locnavObj">検索メニュー</a>
+                <ul id="locMenu1" class="locMenu" style="display:none;">
+                    
+                    
+                    <li class="locnavObjParent">
+                        
+                        <a href="javascript:void(0);" class="menuObj hideMenuList">路線バス</a>
+
+                        <ul class="menuOpen" style="display:none;">
+                            
+                            <li>
+                                
+                                <a href="./route" target="_self">経路検索</a>
+                                
+                            </li>
+                            
+                            <li>
+                                
+                                <a href="./busstate" target="_self">接近情報検索</a>
+                                
+                            </li>
+                            
+                            <li>
+                                
+                                <a href="./diagram" target="_self">時刻表検索</a>
+                                
+                            </li>
+                            
+                        </ul>
+                        
+                    </li>
+                    
+                    
+                    <li class="locnavObjParent">
+                        
+                        <a href="https://www.kintetsu-bus.co.jp/skyvista/" target="" class="menuObj hideMenuList">OSAKA SKY VISTA</a>
+                        
+                    </li>
+                    
+                    
+                    <li class="locnavObjParent">
+                        
+                        <a href="https://www.kintetsu-bus.co.jp/highway/" target="" class="menuObj hideMenuList">高速バス</a>
+                        
+                    </li>
+                    
+                    
+                    <li class="locnavObjParent">
+                        
+                        <a href="https://www.kintetsu-bus.co.jp/charter/" target="" class="menuObj hideMenuList">貸切バス</a>
+                        
+                    </li>
+                    
+                    
+                    <li class="locnavObjParent">
+                        
+                        <a href="https://www.kintetsu-bus.co.jp/airport/" target="" class="menuObj hideMenuList">空港バス</a>
+                        
+                    </li>
+                    
+                </ul>
+            </li>
+            
+            <li id="locLangHeader" class="mov-locnav-first locnavObjPc haschild">
+                <a href="#locMenu2" class="locnavObj">言語<span class="langArea">日本語</span></a>
+                <div id="locMenu2" class="locMenu" style="display:none;">
+                    
+                    <p><a href="./chglng?page=diagram&mode=0&amp;tosk=&amp;dt=202610011050&amp;p=0%2C8" target="_self">日本語</a></p>
+                    
+                    <p><a href="./en/chglng?page=diagram&mode=0&amp;tosk=&amp;dt=202610011050&amp;p=0%2C8" target="_self">ENGLISH</a></p>
+                    
+                </div>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+<!-- ==================== mov-contents ==================== -->
+
+
+        
+
+
+        <!--<div id="contentsArea">-->
+        <div class="mov-contents">
+            
+
+<ul class="pc breadcrumb noprint">
+    
+    <li class="mouseon">
+<a href="./">総合トップ
+</a>
+</li>
+
+    
+    <li class="breadcrumbNow">
+時刻表検索トップ
+</li>
+
+    
+</ul>
+
+            <div class="mov-inner">
+                
+
+
+<input id="mydiagramparams" name="mydiagramparams" type="hidden" value="">
+<input id="listurls" name="listurls" type="hidden" value="{&#34;1&#34;: &#34;./listmap&#34;, &#34;2&#34;: &#34;./listword&#34;, &#34;3&#34;: &#34;./listeki&#34;, &#34;9&#34;: &#34;./listrosenzu&#34;}">
+<input id="opencloselbl" name="opencloselbl" type="hidden" value="{&#34;open&#34;: &#34;%E9%96%8B%E3%81%8F&#34;, &#34;close&#34;: &#34;%E9%96%89%E3%81%98%E3%82%8B&#34;, &#34;more&#34;: &#34;%E8%A9%B3%E7%B4%B0%E3%82%92%E8%A6%8B%E3%82%8B&#34;}">
+
+<form action="./diagram" method="POST" autocomplete="off">
+    <input id="params" name="params" type="hidden" value="mode=0&amp;tosk=&amp;dt=202610011050&amp;p=0%2C8">
+<input id="mode" name="mode" type="hidden" value="1">
+<input id="kkbn" name="kkbn" type="hidden" value="">
+<input id="kkbnint" name="kkbnint" type="hidden" value="">
+<input id="lng" name="lng" type="hidden" value="0">
+<input id="showstcode" name="showstcode" type="hidden" value="False">
+
+
+<input id="navparams" name="navparams" type="hidden" value="[{&#34;selector&#34;: &#34;#fr,#to&#34;, &#34;isnav&#34;: true, &#34;isbaloon&#34;: false, &#34;title&#34;: &#34;停留所を入力&#34;, &#34;message&#34;: &#34;候補となる停留所が表示されます。&#34;}, {&#34;selector&#34;: &#34;.clickMenu&#34;, &#34;isnav&#34;: true, &#34;isbaloon&#34;: false, &#34;title&#34;: &#34;複数の停留所検索方法&#34;, &#34;message&#34;: &#34;複数の検索方法から、停留所を入力できます。&#34;}, {&#34;selector&#34;: &#34;.dateBox&#34;, &#34;isnav&#34;: true, &#34;isbaloon&#34;: false, &#34;title&#34;: &#34;検索日付の入力&#34;, &#34;message&#34;: &#34;検索を行う日付を変更したい場合に入力します。&#34;}, {&#34;selector&#34;: &#34;.search input&#34;, &#34;isnav&#34;: true, &#34;isbaloon&#34;: false, &#34;title&#34;: &#34;検索&#34;, &#34;message&#34;: &#34;時刻表検索を行います。&#34;}, {&#34;selector&#34;: &#34;.toggleBoxTtlArea&#34;, &#34;isnav&#34;: true, &#34;isbaloon&#34;: false, &#34;title&#34;: &#34;My機能&#34;, &#34;message&#34;: &#34;各検索結果を「MY機能」として登録できます。次回以降カンタンに検索することができます。&#34;}, {&#34;selector&#34;: &#34;.infoArea .info&#34;, &#34;isnav&#34;: true, &#34;isbaloon&#34;: false, &#34;title&#34;: &#34;お知らせ&#34;, &#34;message&#34;: &#34;緊急で表示している運行情報と、各会社ごとのお知らせ情報を表示しています。&#34;}]">
+<input id="usemore" name="usemore" type="hidden" value="0">
+<input id="mode_c" name="mode_c" type="hidden" value="">
+
+    <input id="openurl" name="openurl" type="hidden" value="">
+    <input id="dexists" name="dexists" type="hidden" value="">
+    <input id="opentarget" name="opentarget" type="hidden" value="_self">
+    <input id="noribaurl" name="noribaurl" type="hidden" value="">
+    <input id="golocerror" name="golocerror" type="hidden" value="位置情報の取得が許可されませんでした。:現在地取得時にエラーが発生しました。お手数ですが再度お試しください。:位置情報の取得に時間がかかり過ぎてタイムアウトしました。:ご利用の環境は位置情報を取得できません。">
+
+    <input id="kaiseiari" name="kaiseiari" type="hidden" value="">
+    <input id="holidays" name="holidays" type="hidden" value="2016-01-01,2016-01-11,2016-02-11,2016-03-20,2016-03-21,2016-04-29,2016-05-03,2016-05-04,2016-05-05,2016-07-18,2016-08-11,2016-09-19,2016-09-22,2016-10-10,2016-11-03,2016-11-23,2016-12-23,2017-01-01,2017-01-02,2017-01-09,2017-02-11,2017-03-20,2017-04-29,2017-05-03,2017-05-04,2017-05-05,2017-07-17,2017-08-11,2017-08-14,2017-08-15,2017-09-18,2017-09-23,2017-10-09,2017-11-03,2017-11-23,2017-12-23,2018-01-01,2018-01-08,2018-02-11,2018-02-12,2018-03-21,2018-04-29,2018-04-30,2018-05-03,2018-05-04,2018-05-05,2018-07-16,2018-08-11,2018-09-17,2018-09-23,2018-09-24,2018-10-08,2018-11-03,2018-11-23,2018-12-23,2018-12-24,2019-01-01,2019-01-14,2019-02-11,2019-03-21,2019-04-29,2019-04-30,2019-05-01,2019-05-02,2019-05-03,2019-05-04,2019-05-05,2019-05-06,2019-07-15,2019-08-11,2019-08-12,2019-09-16,2019-09-23,2019-10-14,2019-10-22,2019-11-03,2019-11-04,2019-11-23,2020-01-01,2020-01-13,2020-02-11,2020-02-23,2020-02-24,2020-03-20,2020-04-29,2020-05-03,2020-05-04,2020-05-05,2020-05-06,2020-07-23,2020-07-24,2020-08-10,2020-09-21,2020-09-22,2020-11-03,2020-11-23,2021-01-01,2021-01-11,2021-02-11,2021-02-23,2021-03-20,2021-04-29,2021-05-03,2021-05-04,2021-05-05,2021-07-22,2021-07-23,2021-08-08,2021-08-09,2021-09-20,2021-09-23,2021-11-03,2021-11-23,2022-01-01,2022-01-10,2022-02-11,2022-02-23,2022-03-21,2022-04-29,2022-05-03,2022-05-04,2022-05-05,2022-07-18,2022-08-11,2022-09-19,2022-09-23,2022-10-10,2022-11-03,2022-11-23,2023-01-01,2023-01-02,2023-01-09,2023-02-11,2023-02-23,2023-03-21,2023-04-29,2023-05-03,2023-05-04,2023-05-05,2023-07-17,2023-08-11,2023-09-18,2023-09-23,2023-10-09,2023-11-03,2023-11-23,2024-01-01,2024-01-08,2024-02-11,2024-02-12,2024-02-23,2024-03-20,2024-04-29,2024-05-03,2024-05-04,2024-05-05,2024-05-06,2024-07-15,2024-08-11,2024-08-12,2024-09-16,2024-09-22,2024-09-23,2024-10-14,2024-11-03,2024-11-04,2024-11-23,2025-01-01,2025-01-13,2025-02-11,2025-02-23,2025-02-24,2025-03-20,2025-04-29,2025-05-03,2025-05-04,2025-05-05,2025-05-06,2025-07-21,2025-08-11,2025-09-15,2025-09-23,2025-10-13,2025-11-03,2025-11-23,2025-11-24,2026-01-01,2026-01-12,2026-02-11,2026-02-23,2026-03-20,2026-04-29,2026-05-03,2026-05-04,2026-05-05,2026-05-06,2026-07-20,2026-08-11,2026-09-21,2026-09-22,2026-09-23,2026-10-12,2026-11-03,2026-11-23,2027-01-01,2027-01-11,2027-02-11,2027-02-23,2027-03-21,2027-03-22,2027-04-29,2027-05-03,2027-05-04,2027-05-05,2027-07-19,2027-08-11,2027-09-20,2027-09-23,2027-10-11,2027-11-03,2027-11-23">
+    <input id="cal_min" name="cal_min" type="hidden" value="2026/09/01">
+    <input id="cal_max" name="cal_max" type="hidden" value="2026/11/30">
+    <input id="isSetDate" name="isSetDate" type="hidden" value="0">
+    <input id="listrosenzu_sp" name="listrosenzu_sp" type="hidden" value="1">
+
+    <h2 class="pageTtl">時刻表検索</h2>
+
+    
+
+
+    <div class="tabConts">
+
+
+        <div id="jErrorField">
+    
+</div>
+
+        <div class="seachArea">
+            <div class="inputBox cf">
+                <div class="inputBoxIn fl">
+                    <h4 class="searchTtl">停留所</h4>
+                    <div class="input cf">
+                        <p class="inputArea fl">
+                            <input id="fr" name="fr" placeholder="停留所を入力してください" type="text" value="">
+                            <input id="frkbn" name="frkbn" type="hidden" value="0">
+                            <input id="frsk" name="frsk" type="hidden" value="">
+                            
+                        </p>
+
+                        
+                        <p class="history fl mouseon"><a href=""><span>履歴</span></a></p>
+                        
+
+                    </div><!-- /input-->
+
+                    <ul class="historyList historyfr ">
+                        
+                    </ul>
+
+
+                </div><!-- /inputBoxIn -->
+                ﻿<ul class="list list01 cf clickMenu">
+    
+        
+        <li class="mouseon" value="1">
+            <a href="javascript:void(0);">
+                <span>
+                    
+
+                    
+                    
+                    地図から検索
+                    
+
+                </span>
+            </a>
+        </li>
+        
+    
+        
+        <li class="mouseon" value="9">
+            <a href="javascript:void(0);">
+                <span>
+                    
+
+                    
+                    
+                    路線図から検索
+                    
+
+                </span>
+            </a>
+        </li>
+        
+    
+        
+        <li class="mouseon" value="2">
+            <a href="javascript:void(0);">
+                <span>
+                    
+
+                    
+                    
+                    50音から検索
+                    
+
+                </span>
+            </a>
+        </li>
+        
+    
+        
+        <li class="mouseon" value="3">
+            <a href="javascript:void(0);">
+                <span>
+                    
+
+                    
+                    
+                    鉄道駅から検索
+                    
+
+                </span>
+            </a>
+        </li>
+        
+    
+        
+        <li class="mouseon" value="7">
+            <a href="javascript:void(0);">
+                <span>
+                    
+
+                    
+                    
+                    現在地から検索
+                    
+
+                </span>
+            </a>
+        </li>
+        
+    
+</ul>
+
+                
+
+                
+
+
+                <div class="search mt15">
+                    <input type="submit" value="検索">
+
+
+                </div>
+
+
+
+
+            </div><!-- /inputBox -->
+
+
+
+        </div>
+
+
+    </div>
+
+    
+
+
+
+
+
+</form>
+
+    
+    <div class="infoArea">
+        
+<div class="info">
+    <div class="searchTtl">
+        <p class="fl">お知らせ</p>
+        
+    </div>
+    <div class="pc fclear">
+        <ul class="tabBox cf">
+            
+                
+                    <li class="tab tab01 fl mouseon emergency current ">
+                        <input type="hidden" class="company_code" value="" />
+                        <input type="hidden" class="isEmergency" value="True" />
+                        <a href="javascript:void(0)" data-information-id="information-0"><span>緊急</span></a>
+                    </li>
+                
+                    <li class="tab tab02 fl mouseon   ">
+                        <input type="hidden" class="company_code" value="57708010" />
+                        <input type="hidden" class="isEmergency" value="False" />
+                        <a href="javascript:void(0)" data-information-id="information-1"><span>お知らせ</span></a>
+                    </li>
+                
+            
+        </ul>
+        
+            
+                
+                <div class="infoTx infoConts  ">
+                    <input type="hidden" class="company_code" value="" />
+                    <input type="hidden" class="isEmergency" value="True" />
+
+                    
+
+                    <p class="infoDate"></p>
+                    <p class="readMore">
+                        ・接近情報は、バスのGPSおよび携帯電話の通信状況等により正確に表示されない場合があります。あくまで目安の情報としてご利用ください。
+                        ・接近情報に掲載された内容により発生した、いかなるトラブル・損失・損害に対しては、当社は責任を負いません。
+                        
+                    </p>
+                    <input type="hidden" class="hash" value="b8f7094e52432d3dd83b1069f16365959f44f1a34dd86133476557343cbcde6c" />
+                    
+                </div>
+                
+            
+                
+                    <div class="infoTx infoConts hide ">
+                        お知らせはありません
+                    </div>
+            
+            
+            
+        </div><!-- /pc -->
+
+    <div class="sp fclear">
+        <ul class="infoArea">
+            
+            
+            <li>
+                <p class="infoTtl arrow">緊急</p>
+                <ul class="infoTx">
+                    
+                    
+
+                    <li>
+                        <p class="infoDate"></p>
+                        <p class="readMore">
+                            ・接近情報は、バスのGPSおよび携帯電話の通信状況等により正確に表示されない場合があります。あくまで目安の情報としてご利用ください。
+                            ・接近情報に掲載された内容により発生した、いかなるトラブル・損失・損害に対しては、当社は責任を負いません。
+                            
+                        </p>
+                        <input type="hidden" class="hash" value="b8f7094e52432d3dd83b1069f16365959f44f1a34dd86133476557343cbcde6c" />
+                    </li>
+
+                    
+
+                    
+                </ul>
+                <input type="hidden" class="company_code" value="" />
+                <input type="hidden" class="isEmergency" value="True" />
+            </li>
+            
+            <li>
+                <p class="infoTtl arrow">お知らせ</p>
+                <ul class="infoTx">
+                    
+                    お知らせはありません
+                    
+                </ul>
+                <input type="hidden" class="company_code" value="57708010" />
+                <input type="hidden" class="isEmergency" value="False" />
+            </li>
+            
+            
+        </ul>
+    </div><!-- /sp -->
+</div><!-- /info -->
+    </div><!-- /.infoArea -->
+    
+
+
+            </div>
+        </div>
+        <div id="pagetop" class="noprint"><a class="pagetopBtn" href="">PAGE TOP</a></div>
+
+        <footer class="mov-footer noprint sp">
+            <div class="mov-footer-inner cf">
+                <nav class="mov-footer-menu">
+                    <ul>
+                        <li><a href="./termsofuse">利用規約</a></li>
+                    </ul>
+                </nav>
+                <p class="copyright">Copyright&copy; All Rights Reserved.</p>
+            </div>
+        </footer>
+        
+        <div id="footer" class="pc">
+            <div id="footer_inner">
+                <dl>
+                    <dt><a href="./">HOME</a></dt>
+                    <dd>
+                        <ul>
+                            <li><a href="https://www.kintetsu-bus.co.jp/company/concept">経営理念・行動指針</a></li>
+                            <li><a href="https://www.kintetsu-bus.co.jp/company/privacy">個人情報保護方針</a></li>
+                            <li><a href="https://www.kintetsu-bus.co.jp/company/safety">運輸安全マネジメント</a></li>
+                            <li><a href="https://www.kintetsu-bus.co.jp/company/initiative">人と環境のために（近鉄バスの取り組み）</a></li>
+<!--                            <li><a href="http://www.kintetsu-bus.co.jp/images/kokuminhogo.pdf" target="_blank">国民保護業務計画について</a></li>-->
+                            <li><a href="https://www.kintetsu-bus.co.jp/inquiry#:~:text=証明書が欲しい-,お忘れ物,-のお問い合わせ">お忘れ物のお問い合わせ</a></li>
+                            <li><a href="https://www.kintetsu-bus.co.jp/company/office">営業所のご案内</a></li>
+                            <li><a href="https://www.kintetsu-bus.co.jp/company/goods">近鉄バスグッズのご案内</a></li>
+                            <li><a href="https://www.kintetsu-bus.co.jp/company/advertising">バス広告のご案内</a></li>
+                        </ul>
+                    </dd>
+                </dl>
+                <p id="copy">Copyright (C) Kintetsu Bus co.,ltd. All Rights Reserved.</p>
+                <!-- /copy -->
+            </div>
+        </div>
+        
+
+    </div><!-- / #wrap -->
+
+    
+
+    <!--<script src="./static/js/tracking.js"></script>-->
+
+
+    <style type="text/css">
+        
+        
+    </style>
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+CloudPebble proxy host: wss://cloudpebble-proxy.repebble.com/tool-v2
+CloudPebble auth mode: firebase-v2
+Connected to CloudPebble proxy websocket.
+Sending v2 auth frame...
+CloudPebble proxy authentication succeeded.
+Waiting for phone to connect...
+CloudPebble connection status packet: 255
+Connected.
+Installing app...
+App install succeeded.

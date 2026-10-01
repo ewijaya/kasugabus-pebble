@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "github_repo": "ewijaya/kasugabus-pebble",
+  "branch": "main",
+  "store_app_id": null,
+  "uuid": "d7ba77b0-d528-4cc8-b35c-7052798152c9",
+  "display_name": "KasugaBus",
+  "platforms": [
+    "emery"
+  ],
+  "artifact_name": "kasugabus-pebble.pbw",
+  "appstore_api": "https://appstore-api.repebble.com",
+  "dashboard": "https://developer.repebble.com",
+  "public_store": "https://apps.repebble.com",
+  "public_catalog_path": "/api/v1/apps/uuid/{uuid}",
+  "timetable_feed_url": "https://ewijaya.github.io/kasugabus-pebble/timetables/manifest.json",
+  "listing_patch_contract": "dashboard-form-2026-10-01",
+  "store_listing_url": null,
+  "initial_listing": "docs/releases/listing.json",
+  "registration_method": "dashboard-new"
+}

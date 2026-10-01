@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <script src="./static/js/libs/jquery-3.7.1.min.js?ver=20261001030036"></script>
+
+    <script src='https://unpkg.com/maplibre-gl@^3.6/dist/maplibre-gl.js'></script>
+    <link href='https://unpkg.com/maplibre-gl@^3.6/dist/maplibre-gl.css' rel='stylesheet' />
+
+    <script src='https://mapbox-gl-inspect.lukasmartinelli.ch/dist/mapbox-gl-inspect.min.js'></script>
+    <link href='https://mapbox-gl-inspect.lukasmartinelli.ch/dist/mapbox-gl-inspect.css' rel='stylesheet' />
+    <script type="module" src="./static/js/b_openstreetmap.js?ver=20261001030036"></script>
+    <link rel="stylesheet" href="./static/css/b_openstreetmap.min.css?ver=20261001030036">
+</head>
+<body>
+    <div id="map">
+    </div>
+    <button id="open_google_map">
+        GoogleMapで見る
+    </button>
+    <input id="params" name="params" type="hidden" value="mode=1&amp;tosk=&amp;dt=202610011057&amp;p=0%2C18">
+<input id="mode" name="mode" type="hidden" value="1">
+<input id="kkbn" name="kkbn" type="hidden" value="">
+<input id="kkbnint" name="kkbnint" type="hidden" value="">
+<input id="lng" name="lng" type="hidden" value="0">
+<input id="showstcode" name="showstcode" type="hidden" value="False">
+
+
+<input id="navparams" name="navparams" type="hidden" value="">
+<input id="usemore" name="usemore" type="hidden" value="0">
+<input id="mode_c" name="mode_c" type="hidden" value="">
+
+
+    <input id="maplatlondef" name="maplatlondef" type="hidden" value="34.81853914989432:135.53002611953053:12:1:B:::L::">
+    <input id="maplatlon" name="maplatlon" type="hidden" value="34.81853914989432:135.53002611953053:12:1:B:::L::">
+    <input id="mapzoommax" name="mapzoommax" type="hidden" value="20">
+    <input id="mapzoommin" name="mapzoommin" type="hidden" value="12">
+    <input id="mapaddpin" name="mapaddpin" type="hidden" value="0">
+
+    <input id="defaultpin" name="defaultpin" type="hidden" value="1">
+    
+    <input id="isFromList" name="isFromList" type="hidden" value="">
+    <input id="defaultzoom" name="defaultzoom" type="hidden" value="18">
+
+    <input id="setbtns" name="setbtns" type="hidden" value="発に設定:着に設定:設定:決定">
+    <input id="routetoho" name="routetoho" type="hidden" value="1">
+    <input id="polelist" name="polelist" type="hidden" value="">
+    <input id="buslist" name="buslist" type="hidden" value="">
+    <input id="directionlist" name="directionlist" type="hidden" value="">
+    <input id="showstcode" name="showstcode" type="hidden" value="False">
+    <input id="mapmode" name="mapmode" type="hidden" value="0">
+    <input id="nsmode" name="nsmode" type="hidden" value="0">
+    <input id="basespot" name="basespot" type="hidden" value="B">
+    <input id="clickiconchange" name="clickiconchange" type="hidden" value="1">
+
+    <input id="osm_access_token" name="osm_access_token" type="hidden" value="jrd.G5Cadg-Oke1H8pgVokz5jryTM-pSaWSVmAnUi9=uyuTMuDZKSDDp8yBfJUOTqAE=LkGR9wUkxpTXaXIaiQZNnRzmxhOQM@=Bkazq">
+    <input id="osm_style_api" name="osm_style_api" type="hidden" value="/v1/styles/osm-jrd">
+    <input id="osm_main_url" name="osm_main_url" type="hidden" value="https://map-api.jorudan.biz">
+    <input id="osm_poi_api" name="osm_poi_api" type="hidden" value="/v1/poi/agg">
+    <input id="osm_route_api" name="osm_route_api" type="hidden" value="/v1/routes/search">
+</body>
+</html>

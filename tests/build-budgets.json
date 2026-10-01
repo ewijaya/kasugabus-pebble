@@ -1,0 +1,15 @@
+{
+  "platform": "emery",
+  "headroom_percent": 20,
+  "native_binary_limit_bytes": 131072,
+  "static_ram_limit_bytes": 131072,
+  "resource_limit_bytes": 262144,
+  "max_native_binary_bytes": 104857,
+  "max_static_ram_bytes": 104857,
+  "max_resources_bytes": 209715,
+  "minimum_measured_free_heap_bytes": 26215,
+  "max_payload_bytes": 24576,
+  "max_pbw_bytes": 2097152,
+  "required_runtime_scenarios": ["launch", "navigation", "update-transfer"],
+  "notes": "PBW zip size is an engineering guard, not an SDK memory ceiling. Runtime free heap must be measured from the exact artifact after exercising these scenarios; linker free RAM is only static evidence."
+}

@@ -1,0 +1,106 @@
+Installing app...
+App install succeeded.
+[12:30:32] main.c:560> READY init_ms=-621 storage=1048576 heap=35424 message=0
+[12:30:32] ui.c:501> UI screen0 render_ms10 heap35424
+[12:30:32] ui.c:501> UI screen0 render_ms7 heap35504
+[12:30:33] ui.c:501> UI screen0 render_ms8 heap35504
+[12:30:37] ui.c:501> UI screen0 render_ms9 heap35504
+[12:30:37] ui.c:501> UI screen0 render_ms8 heap35504
+[12:30:38] ui.c:501> UI screen0 render_ms11 heap35504
+[12:30:39] ocess_manager.c:487> Heap Usage for App <KasugaBus>: Total Size <94920B> Used <59496B> Still allocated <0B>
+[12:30:39] main.c:560> READY init_ms=-641 storage=1048576 heap=35424 message=0
+[12:30:39] ui.c:501> UI screen0 render_ms10 heap35424
+[12:30:39] ui.c:501> UI screen0 render_ms8 heap35504
+[12:30:39] ui.c:501> UI screen0 render_ms8 heap35504
+[12:30:39] ui.c:501> UI screen0 render_ms8 heap35504
+[12:30:39] ui.c:501> UI screen1 render_ms10 heap35504
+[12:30:40] ui.c:501> UI screen1 render_ms10 heap35504
+[12:30:40] main.c:373> Update begin v7 bytes24203 status0
+[12:30:40] ui.c:501> UI screen1 render_ms9 heap35504
+[12:30:45] main.c:398> Update commit session810007 status4 heap35504
+[12:30:45] ui.c:501> UI screen1 render_ms11 heap35504
+[12:30:45] main.c:373> Update begin v6 bytes24198 status0
+[12:30:45] ui.c:501> UI screen1 render_ms10 heap35504
+[12:30:47] ui.c:501> UI screen1 render_ms11 heap35504
+[12:30:51] main.c:398> Update commit session810006 status3 heap35504
+[12:30:51] ui.c:501> UI screen1 render_ms11 heap35504
+[12:30:51] ui.c:501> UI screen1 render_ms11 heap35504
+[12:30:51] ui.c:501> UI screen1 render_ms11 heap35504
+[12:30:51] ui.c:501> UI screen1 render_ms9 heap35504
+[12:30:52] ui.c:501> UI screen1 render_ms12 heap35504
+[12:30:53] ui.c:501> UI screen1 render_ms14 heap35504
+[12:30:53] ui.c:501> UI screen1 render_ms11 heap35504
+[12:30:53] ocess_manager.c:487> Heap Usage for App <KasugaBus>: Total Size <94920B> Used <59496B> Still allocated <0B>
+[12:30:54] main.c:560> READY init_ms=614 storage=1048576 heap=35424 message=0
+[12:30:54] ui.c:501> UI screen0 render_ms9 heap35424
+[12:30:54] ui.c:501> UI screen0 render_ms7 heap35504
+[12:30:54] ui.c:501> UI screen0 render_ms8 heap35504
+[12:30:55] ui.c:501> UI screen0 render_ms9 heap35504
+[12:31:00] ui.c:501> UI screen0 render_ms11 heap35504
+[12:31:20] ui.c:501> UI screen0 render_ms9 heap35504
+[12:31:20] ui.c:501> UI screen0 render_ms8 heap35504
+[12:31:21] main.c:373> Update begin v9 bytes24203 status0
+[12:31:21] ui.c:501> UI screen0 render_ms9 heap35504
+[12:31:28] main.c:398> Update commit session1483249318 status4 heap35504
+[12:31:28] ui.c:501> UI screen0 render_ms8 heap35504
+[12:31:28] ui.c:501> UI screen0 render_ms9 heap35504
+[12:31:28] ui.c:501> UI screen0 render_ms9 heap35504
+[12:31:28] main.c:373> Update begin v8 bytes24203 status0
+[12:31:28] ui.c:501> UI screen0 render_ms9 heap35504
+[12:31:31] ui.c:501> UI screen0 render_ms9 heap35504
+[12:31:37] main.c:398> Update commit session1483249319 status3 heap35504
+[12:31:37] ui.c:501> UI screen0 render_ms9 heap35504
+[12:31:37] ui.c:501> UI screen0 render_ms8 heap35504
+[12:31:37] ui.c:501> UI screen0 render_ms9 heap35504
+[12:31:37] ocess_manager.c:487> Heap Usage for App <KasugaBus>: Total Size <94920B> Used <59496B> Still allocated <0B>
+[12:31:38] main.c:560> READY init_ms=1050 storage=1048576 heap=35424 message=0
+[12:31:38] ui.c:501> UI screen0 render_ms9 heap35424
+[12:31:38] ui.c:501> UI screen0 render_ms7 heap35504
+[12:31:38] ui.c:501> UI screen0 render_ms7 heap35504
+[12:31:38] main.c:373> Update begin v11 bytes24203 status0
+[12:31:38] ui.c:501> UI screen0 render_ms9 heap35504
+[12:31:38] ui.c:501> UI screen0 render_ms8 heap35504
+[12:31:38] ui.c:501> UI screen0 render_ms8 heap35504
+[12:31:38] ui.c:501> UI screen0 render_ms8 heap35504
+[12:31:38] ocess_manager.c:487> Heap Usage for App <KasugaBus>: Total Size <94920B> Used <59496B> Still allocated <0B>
+[12:31:39] main.c:560> READY init_ms=1043 storage=1048576 heap=35424 message=0
+[12:31:39] ui.c:501> UI screen0 render_ms10 heap35424
+[12:31:39] ui.c:501> UI screen0 render_ms8 heap35504
+[12:31:39] ui.c:501> UI screen0 render_ms8 heap35504
+[12:31:39] ui.c:501> UI screen0 render_ms9 heap35504
+[12:31:39] ui.c:501> UI screen0 render_ms8 heap35504
+[12:31:39] ui.c:501> UI screen0 render_ms8 heap35504
+[12:31:39] ui.c:501> UI screen0 render_ms7 heap35504
+[12:31:40] ui.c:501> UI screen0 render_ms13 heap35504
+[12:32:00] ui.c:501> UI screen0 render_ms8 heap35504
+[12:32:54] ocess_manager.c:487> Heap Usage for App <KasugaBus>: Total Size <94920B> Used <59496B> Still allocated <0B>
+[12:32:55] main.c:560> READY init_ms=1051 storage=1048576 heap=35424 message=0
+[12:32:55] ui.c:501> UI screen0 render_ms10 heap35424
+[12:32:55] ui.c:501> UI screen0 render_ms7 heap35504
+[12:32:55] ui.c:501> UI screen0 render_ms7 heap35504
+[12:32:56] ui.c:501> UI screen1 render_ms10 heap35504
+[12:32:56] ui.c:501> UI screen2 render_ms10 heap35504
+[12:32:56] ui.c:501> UI screen2 render_ms11 heap35504
+[12:32:56] ui.c:501> UI screen1 render_ms10 heap35504
+[12:32:56] ui.c:501> UI screen0 render_ms11 heap35504
+[12:32:57] ocess_manager.c:487> Heap Usage for App <KasugaBus>: Total Size <94920B> Used <59496B> Still allocated <0B>
+[12:32:58] main.c:560> READY init_ms=1052 storage=1048576 heap=35424 message=0
+[12:32:58] ui.c:501> UI screen0 render_ms10 heap35424
+[12:32:58] ui.c:501> UI screen0 render_ms8 heap35504
+[12:32:58] ui.c:501> UI screen0 render_ms7 heap35504
+[12:32:58] ui.c:501> UI screen0 render_ms8 heap35504
+[12:32:58] ui.c:501> UI screen1 render_ms10 heap35504
+[12:32:58] ui.c:501> UI screen2 render_ms11 heap35504
+[12:32:58] ui.c:501> UI screen1 render_ms17 heap35504
+[12:32:59] ui.c:501> UI screen0 render_ms13 heap35504
+[12:32:59] ocess_manager.c:487> Heap Usage for App <KasugaBus>: Total Size <94920B> Used <59496B> Still allocated <0B>
+[12:33:00] main.c:560> READY init_ms=52 storage=1048576 heap=35424 message=0
+[12:33:00] ui.c:501> UI screen0 render_ms10 heap35424
+[12:33:00] ui.c:501> UI screen0 render_ms7 heap35504
+[12:33:00] ui.c:501> UI screen0 render_ms7 heap35504
+[12:33:00] ui.c:501> UI screen0 render_ms8 heap35504
+[12:33:00] ui.c:501> UI screen1 render_ms11 heap35504
+[12:33:00] ui.c:501> UI screen2 render_ms17 heap35504
+[12:33:01] ui.c:501> UI screen1 render_ms16 heap35504
+[12:33:01] ui.c:501> UI screen0 render_ms14 heap35504
+[12:34:00] ui.c:501> UI screen0 render_ms12 heap35504

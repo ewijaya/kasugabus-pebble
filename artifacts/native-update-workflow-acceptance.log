@@ -1,0 +1,9 @@
+PASS native emulator current + future update without PBW reinstall active=28 pending=29 chunksSent=254
+PASS native emulator stop/start preserved active and pending
+PASS native monotonic launch and button profiling before interrupted candidate
+PASS native emulator interrupted partial replacement active=28 pending=29 chunksSent=2
+PASS native emulator partial candidate restart kept active and pending
+PASS native emulator corrupt full payload active=28 pending=29 chunksSent=0
+PASS native emulator incompatible manifest active=28 pending=29 chunksSent=0
+PASS native emulator interrupted HTTP active=28 pending=29 chunksSent=0
+Emulator checks passed; no PBW installation occurred during this harness.

@@ -1,0 +1,19 @@
+__ISB () at ../third_party/cmsis_core/CMSIS/CMSIS/Core/Include/cmsis_gcc.h:266
+warning: 266	../third_party/cmsis_core/CMSIS/CMSIS/Core/Include/cmsis_gcc.h: No such file or directory
+$1 = {
+  in_progress = false,
+  suspended = false,
+  is_subsector = true,
+  retries = 0 '\000',
+  task = PebbleTask_KernelMain,
+  address = 301805568,
+  on_complete_cb = 0xfc31 <prv_blocking_erase_complete>,
+  cb_context = 0x0 <vector_table>,
+  expected_duration = 1
+}
+$2 = 4
+$3 = 5
+$4 = (SemaphoreHandle_t) 0x200192dc
+$5 = true
+$6 = 1300663
+[Inferior 1 (process 1) detached]

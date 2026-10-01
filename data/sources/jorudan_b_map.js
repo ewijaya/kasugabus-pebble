@@ -1,0 +1,1 @@
+import{l as n,a as l,o as r}from"./b_events.js";(function(o){o(t)})(jQuery);function t(){n(),l(),$("#btnBack").off("click").on("click",()=>{const o=$(".mov-contents a").last().attr("href");if(o==null||o.length===0){const a=$("#params").val();window.location.href=`./nsresult?${a}`}else window.location.href=o;return!1}),window.onLoadNoriba=r}

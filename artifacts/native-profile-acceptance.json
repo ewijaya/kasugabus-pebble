@@ -1,0 +1,80 @@
+{
+  "environment": "Emery emulator",
+  "clock": "host time.perf_counter",
+  "pbw_sha256": "466df8dd233cb2886171eb44fe23f1188fd1b3f68bc1d872249be3262a8dff5b",
+  "artifact_binding": "Read beside exact-PBW capture receipt; this tool never installs",
+  "start_command_to_first_home_render_ms": [
+    558.02,
+    554.08,
+    552.49
+  ],
+  "app_initialization_to_first_home_render_ms": [
+    529.47,
+    525.07,
+    523.23
+  ],
+  "interactions": [
+    {
+      "button": "select",
+      "screen": 1,
+      "press_to_render_ms": 80.0
+    },
+    {
+      "button": "select",
+      "screen": 2,
+      "press_to_render_ms": 84.73
+    },
+    {
+      "button": "back",
+      "screen": 1,
+      "press_to_render_ms": 19.96
+    },
+    {
+      "button": "back",
+      "screen": 0,
+      "press_to_render_ms": 10.35
+    },
+    {
+      "button": "select",
+      "screen": 1,
+      "press_to_render_ms": 76.09
+    },
+    {
+      "button": "select",
+      "screen": 2,
+      "press_to_render_ms": 75.44
+    },
+    {
+      "button": "back",
+      "screen": 1,
+      "press_to_render_ms": 19.6
+    },
+    {
+      "button": "back",
+      "screen": 0,
+      "press_to_render_ms": 16.34
+    },
+    {
+      "button": "select",
+      "screen": 1,
+      "press_to_render_ms": 84.08
+    },
+    {
+      "button": "select",
+      "screen": 2,
+      "press_to_render_ms": 82.92
+    },
+    {
+      "button": "back",
+      "screen": 1,
+      "press_to_render_ms": 19.33
+    },
+    {
+      "button": "back",
+      "screen": 0,
+      "press_to_render_ms": 17.37
+    }
+  ],
+  "all_launches_under_1000ms": true,
+  "all_buttons_under_200ms": true
+}

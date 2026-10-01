@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "prepared_at": "2026-10-01T06:19:25.560278+00:00",
+  "app_uuid": "d7ba77b0-d528-4cc8-b35c-7052798152c9",
+  "pbw_sha256": "2bddb0b092d51c7cdab6944c56a11bb377f4a97932643ee37541450bfc8bdb09",
+  "pbw_path": "artifacts/KasugaBus-1.0.0-emery.pbw",
+  "platforms": [
+    "emery"
+  ],
+  "version": "1.0.0",
+  "assets": [
+    {
+      "role": "iconSmall",
+      "path": "docs/releases/assets/icon-small.png",
+      "width": 80,
+      "height": 80,
+      "bytes": 2154,
+      "sha256": "5327a4efffcba39b5d640571561e69064e2d99916e72231937d28814a19a9f0c"
+    },
+    {
+      "role": "iconLarge",
+      "path": "docs/releases/assets/icon-large.png",
+      "width": 144,
+      "height": 144,
+      "bytes": 4714,
+      "sha256": "9c9f0084e0508b11bb1eb527d528cdf2113bdb53793a8b9f9282eb18f6302f41"
+    },
+    {
+      "role": "banner",
+      "path": "docs/releases/assets/emery-banner.png",
+      "platform": "emery",
+      "width": 720,
+      "height": 320,
+      "bytes": 125520,
+      "sha256": "825b9bf3fac940abae7799024fe02b0c75b8bdb77882317a37987952889ad2cb"
+    },
+    {
+      "role": "screenshot",
+      "path": "docs/releases/assets/emery_01_home.png",
+      "platform": "emery",
+      "width": 200,
+      "height": 228,
+      "bytes": 2173,
+      "sha256": "c7b2806594f197ed6cc0213eee150680e952d1ccdb7c3b7679fe42d05c8b82b1"
+    },
+    {
+      "role": "screenshot",
+      "path": "docs/releases/assets/emery_02_board.png",
+      "platform": "emery",
+      "width": 200,
+      "height": 228,
+      "bytes": 2307,
+      "sha256": "8cd7ac31b29ce82038313160fe9999cb47c80cd4fbc50c29ed30a568ae719a63"
+    },
+    {
+      "role": "screenshot",
+      "path": "docs/releases/assets/emery_03_details.png",
+      "platform": "emery",
+      "width": 200,
+      "height": 228,
+      "bytes": 2524,
+      "sha256": "f347e7a46073e1a1a71a2e6fd27b358a7a0469cf6378c01ebf1f33a854b77ba7"
+    }
+  ],
+  "screenshots": "Actual installed Emery 200x228 framebuffer captures at actual 2026-10-01 15:18 JST; no resizing, recoloring, framing or synthetic UI. Current 28/future 29 are isolated full copies of the validated timetable; original preference bytes were preserved.",
+  "icon_source": "artifacts/icon-options/01-neon-express.png; imagegen-selected original, technical ImageMagick resizing only",
+  "banner_source": "artifacts/store-listing/banner-master.png",
+  "banner_prompt": "artifacts/store-listing/banner-prompt.txt",
+  "banner_generation": "Built-in image_gen tool; technical ImageMagick resize to720x320. Marketing artwork, not a watch screenshot.",
+  "form_requirements": "artifacts/store-new-form-inspection.json",
+  "published": false,
+  "screenshot_receipt": "artifacts/screenshots/workflow-capture.json"
+}

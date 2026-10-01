@@ -1,0 +1,32 @@
+{
+  "recorded_at": "2026-10-01T04:39:53.871446+00:00",
+  "pbw_sha256": "466df8dd233cb2886171eb44fe23f1188fd1b3f68bc1d872249be3262a8dff5b",
+  "watch": "Pebble Time 2 / emery",
+  "watch_firmware_verified": "v4.38.4",
+  "phone_user_reported": "Poco F4",
+  "companion_user_reported": "1.14.0.1",
+  "android_version": "14",
+  "installed_via": "Pebble Cloud developer connection",
+  "installation_receipt": "runtime-physical.log.install.json",
+  "physical_capacity_reported_bytes": 1048576,
+  "observed_minimum_free_heap_bytes": 32400,
+  "user_confirmed": {
+    "home_board_details_readable": true,
+    "select_navigation_responds_correctly": true
+  },
+  "not_yet_verified": [
+    "outdoor sunlight readability",
+    "three-second glance task",
+    "actual phone GPS permission/accuracy/latency and failures",
+    "Clay settings and persistence on physical watch",
+    "production HTTPS timetable update",
+    "physical update interruption/recovery",
+    "physical connection-loss behavior",
+    "battery impact",
+    "seven-day use including weekend"
+  ],
+  "release_publication_approved": false,
+  "android_build": "UKQ1.231207.002",
+  "phone_os_version": "1.0.9.0.ULMIDXM",
+  "phone_version_evidence": "Owner-provided Settings screenshot inspected; screenshot kept outside project"
+}

@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "artifact": {
+    "sha256": "7c50a5edadb3dc6c1d9ea5221e962a47953381e81618112afe6b0727b87cbe3c",
+    "bytes": 810124
+  },
+  "environment": "emulator",
+  "command": [
+    "pebble",
+    "install",
+    "--emulator",
+    "emery",
+    "--logs",
+    "/Users/e_wijaya_ap/Desktop/kasugabus-pebble/build/kasugabus-pebble.pbw"
+  ],
+  "started_at": "2026-10-01T03:30:30.066322+00:00",
+  "finished_at": "2026-10-01T03:34:26.367195+00:00",
+  "log_sha256": "9bf893c540aceb8d026171629041893bfeb0d0d94f1af0fd2d057bdac1c1dd89"
+}

@@ -1,0 +1,9 @@
+Installing app...
+App install succeeded.
+[14:08:09] main.c:658> INIT entered
+[14:08:10] main.c:695> READY storage=1048576 heap=32400 message=0
+[14:08:10] ui.c:511> UI screen0 heap32400
+[14:08:10] ui.c:511> UI screen0 heap32480
+[14:08:10] ui.c:511> UI screen0 heap32480
+[14:08:44] ui.c:511> UI screen0 heap32480
+[14:08:44] ocess_manager.c:487> Heap Usage for App <KasugaBus>: Total Size <91896B> Used <59496B> Still allocated <0B>

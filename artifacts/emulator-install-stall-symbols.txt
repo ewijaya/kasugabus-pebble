@@ -1,0 +1,36 @@
+prv_flash_erase_start + 29 in section .text
+prv_flash_erase_blocking + 17 in section .text
+flash_logging_log_start + 87 in section .text
+handle_buffer_sync + 153 in section .text
+system_task_main + 57 in section .text
+app_event_loop_common + 153 in section .text
+s_main + 111 in section .text
+s_main + 1 in section .text
+prv_app_task_main + 31 in section .text
+prv_destroy_recognizer + 7 in section .text
+handle_buffer_sync + 17 in section .text
+pbl_log_advanced + 83 in section .text
+prv_log_internal + 79 in section .text
+accel_cb_new_sample + 113 in section .text
+event_take_timeout + 83 in section .text
+launcher_main_loop + 39 in section .text
+All variables matching regular expression "erase":
+
+File ../src/fw/console/pulse_flash_imaging.c:
+98:	static _Bool s_erase_in_progress;
+100:	static uint32_t s_erase_length;
+99:	static uint32_t s_erase_start_address;
+
+File ../src/fw/drivers/flash/flash_api.c:
+44:	static struct FlashEraseContext s_erase;
+46:	static TimerID s_erase_poll_timer;
+32:	static SemaphoreHandle_t s_erase_semphr;
+47:	static TimerID s_erase_suspend_timer;
+
+File ../src/fw/drivers/flash/flash_erase.c:
+22:	static SemaphoreHandle_t s_erase_mutex;
+28:	static struct FlashRegionEraseState s_erase_state;
+All variables matching regular expression "flash_logging":
+
+File ../src/fw/debug/flash_logging.c:
+53:	static _Bool s_flash_logging_enabled;

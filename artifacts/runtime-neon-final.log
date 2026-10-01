@@ -1,0 +1,12 @@
+Installing app...
+App install succeeded.
+[14:12:10] main.c:658> INIT entered
+[14:12:11] main.c:695> READY storage=1048576 heap=32400 message=0
+[14:12:11] ui.c:511> UI screen0 heap32400
+[14:12:11] ui.c:511> UI screen0 heap32480
+[14:12:11] ui.c:511> UI screen0 heap32480
+[14:12:49] ocess_manager.c:487> Heap Usage for App <KasugaBus>: Total Size <91896B> Used <59496B> Still allocated <0B>
+[14:12:49] main.c:6> PROBE storage=1048576 inbox=8200 outbox=8200 heap=129804
+[14:13:10] pkjs> ./src/pkjs/index.js:3:0 Hello world! - Sent from your javascript application.
+[14:13:42] main.c:9> PROBE wrote=262144 fail=0 read=256
+[14:16:08] main.c:11> PROBE open=0

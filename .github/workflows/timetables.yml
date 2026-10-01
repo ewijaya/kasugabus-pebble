@@ -1,0 +1,171 @@
+name: Review or publish timetable feed
+
+# No pushes, schedules, PRs, app builds, or releases publish a feed.
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Deploy the reviewed artifact to the owner-approved GitHub Pages site'
+        type: boolean
+        required: true
+        default: false
+      initialize_dedicated_site:
+        description: 'First feed only: owner confirms this is a dedicated KasugaBus Pages site and no unrelated site content must be preserved'
+        type: boolean
+        required: true
+        default: false
+
+permissions:
+  contents: read
+
+# Serialize the live-history check and deployment. Never interrupt a deployment.
+concurrency:
+  group: kasugabus-timetable-pages
+  cancel-in-progress: false
+
+env:
+  TIMETABLE_BASE_URL: https://ewijaya.github.io/kasugabus-pebble/timetables
+
+jobs:
+  validate:
+    if: github.repository == 'ewijaya/kasugabus-pebble' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Read the selected default-branch revision
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.13'
+      - name: Set up Node for production phone validators
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24'
+      - name: Test the hosting validation and preservation guards
+        run: python3 -m unittest discover -s tests -p test_hosting.py
+      - name: Validate already prepared reviewed files
+        env:
+          PUBLISH_REQUESTED: ${{ inputs.publish }}
+          INITIALIZE_DEDICATED_SITE: ${{ inputs.initialize_dedicated_site }}
+        run: |
+          args=()
+          if [ "$PUBLISH_REQUESTED" = "true" ]; then
+            args+=(--check-live)
+            if [ "$INITIALIZE_DEDICATED_SITE" = "true" ]; then
+              args+=(--allow-first-deployment)
+            fi
+          fi
+          python3 tools/validate_hosting.py hosting/public \
+            --base-url "$TIMETABLE_BASE_URL" \
+            --source data/timetable.json \
+            --source-directory hosting/sources \
+            "${args[@]}" > "$RUNNER_TEMP/hosting-validation.json"
+      - name: Stage only the public timetable artifact
+        env:
+          INPUT_ROOT: hosting/public
+          OUTPUT_ROOT: _site
+          REVIEW_FILE: ${{ runner.temp }}/hosting-validation.json
+        run: |
+          python3 - <<'PY'
+          # BEGIN PUBLIC ARTIFACT STAGING
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+          import sys
+          sys.path.insert(0, str(Path('tools').resolve()))
+          import validate_hosting as validator
+          reviewed = validator.read_json(os.environ['REVIEW_FILE'])
+          if reviewed.get('validated') is not True or reviewed.get('baseUrl') != validator.BASE_URL:
+              raise ValueError('Expected validated project-controlled feed')
+          records = validator.validate_inventory(reviewed['inventory'])
+          source = Path(os.environ['INPUT_ROOT'])
+          destination = Path(os.environ['OUTPUT_ROOT'])
+          destination.mkdir(parents=True, exist_ok=False)
+          public = destination / 'timetables'
+          (public / 'releases').mkdir(parents=True)
+          manifest = validator.regular_bytes(source / 'manifest.json', validator.MAX_MANIFEST)
+          if hashlib.sha256(manifest).hexdigest() != reviewed['manifestSha256']:
+              raise ValueError('Manifest changed after validation')
+          for relative, expected in records.items():
+              payload = validator.regular_bytes(source / relative, validator.MAX_PAYLOAD)
+              if validator.file_record(relative, payload) != expected:
+                  raise ValueError('Payload changed after validation')
+              (public / relative).write_bytes(payload)
+          # All immutable history and its inventory accompany the manifest.
+          (public / 'inventory.json').write_text(json.dumps(reviewed['inventory'], indent=2) + '\n', encoding='utf-8')
+          (public / 'manifest.json').write_bytes(manifest)
+          (destination / 'index.html').write_text('<!doctype html>\n<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>KasugaBus timetable feed</title><h1>KasugaBus timetable feed</h1><p>Reviewed bus timetable snapshots for the KasugaBus Pebble app.</p><p><a href="timetables/manifest.json">Timetable manifest</a></p></html>\n', encoding='utf-8')
+          # END PUBLIC ARTIFACT STAGING
+          PY
+      - name: Package the public files for review or later deployment
+        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
+        with:
+          path: _site
+          retention-days: 7
+      - name: Record what was reviewed
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          review = json.loads((Path(os.environ['RUNNER_TEMP']) / 'hosting-validation.json').read_text())
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as summary:
+              summary.write('Timetable feed validated. Public artifact contains index.html, timetables/manifest.json, inventory.json and all immutable payloads.\n\n')
+              summary.write('Current v{}; upcoming {}; {} retained payload(s). Live preservation checked: {}.\n'.format(review['currentVersion'], review['upcomingVersion'], len(review['inventory']['files']), review['liveChecked']))
+              summary.write('\nThe owner-selected endpoint is configured locally. A live feed requires an explicit Pages deployment and HTTP checks.\n')
+          PY
+
+  deploy:
+    if: inputs.publish == true && github.repository == 'ewijaya/kasugabus-pebble' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Read the same reviewed revision after environment approval
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.13'
+      - name: Set up Node for production phone validators
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24'
+      - name: Recheck live preservation immediately before deployment
+        env:
+          INITIALIZE_DEDICATED_SITE: ${{ inputs.initialize_dedicated_site }}
+        run: |
+          args=(--check-live)
+          if [ "$INITIALIZE_DEDICATED_SITE" = "true" ]; then
+            args+=(--allow-first-deployment)
+          fi
+          python3 tools/validate_hosting.py hosting/public \
+            --base-url "$TIMETABLE_BASE_URL" \
+            --source data/timetable.json \
+            --source-directory hosting/sources \
+            "${args[@]}" > "$RUNNER_TEMP/hosting-deployment-validation.json"
+      - name: Read existing owner-approved Pages configuration
+        id: pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
+        with:
+          enablement: false
+      - name: Require the exact selected project URL
+        env:
+          PAGE_BASE_URL: ${{ steps.pages.outputs.base_url }}
+        run: test "$PAGE_BASE_URL" = 'https://ewijaya.github.io/kasugabus-pebble'
+      - name: Deploy the validated artifact
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4

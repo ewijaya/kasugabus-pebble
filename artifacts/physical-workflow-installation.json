@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "installed_at": "2026-10-01T06:18:42.174796+00:00",
+  "command": [
+    "pebble",
+    "install",
+    "--cloudpebble",
+    "artifacts/KasugaBus-1.0.0-emery.pbw"
+  ],
+  "artifact": {
+    "sha256": "2bddb0b092d51c7cdab6944c56a11bb377f4a97932643ee37541450bfc8bdb09",
+    "bytes": 817565
+  },
+  "log_path": "artifacts/physical-workflow-installation.log",
+  "log_sha256": "70349a9fc4df3ab8041a8388ba8f275e6c8eced623db752a6922b0dbdabb91a8",
+  "sdk_installation_succeeded": true,
+  "physical_release_approved": false,
+  "user_navigation_and_icon_observations": "See physical-verification.json and physical-neon-installation.json for observations on earlier exact packages. This fresh installation alone does not repeat that QA.",
+  "comparison": "workflow-build-comparison.json verifies unchanged native application code, phone JavaScript and resources versus the owner-confirmed icon package."
+}

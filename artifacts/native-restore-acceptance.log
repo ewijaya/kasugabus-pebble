@@ -1,0 +1,2 @@
+Captured artifacts/screenshots/emery_29_restored_baseline.png
+PASS native Restore cancels deferred update and late download sessions; old/missing request BEGINs rejected; new request accepted; bundled v1 survives restart

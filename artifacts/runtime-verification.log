@@ -1,0 +1,30 @@
+Installing app...
+App install succeeded.
+[13:21:10] main.c:621> INIT entered
+[13:21:13] main.c:655> READY storage=1048576 heap=32952 message=0
+[13:21:13] ui.c:511> UI screen0 heap32952
+[13:21:14] ui.c:511> UI screen0 heap33032
+[13:21:14] ui.c:511> UI screen0 heap33032
+[13:21:38] ocess_manager.c:487> Heap Usage for App <KasugaBus>: Total Size <92448B> Used <59496B> Still allocated <0B>
+[13:21:38] main.c:621> INIT entered
+[13:21:38] main.c:655> READY storage=1048576 heap=32952 message=0
+[13:21:38] ui.c:511> UI screen0 heap32952
+[13:21:39] ui.c:511> UI screen0 heap33032
+[13:21:39] ui.c:511> UI screen0 heap33032
+[13:21:39] ui.c:511> UI screen0 heap33032
+[13:21:39] ui.c:511> UI screen0 heap33032
+[13:22:00] ui.c:511> UI screen0 heap33032
+[13:22:32] ui.c:511> UI screen0 heap33032
+[13:22:33] ui.c:511> UI screen1 heap33032
+[13:23:00] ui.c:511> UI screen1 heap33032
+[13:23:16] ocess_manager.c:487> Heap Usage for App <KasugaBus>: Total Size <92448B> Used <59496B> Still allocated <0B>
+[13:23:16] main.c:621> INIT entered
+[13:23:16] main.c:655> READY storage=1048576 heap=32952 message=0
+[13:23:16] ui.c:511> UI screen0 heap32952
+[13:23:16] ui.c:511> UI screen0 heap33032
+[13:23:17] ui.c:511> UI screen0 heap33032
+[13:23:17] ui.c:511> UI screen1 heap33032
+[13:23:17] ui.c:511> UI screen1 heap33032
+[13:23:18] ui.c:511> UI screen2 heap33032
+[13:23:18] ui.c:511> UI screen1 heap33032
+[13:23:19] ui.c:511> UI screen0 heap33032

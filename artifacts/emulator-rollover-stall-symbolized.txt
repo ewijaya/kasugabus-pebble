@@ -1,0 +1,72 @@
+__ISB () at ../third_party/cmsis_core/CMSIS/CMSIS/Core/Include/cmsis_gcc.h:266
+warning: 266	../third_party/cmsis_core/CMSIS/CMSIS/Core/Include/cmsis_gcc.h: No such file or directory
+Current CPU backtrace (arguments suppressed):
+#0  __ISB () at ../third_party/cmsis_core/CMSIS/CMSIS/Core/Include/cmsis_gcc.h:266
+#1  vPortSuppressTicksAndSleep (xExpectedIdleTime=...) at ../soc/qemu/freertos.c:21
+#2  0x0008ea9a in prvIdleTask (pvParameters=...) at ../third_party/freertos/FreeRTOS-Kernel/FreeRTOS/Source/tasks.c:2771
+#3  0x00000000 in ?? ()
+
+Suspended task count: $1 = 4
+
+Suspended task: $2 = "KernelBG\000\000\000\000\000\000\000"
+Priority: $3 = 4
+Saved PC: xQueueGenericReceive + 328 in section .text
+Saved LR: xTaskResumeAll + 53 in section .text
+Symbolized stack return-address candidates only (no raw memory):
+PiuRoundRectDictionary + 69 in section .text
+prv_blocking_erase_complete + 1 in section .text
+prv_flash_erase_start + 29 in section .text
+prv_flash_erase_blocking + 17 in section .text
+gap_le_slave_set_discoverable + 241 in section .text
+flash_logging_log_start + 87 in section .text
+handle_buffer_sync + 153 in section .text
+system_task_main + 57 in section .text
+handle_buffer_sync + 1 in section .text
+RESULT_DISMISSED_LARGE_builtin_bytes + 3077 in section .text
+
+Suspended task: $4 = "App <KasugaBus>"
+Priority: $5 = 2
+Saved PC: xQueueGenericReceive + 328 in section .text
+Saved LR: xTaskResumeAll + 53 in section .text
+Symbolized stack return-address candidates only (no raw memory):
+prv_drop_privilege + 1 in section .text
+fx_String_prototype_repeat + 195 in section .text
+
+Suspended task: $6 = "NewTimer\000\000\000\000\000\000\000"
+Priority: $7 = 4
+Saved PC: xLightMutexLock + 214 in section .text
+Saved LR: xTaskResumeAll + 53 in section .text
+Symbolized stack return-address candidates only (no raw memory):
+handle_buffer_sync + 17 in section .text
+mutex_lock + 31 in section .text
+handle_buffer_sync + 17 in section .text
+xLightMutexLock + 187 in section .text
+pbl_log_advanced + 83 in section .text
+prv_log_internal + 79 in section .text
+pbl_log + 31 in section .text
+accel_cb_new_sample + 113 in section .text
+No symbol matches $candidate.
+prv_timer_cb + 79 in section .text
+fxRunID + 14803 in section .text
+task_timer_manager_execute_expired_timers + 105 in section .text
+
+Suspended task: $8 = "PULSE\000\000\000\000\000\000\000\000\000\000"
+Priority: $9 = 3
+Saved PC: xQueueGenericReceive + 328 in section .text
+Saved LR: xTaskResumeAll + 53 in section .text
+Symbolized stack return-address candidates only (no raw memory):
+prv_pulse_task_main + 85 in section .text
+
+Delayed tasks:
+$10 = "KernelMain\000\000\000\000\000"
+Saved PC: xQueueGenericReceive + 328 in section .text
+
+Flash state (no message contents):
+$11 = {in_progress = false, suspended = false, is_subsector = true, retries = 0 '\000', task = PebbleTask_KernelMain, address = 301809664, on_complete_cb = 0xfc31 <prv_blocking_erase_complete>, cb_context = 0x0 <vector_table>, expected_duration = 1}
+$12 = true
+$13 = 0
+$14 = 1
+$15 = "KernelBG\000\000\000\000\000\000\000"
+
+Tick count: $16 = 1125443
+[Inferior 1 (process 1) detached]

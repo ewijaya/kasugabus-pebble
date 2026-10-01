@@ -1,0 +1,100 @@
+[
+  {
+    "path": "data/extraction/kintetsu_0_tables.json",
+    "sha256": "3fc2b4d4ee09c40232d8ad171d2e79db8eda0fba2da2f7901e930f579f78f8ba",
+    "source_path": "data/sources/kintetsu_0.pdf",
+    "source_sha256": "6c902ec1d78e1935b0477ffdd4cb6eed1d65593bff5187e2231a8a3f318a3bb3",
+    "extractor": "pdfplumber0.11.10 extract_tables default line strategy"
+  },
+  {
+    "path": "data/extraction/kintetsu_1_tables.json",
+    "sha256": "b1d7e4363bd7bc5a73fcb7e5e89c990c8c01d4907376c385682439fed2dd8a0b",
+    "source_path": "data/sources/kintetsu_1.pdf",
+    "source_sha256": "c9b890ea9be8cd930aadbe6c33b8dc9928ee76ecb485724af5b35b8a1cd5981b",
+    "extractor": "pdfplumber0.11.10 extract_tables default line strategy"
+  },
+  {
+    "path": "data/extraction/kintetsu_2_tables.json",
+    "sha256": "0a16fecfb4d8be3ab9283ec78058bd56c87c6d0fb4716ff26c8e7970f24b2a52",
+    "source_path": "data/sources/kintetsu_2.pdf",
+    "source_sha256": "0a409f331f3c8963f168856fbcb604db3986439ac93e8bb7e85b0538e4ae861d",
+    "extractor": "pdfplumber0.11.10 extract_tables default line strategy"
+  },
+  {
+    "path": "data/extraction/kintetsu_3_tables.json",
+    "sha256": "e6ba3128e9dd7619ef52826f9f3bac87bb0d9dc5046409c03201ed946d81cefb",
+    "source_path": "data/sources/kintetsu_3.pdf",
+    "source_sha256": "c9a89e66af2712c8cd0b737fab9acd5dcd66daadeca22207eb02e112642877c6",
+    "extractor": "pdfplumber0.11.10 extract_tables default line strategy"
+  },
+  {
+    "path": "data/extraction/kintetsu_4_tables.json",
+    "sha256": "0f575983fa85f30fe03d8a757759e8192bc8d0ca1b4105c04d0f505078d99fb7",
+    "source_path": "data/sources/kintetsu_4.pdf",
+    "source_sha256": "c7ae18fa6e4a0ba2baf3b97694a09d2d46882b1b29d99d15a839ad562db9009b",
+    "extractor": "pdfplumber0.11.10 extract_tables default line strategy"
+  },
+  {
+    "path": "data/extraction/kintetsu_stop_1_direction_1_table.json",
+    "sha256": "cf72f8341c42d8aa38a756e48b8cde74927556be8a4426456fb872dea4e83e34",
+    "source_path": "data/sources/kintetsu_stop_1_direction_1.pdf",
+    "source_sha256": "26fa1dae3b25cf758ae57b3bed0f9d3ea66c287b00c4b699e8990f669e73619d",
+    "extractor": "pdfplumber0.11.10 extract_tables default line strategy"
+  },
+  {
+    "path": "data/extraction/kintetsu_stop_2_direction_1_table.json",
+    "sha256": "ec8f6a6e791c5f5179e2ad0632166c03c9a7b63a0db7a998172880993f745540",
+    "source_path": "data/sources/kintetsu_stop_2_direction_1.pdf",
+    "source_sha256": "f8a10b12644d5d6d52e4342300d8daf2b487dc4cefa879a3b6bfc56dcd2db66a",
+    "extractor": "pdfplumber0.11.10 extract_tables default line strategy"
+  },
+  {
+    "path": "data/extraction/kintetsu_stop_3_direction_1_table.json",
+    "sha256": "31186a85748057814f105114c463517035e45426361162545f9fde43ab527e79",
+    "source_path": "data/sources/kintetsu_stop_3_direction_1.pdf",
+    "source_sha256": "b50400c9937a9a1f73ee6b9b9464b0e66dfce71604d7ac5ef1f73ee8df43385d",
+    "extractor": "pdfplumber0.11.10 extract_tables default line strategy"
+  },
+  {
+    "path": "data/extraction/kintetsu_stop_4_direction_1_table.json",
+    "sha256": "f729fb029cfc71b7533361d0a0580abb26760e1fa3a931ee0180416777eb99ca",
+    "source_path": "data/sources/kintetsu_stop_4_direction_1.pdf",
+    "source_sha256": "7a321950f05e5bea2940e8e1e154a84951471702f46b32bb4a969495f2980dff",
+    "extractor": "pdfplumber0.11.10 extract_tables default line strategy"
+  },
+  {
+    "path": "data/extraction/kintetsu_stop_4_direction_2_table.json",
+    "sha256": "9ff32e9dc2c725f8cea95b85dbe48a3ec092e6b21b5d908e3d2655555d463f31",
+    "source_path": "data/sources/kintetsu_stop_4_direction_2.pdf",
+    "source_sha256": "c95ee6a7c8f8cd089f760d33f53f6b55f6f6f1dacdab84f75a4e0039d3ead1b8",
+    "extractor": "pdfplumber0.11.10 extract_tables default line strategy"
+  },
+  {
+    "path": "data/extraction/kintetsu_stop_5_direction_1_table.json",
+    "sha256": "084d06f75bdb5318cf8d1f92a5953e175afd27f3885a1528956e82ba579bbc50",
+    "source_path": "data/sources/kintetsu_stop_5_direction_1.pdf",
+    "source_sha256": "8227c53dd6460c1e019e3aa2239ad3af5e26bbbfda1c2fcd008b58391198f7b2",
+    "extractor": "pdfplumber0.11.10 extract_tables default line strategy"
+  },
+  {
+    "path": "data/extraction/kintetsu_stop_5_direction_2_table.json",
+    "sha256": "91717ce9bf927ece112a922a8a302345b48b913876185091250a25ce9697036f",
+    "source_path": "data/sources/kintetsu_stop_5_direction_2.pdf",
+    "source_sha256": "00ef41126771f8b15f8ce594ec4334832488fc78764319e34a0ea1caa3700af4",
+    "extractor": "pdfplumber0.11.10 extract_tables default line strategy"
+  },
+  {
+    "path": "data/extraction/kintetsu_stop_6_direction_1_table.json",
+    "sha256": "12c3e79fa81b56c9d55c9b5b4cdf956fec3f4b036963d2731c29b440800884ea",
+    "source_path": "data/sources/kintetsu_stop_6_direction_1.pdf",
+    "source_sha256": "948ce8f72b8fcd898bb18fe5eaeb2478d4e6674b9fe73dc1e1b412de6ed03cd2",
+    "extractor": "pdfplumber0.11.10 extract_tables default line strategy"
+  },
+  {
+    "path": "data/extraction/kintetsu_stop_6_direction_2_table.json",
+    "sha256": "bc3f4f4e241799dd5b7f9f4cbba83cc948fc78cfc1bb958cc650ed1a2f895a4c",
+    "source_path": "data/sources/kintetsu_stop_6_direction_2.pdf",
+    "source_sha256": "91dee04e353b26817b0ae633c9254d3dee9b0a5f81aeb852e0ddee0b534c5ed5",
+    "extractor": "pdfplumber0.11.10 extract_tables default line strategy"
+  }
+]

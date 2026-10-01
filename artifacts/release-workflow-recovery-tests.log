@@ -1,0 +1,29 @@
+...................Runtime log captured: /private/var/folders/5r/5wgy3x_d64z4dm3n0d6g6zq80000gn/T/kasugabus-release-fixtures-jx2o_8at/artifacts/capture-fixture.log receipt: /private/var/folders/5r/5wgy3x_d64z4dm3n0d6g6zq80000gn/T/kasugabus-release-fixtures-jx2o_8at/artifacts/capture-fixture.log.install.json PBW: 8351a631b90ceec0f2ff7a0186cd65ab0703963333821438124919eaffbb198a
+usage: python3.13 -m unittest [-h] {plan,prepare,publish,verify} ...
+
+Freeze, publish and verify one approved KasugaBus PBW. Never auto-register.
+Imports and help are offline and unauthenticated. Publication is a separate,
+explicit command and never builds or rewrites its approved artifact.
+
+positional arguments:
+  {plan,prepare,publish,verify}
+    plan                Read-only release/version context; no build, bump or
+                        publication
+    prepare             Freeze an already audited exact PBW and install it
+                        physically; no public mutation
+    publish             Explicitly publish the frozen artifact; no build or
+                        auto-registration
+    verify              Read-only bounded verification, preserving partial
+                        status
+
+options:
+  -h, --help            show this help message and exit
+Candidate frozen: /var/folders/5r/5wgy3x_d64z4dm3n0d6g6zq80000gn/T/kasugabus-release-fixtures-nqm0bgpf/.release/1.0.0 {"sha256": "8351a631b90ceec0f2ff7a0186cd65ab0703963333821438124919eaffbb198a", "bytes": 567}
+Installation is recorded. Explicit physical approval of this SHA-256 and these destinations is still required.
+..........Verification attempt 1 {"github": {"state": "verified", "details": {"fixture": "ok"}}, "appstore": {"state": "pending verification", "reason": "fixture propagation"}}
+Verification attempt 2 {"github": {"state": "verified", "details": {"fixture": "ok"}}, "appstore": {"state": "pending verification", "reason": "fixture propagation"}}
+..
+----------------------------------------------------------------------
+Ran 31 tests in 1.384s
+
+OK

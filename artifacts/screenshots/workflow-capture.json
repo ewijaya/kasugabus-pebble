@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "captured_at": "2026-10-01T06:18:13.051168+00:00",
+  "artifact_sha256": "2bddb0b092d51c7cdab6944c56a11bb377f4a97932643ee37541450bfc8bdb09",
+  "width": 200,
+  "height": 228,
+  "preference_bytes_preserved": true,
+  "current_test_revision": 28,
+  "future_test_revision": 29,
+  "files": [
+    "artifacts/screenshots/emery_workflow_home.png",
+    "artifacts/screenshots/emery_workflow_board.png",
+    "artifacts/screenshots/emery_workflow_details.png"
+  ]
+}

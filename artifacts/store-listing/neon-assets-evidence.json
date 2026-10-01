@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "prepared_at": "2026-10-01T05:43:08.708639+00:00",
+  "app_uuid": "d7ba77b0-d528-4cc8-b35c-7052798152c9",
+  "pbw_sha256": "4679b90e11353358a85c629ceeb926cfd564556666158899d1d633bdd329f6d6",
+  "pbw_path": "artifacts/KasugaBus-1.0.0-emery-neon-installed.pbw",
+  "platforms": [
+    "emery"
+  ],
+  "version": "1.0.0",
+  "assets": [
+    {
+      "role": "iconSmall",
+      "path": "docs/releases/assets/icon-small.png",
+      "width": 80,
+      "height": 80,
+      "bytes": 2154,
+      "sha256": "5327a4efffcba39b5d640571561e69064e2d99916e72231937d28814a19a9f0c"
+    },
+    {
+      "role": "iconLarge",
+      "path": "docs/releases/assets/icon-large.png",
+      "width": 144,
+      "height": 144,
+      "bytes": 4714,
+      "sha256": "9c9f0084e0508b11bb1eb527d528cdf2113bdb53793a8b9f9282eb18f6302f41"
+    },
+    {
+      "role": "banner",
+      "path": "docs/releases/assets/emery-banner.png",
+      "platform": "emery",
+      "width": 720,
+      "height": 320,
+      "bytes": 125520,
+      "sha256": "825b9bf3fac940abae7799024fe02b0c75b8bdb77882317a37987952889ad2cb"
+    },
+    {
+      "role": "screenshot",
+      "path": "artifacts/screenshots/emery_store_home.png",
+      "platform": "emery",
+      "width": 200,
+      "height": 228,
+      "bytes": 2143,
+      "sha256": "3e3cd1618bf60691ea1db63454e24bbe7df639d66c147eaf672b1f7b014f42d8"
+    },
+    {
+      "role": "screenshot",
+      "path": "artifacts/screenshots/emery_store_board.png",
+      "platform": "emery",
+      "width": 200,
+      "height": 228,
+      "bytes": 2308,
+      "sha256": "b6693efb9f95fdb0700480b0375a917392c39c6ef87f4210c1f899efa5e53cec"
+    },
+    {
+      "role": "screenshot",
+      "path": "artifacts/screenshots/emery_store_details.png",
+      "platform": "emery",
+      "width": 200,
+      "height": 228,
+      "bytes": 2516,
+      "sha256": "a8c5205c337463eab8d88b68c352dc4d9e650327701b9396df4230c344e85011"
+    }
+  ],
+  "screenshots": "Actual installed Emery200x228 framebuffer captures at actual2026-10-01 14:41JST; no resizing, recoloring, framing or synthetic UI. Current24/future25 isolated full copies of validated timetable; original preferences unchanged.",
+  "icon_source": "artifacts/icon-options/01-neon-express.png; imagegen-selected original, technical ImageMagick resizing only",
+  "banner_source": "artifacts/store-listing/banner-master.png",
+  "banner_prompt": "artifacts/store-listing/banner-prompt.txt",
+  "banner_generation": "Built-in image_gen tool; technical ImageMagick resize to720x320. Marketing artwork, not a watch screenshot.",
+  "form_requirements": "artifacts/store-new-form-inspection.json",
+  "published": false,
+  "original_pbw_path": "artifacts/KasugaBus-1.0.0-emery.pbw"
+}

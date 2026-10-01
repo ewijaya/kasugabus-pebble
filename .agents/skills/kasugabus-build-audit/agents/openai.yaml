@@ -1,0 +1,4 @@
+interface:
+  display_name: "KasugaBus Build Audit"
+  short_description: "Audit Emery builds and measured runtime headroom"
+  default_prompt: "Use $kasugabus-build-audit for the requested KasugaBus workflow."

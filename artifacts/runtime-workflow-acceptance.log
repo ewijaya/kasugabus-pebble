@@ -1,0 +1,82 @@
+Installing app...
+App install succeeded.
+[15:16:22] main.c:658> INIT entered
+[15:16:22] main.c:695> READY storage=1048576 heap=32400 message=0
+[15:16:22] ui.c:511> UI screen0 heap32400
+[15:16:22] ui.c:511> UI screen0 heap32480
+[15:16:23] ui.c:511> UI screen0 heap32480
+[15:16:49] ui.c:511> UI screen0 heap32480
+[15:16:49] ui.c:511> UI screen0 heap32480
+[15:16:49] ui.c:511> UI screen0 heap32480
+[15:16:49] main.c:250> Update begin v29 bytes24203 status0
+[15:16:49] ui.c:511> UI screen0 heap32480
+[15:16:53] ui.c:511> UI screen0 heap32480
+[15:16:57] main.c:537> Update commit session570139570 status4 heap32480
+[15:16:57] ui.c:511> UI screen0 heap32480
+[15:16:57] ui.c:511> UI screen0 heap32480
+[15:16:57] ui.c:511> UI screen0 heap32480
+[15:16:57] ui.c:511> UI screen0 heap32480
+[15:16:57] main.c:250> Update begin v28 bytes24203 status0
+[15:16:57] ui.c:511> UI screen0 heap32480
+[15:17:00] ui.c:511> UI screen0 heap32480
+[15:17:06] main.c:537> Update commit session570139571 status3 heap32480
+[15:17:06] ui.c:511> UI screen0 heap32480
+[15:17:06] ui.c:511> UI screen0 heap32480
+[15:17:06] ui.c:511> UI screen0 heap32480
+[15:17:06] ocess_manager.c:487> Heap Usage for App <KasugaBus>: Total Size <91896B> Used <59496B> Still allocated <0B>
+[15:17:07] main.c:658> INIT entered
+[15:17:07] main.c:695> READY storage=1048576 heap=32400 message=0
+[15:17:07] ui.c:511> UI screen0 heap32400
+[15:17:07] ui.c:511> UI screen0 heap32480
+[15:17:07] ui.c:511> UI screen0 heap32480
+[15:17:08] ui.c:511> UI screen0 heap32480
+[15:17:08] ocess_manager.c:487> Heap Usage for App <KasugaBus>: Total Size <91896B> Used <59496B> Still allocated <0B>
+[15:17:08] main.c:658> INIT entered
+[15:17:08] main.c:695> READY storage=1048576 heap=32400 message=0
+[15:17:08] ui.c:511> UI screen0 heap32400
+[15:17:08] ui.c:511> UI screen0 heap32480
+[15:17:09] ui.c:511> UI screen0 heap32480
+[15:17:09] ui.c:511> UI screen0 heap32480
+[15:17:09] ui.c:511> UI screen1 heap32480
+[15:17:10] ui.c:511> UI screen2 heap32480
+[15:17:10] ui.c:511> UI screen1 heap32480
+[15:17:11] ui.c:511> UI screen0 heap32480
+[15:17:11] ocess_manager.c:487> Heap Usage for App <KasugaBus>: Total Size <91896B> Used <59496B> Still allocated <0B>
+[15:17:11] main.c:658> INIT entered
+[15:17:12] main.c:695> READY storage=1048576 heap=32400 message=0
+[15:17:12] ui.c:511> UI screen0 heap32400
+[15:17:12] ui.c:511> UI screen0 heap32480
+[15:17:12] ui.c:511> UI screen0 heap32480
+[15:17:13] ui.c:511> UI screen1 heap32480
+[15:17:13] ui.c:511> UI screen1 heap32480
+[15:17:13] ui.c:511> UI screen2 heap32480
+[15:17:14] ui.c:511> UI screen1 heap32480
+[15:17:14] ui.c:511> UI screen0 heap32480
+[15:17:15] ocess_manager.c:487> Heap Usage for App <KasugaBus>: Total Size <91896B> Used <59496B> Still allocated <0B>
+[15:17:15] main.c:658> INIT entered
+[15:17:15] main.c:695> READY storage=1048576 heap=32400 message=0
+[15:17:15] ui.c:511> UI screen0 heap32400
+[15:17:15] ui.c:511> UI screen0 heap32480
+[15:17:16] ui.c:511> UI screen0 heap32480
+[15:17:16] ui.c:511> UI screen0 heap32480
+[15:17:16] ui.c:511> UI screen1 heap32480
+[15:17:17] ui.c:511> UI screen2 heap32480
+[15:17:17] ui.c:511> UI screen1 heap32480
+[15:17:18] ui.c:511> UI screen0 heap32480
+[15:17:18] ui.c:511> UI screen0 heap32480
+[15:17:18] ui.c:511> UI screen0 heap32480
+[15:17:19] main.c:250> Update begin v31 bytes24203 status0
+[15:17:19] ui.c:511> UI screen0 heap32480
+[15:17:19] ui.c:511> UI screen0 heap32480
+[15:17:19] ui.c:511> UI screen0 heap32480
+[15:17:19] ocess_manager.c:487> Heap Usage for App <KasugaBus>: Total Size <91896B> Used <59496B> Still allocated <0B>
+[15:17:19] main.c:658> INIT entered
+[15:17:20] main.c:695> READY storage=1048576 heap=32400 message=0
+[15:17:20] ui.c:511> UI screen0 heap32400
+[15:17:20] ui.c:511> UI screen0 heap32480
+[15:17:20] ui.c:511> UI screen0 heap32480
+[15:17:20] ui.c:511> UI screen0 heap32480
+[15:17:20] ui.c:511> UI screen0 heap32480
+[15:17:20] ui.c:511> UI screen0 heap32480
+[15:17:20] ui.c:511> UI screen0 heap32480
+[15:17:21] ui.c:511> UI screen0 heap32480

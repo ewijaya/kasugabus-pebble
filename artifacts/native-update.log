@@ -1,0 +1,6 @@
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+5 !== 3
+
+    at Immediate.done [as _onImmediate] (/Users/e_wijaya_ap/Desktop/kasugabus-pebble/tests/run_emulator_feed.js:48:176)
+    at process.processImmediate (node:internal/timers:574:21)

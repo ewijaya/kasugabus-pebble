@@ -1,0 +1,385 @@
+{
+  "reviewed_at": "2026-10-01",
+  "reviewer": "Codex: official-source visual and structured reconciliation",
+  "sources": [
+    {
+      "id": "kintetsu_0",
+      "sha256": "6c902ec1d78e1935b0477ffdd4cb6eed1d65593bff5187e2231a8a3f318a3bb3"
+    },
+    {
+      "id": "kintetsu_1",
+      "sha256": "c9b890ea9be8cd930aadbe6c33b8dc9928ee76ecb485724af5b35b8a1cd5981b"
+    },
+    {
+      "id": "kintetsu_2",
+      "sha256": "0a409f331f3c8963f168856fbcb604db3986439ac93e8bb7e85b0538e4ae861d"
+    },
+    {
+      "id": "kintetsu_3",
+      "sha256": "c9a89e66af2712c8cd0b737fab9acd5dcd66daadeca22207eb02e112642877c6"
+    },
+    {
+      "id": "kintetsu_4",
+      "sha256": "c7ae18fa6e4a0ba2baf3b97694a09d2d46882b1b29d99d15a839ad562db9009b"
+    },
+    {
+      "id": "hankyu_route",
+      "sha256": "f3c7a80c64a0c5dd17e6def2b2f7b090a5bfeea29a186035c8cef95ea49ac119"
+    },
+    {
+      "id": "kintetsu_directory",
+      "sha256": "3376204f5b78041d7d8442ad07530bc2529a4f8392c907dbb198c86b07d79de6"
+    },
+    {
+      "id": "kintetsu_route",
+      "sha256": "d3f9cc3f39a4675bede7856c9896df17a2d60f0ff324bf95b4d9042bfb5bc6fe"
+    },
+    {
+      "id": "kintetsu_notices",
+      "sha256": "293b8d6aaf15efa6cdbaa9c8524d8174c3b5297b4893ae278fc9a521ce751309"
+    },
+    {
+      "id": "hankyu_directory",
+      "sha256": "1414f855971732bd5d9aef0edad762df12ffb6ce197764bdb0959ce78c29369c"
+    },
+    {
+      "id": "hankyu_notices",
+      "sha256": "bab35b6d313fb9058002291a4d44f0796534db472401d6a52939958e3a489cd4"
+    },
+    {
+      "id": "holiday_calendar_page",
+      "sha256": "565ed19991424566812ce202196adc2a5f7932d9e607940ce28df76456413e43"
+    },
+    {
+      "id": "kintetsu_map",
+      "sha256": "4fda178d9e22efebe5db199cecc78cf08ecd33fd5e04c9563875421051ce577e"
+    },
+    {
+      "id": "hankyu_083801",
+      "sha256": "82802b3c5dbdb4f5f54d5e893b8e4954871e6aa1ef35e4a38521e69b3a55373d"
+    },
+    {
+      "id": "hankyu_083802",
+      "sha256": "811e77233e367e881733e1b9def978f644bb88412ada749e60b9c32caa68a1ea"
+    },
+    {
+      "id": "hankyu_138401",
+      "sha256": "abffe356134468d44bab8938365d25721f0f79a68a53888317d9b173a2b4a3e7"
+    },
+    {
+      "id": "hankyu_138402",
+      "sha256": "95786ff19309eb6a4cac3fc7e988a7d0007b2cbb5417d99b74e438ea900999f3"
+    },
+    {
+      "id": "hankyu_138501",
+      "sha256": "10589bfaaa743bf555a0adeb384744986c7a0ef267862182ccf25ee8221989e8"
+    },
+    {
+      "id": "hankyu_138502",
+      "sha256": "94b4e90916f4ebb7e3f6753757fb706e64218210550a078a183515829bb1a2ba"
+    },
+    {
+      "id": "hankyu_stop_00020633",
+      "sha256": "878fccc92aff911dfde37ff75df0228d3ade1623c2604db6a3e6f6690dfd4104"
+    },
+    {
+      "id": "hankyu_stop_00021075",
+      "sha256": "f58478f08fde3433b0910d7dd386199f4c47fc5ca1643276f7be9749d763d1b8"
+    },
+    {
+      "id": "hankyu_stop_00021076",
+      "sha256": "a4ddc37d945542c6314a14dbbbae8e6100c31985efda3e30ecc8d269af607fcc"
+    },
+    {
+      "id": "kintetsu_loop_notice",
+      "sha256": "e7079929de90ffe04930181559adfe508827ceffa4f8940a129952b5792b4e7b"
+    },
+    {
+      "id": "kintetsu_loop_timetable",
+      "sha256": "4b489e1bda474c623672532485b1ab7e906be101f3739dd08e093f42441d8cbc"
+    },
+    {
+      "id": "holidays",
+      "sha256": "cec37a743c96995cdb9cb52b685c9003634682a9b0e1a640a6b9b96881fe964a"
+    },
+    {
+      "id": "kintetsu_stop_1",
+      "sha256": "b486d277a6c11fc3ff9441eb5dcf3ed173de817f8c93f81bc61f92bdc8f10845"
+    },
+    {
+      "id": "kintetsu_stop_1_direction_1",
+      "sha256": "26fa1dae3b25cf758ae57b3bed0f9d3ea66c287b00c4b699e8990f669e73619d"
+    },
+    {
+      "id": "kintetsu_stop_2",
+      "sha256": "73bd8ed7a614c82fd17048eb784ba85dbc5e56212f4ecc1f13abe98f9bc4a61c"
+    },
+    {
+      "id": "kintetsu_stop_2_direction_1",
+      "sha256": "f8a10b12644d5d6d52e4342300d8daf2b487dc4cefa879a3b6bfc56dcd2db66a"
+    },
+    {
+      "id": "kintetsu_stop_3",
+      "sha256": "480e2579d220058b473022c8482d69ddb0b342453fce05e50def5ae30278c7b3"
+    },
+    {
+      "id": "kintetsu_stop_3_direction_1",
+      "sha256": "b50400c9937a9a1f73ee6b9b9464b0e66dfce71604d7ac5ef1f73ee8df43385d"
+    },
+    {
+      "id": "kintetsu_stop_4",
+      "sha256": "7cb2bca993f4fbba1954d96a04d1de0e35fc929ca366d8227c2f9f26c4bd985d"
+    },
+    {
+      "id": "kintetsu_stop_4_direction_1",
+      "sha256": "7a321950f05e5bea2940e8e1e154a84951471702f46b32bb4a969495f2980dff"
+    },
+    {
+      "id": "kintetsu_stop_4_direction_2",
+      "sha256": "c95ee6a7c8f8cd089f760d33f53f6b55f6f6f1dacdab84f75a4e0039d3ead1b8"
+    },
+    {
+      "id": "kintetsu_stop_5",
+      "sha256": "9deb8340a8a062da3f2cd14a9148a8ed63531a21040c0b73d85d0617961169ec"
+    },
+    {
+      "id": "kintetsu_stop_5_direction_1",
+      "sha256": "8227c53dd6460c1e019e3aa2239ad3af5e26bbbfda1c2fcd008b58391198f7b2"
+    },
+    {
+      "id": "kintetsu_stop_5_direction_2",
+      "sha256": "00ef41126771f8b15f8ce594ec4334832488fc78764319e34a0ea1caa3700af4"
+    },
+    {
+      "id": "kintetsu_stop_6",
+      "sha256": "03538c1f70f376eac2d15c14a425149ccae63b86de0f39bbc12bd2cd14dc306c"
+    },
+    {
+      "id": "kintetsu_stop_6_direction_1",
+      "sha256": "948ce8f72b8fcd898bb18fe5eaeb2478d4e6674b9fe73dc1e1b412de6ed03cd2"
+    },
+    {
+      "id": "kintetsu_stop_6_direction_2",
+      "sha256": "91dee04e353b26817b0ae633c9254d3dee9b0a5f81aeb852e0ddee0b534c5ed5"
+    },
+    {
+      "id": "hankyu_trip_00970003-1-01-1009",
+      "sha256": "b2e6e9300afe4d39a3db7181400ff0b4d0f358c5276f00b2894cb080e6ded47c"
+    },
+    {
+      "id": "hankyu_trip_00970003-1-01-1109",
+      "sha256": "09267655d227e1b9fabdf086e1733373ef9dbd30081da335283da7f5b349d7b2"
+    },
+    {
+      "id": "hankyu_trip_00970003-1-01-1209",
+      "sha256": "f3396d1c36926ceb31f4537dc47df299448341dee7eee6a65daa58195e28a0df"
+    },
+    {
+      "id": "hankyu_trip_00970003-1-01-1309",
+      "sha256": "bb7a96298c7bfcc43a113c41294b85904383f4f5a3bb6675038bfb9a1986e81d"
+    },
+    {
+      "id": "hankyu_trip_00970003-1-01-1409",
+      "sha256": "f1a4a8d8795ad6d68b5f01842c49315695809ac7731f55bdb19d4fd59cf1d14d"
+    },
+    {
+      "id": "hankyu_trip_00970003-1-01-1509",
+      "sha256": "d9c5843946cdcfb59b69b6aae83b1fd90130f9335488b25be2bc0c97b2c740aa"
+    },
+    {
+      "id": "hankyu_trip_00970003-1-01-1609",
+      "sha256": "1323cbdc485482c90837538ec36d411e83caa22c658e9b28a0a85cebb3b71d49"
+    },
+    {
+      "id": "hankyu_trip_00970003-1-01-1709",
+      "sha256": "5aa59d3da6a40a90ad625a90d4923d8cc92c48aed5045be733f467558ab5ce8d"
+    },
+    {
+      "id": "hankyu_trip_00970004-1-01-0719",
+      "sha256": "1883b2a4566c1d841cf09f5d6c1fa7580c553795573e4c4b33a767e55fe3a696"
+    },
+    {
+      "id": "hankyu_trip_00970004-1-01-0731",
+      "sha256": "86f0a460bb6412e4107a5a18be614d59eb51c09f1170e236739e5150d5957777"
+    },
+    {
+      "id": "hankyu_trip_00970004-1-01-0743",
+      "sha256": "0a644f28e0cb9a6031eb59e797174da9238415debbc90db3c6d1e4a00f79c69a"
+    },
+    {
+      "id": "hankyu_trip_00970004-1-01-0755",
+      "sha256": "1ddb298572d2b751433aba9267e8b74cff10cb72520d38ea947b56fa4a426397"
+    },
+    {
+      "id": "hankyu_trip_00970004-1-01-0807",
+      "sha256": "8799dc76dd749e0197ce01ca1da1b9fbf4033a5d2a6f705f483b36d4710b5674"
+    },
+    {
+      "id": "hankyu_trip_00970004-1-01-0819",
+      "sha256": "2d1b82f1f450516275219aed768ac21b80ab152a08032017002a6a0a56a50d49"
+    },
+    {
+      "id": "hankyu_trip_00970004-1-01-0831",
+      "sha256": "12c9578066195350bc6684213d21fc8f1a5af0c7fc6b3df88676a39553ffa0ca"
+    },
+    {
+      "id": "hankyu_trip_00970004-1-01-0846",
+      "sha256": "a0ffba6368e1c135c50f2134ddd240fd003bb2b17a998a31d77eae2eb04aa34a"
+    },
+    {
+      "id": "hankyu_trip_00970004-1-01-0906",
+      "sha256": "3df761c3af10d9e89fdd877c5a8756b99cd7edb1886825a69221ef8cebd05b3a"
+    },
+    {
+      "id": "hankyu_trip_00970004-1-01-0930",
+      "sha256": "36b3aa7fecbb43c702521b413900593cd5871b9db4fd222b105781af340a0ea7"
+    },
+    {
+      "id": "hankyu_trip_00970004-1-01-0948",
+      "sha256": "c80ecaea95ae220ba289738a46f81aa6febbccb4e454a9510dc42d8df9970977"
+    },
+    {
+      "id": "hankyu_trip_00970002-2-01-0830",
+      "sha256": "d1c08a42d003e4a5ff2bea786dc80c1a7f4d673ae95c37a7faf3538b23870da8"
+    },
+    {
+      "id": "hankyu_trip_00970004-2-01-0948",
+      "sha256": "36846ffc0012bd87ca80f37a2ff63aeb13c6a8892b39207b037ff6bc4119009c"
+    },
+    {
+      "id": "hankyu_trip_00970002-2-01-0936",
+      "sha256": "0ef97b51b5ea95beec7cd95d76c6d4f78569cd07407fc5ded57a49172c5099d1"
+    },
+    {
+      "id": "hankyu_trip_00970004-2-01-1033",
+      "sha256": "b0cf1894a85d6669cde2ae46ed30fbf9b44c06050fc6e8f193b48ea9431557ae"
+    },
+    {
+      "id": "hankyu_trip_00970002-2-01-1036",
+      "sha256": "1eab5b10ec48dcbc7b1b449232fe959ac6191677ff6dca3acb25876cb70b3eab"
+    },
+    {
+      "id": "hankyu_trip_00970004-2-01-1137",
+      "sha256": "2a6f9f7b13a1dbabbffbf6b8e856f50a59362cc4d4b51af350a85d216c6dc653"
+    },
+    {
+      "id": "hankyu_trip_00970002-2-01-1136",
+      "sha256": "bda91adfb0fb77cb591d44eb562c6bb0d1938fe0b504fff7d6149084f5d81ec1"
+    },
+    {
+      "id": "hankyu_trip_00970004-2-01-1237",
+      "sha256": "11d9647bf5aafaf5de9ea312d21ae02f2e82b01c7ea8c24773db14b33a6fe200"
+    },
+    {
+      "id": "hankyu_trip_00970002-2-01-1236",
+      "sha256": "d97b2588c90269ebfee09689c67129805e1c88f54fee318e33f6c0416acfed03"
+    },
+    {
+      "id": "hankyu_trip_00970004-2-01-1337",
+      "sha256": "dd1c3f2faa9f0e1d0af4d220f88b9fdafd80ba068a51f487603b65d5773e8fab"
+    },
+    {
+      "id": "hankyu_trip_00970002-2-01-1336",
+      "sha256": "94ea57abf239f38597192626ab6a20b9b13d70b4b6b969f5aec7fee349620ed8"
+    },
+    {
+      "id": "hankyu_trip_00970002-2-01-1436",
+      "sha256": "46018750244ddb540b6584e85687bd16d79496cd7c2cbbc7dbd87662aaeee87a"
+    },
+    {
+      "id": "hankyu_trip_00970002-2-01-1536",
+      "sha256": "4f7f797bea4517c3ece2903ea87ea0192b4442da77229cfa1cb7e1543c040cd7"
+    },
+    {
+      "id": "hankyu_trip_00970004-2-01-1725",
+      "sha256": "feead9f4cc367033c36e71fffbbe748a45a32f093a6d471fa1a5228cf4ac716f"
+    },
+    {
+      "id": "hankyu_trip_00970004-2-01-1740",
+      "sha256": "c28e096f7d2ecf8d9aff60aa381b9b4564e5f71f6a7077792ebef5f3b3bf1cf6"
+    },
+    {
+      "id": "hankyu_trip_00970004-2-01-1820",
+      "sha256": "39036a62efc0d3c754a393b3dca3270c5c8ca2ac0c0609ed3e8f9633160d1f3c"
+    },
+    {
+      "id": "hankyu_trip_00970004-2-01-1840",
+      "sha256": "274a32e6576bc3019d6e4361de4a51967a0283726843e6b42d3521d52e821009"
+    },
+    {
+      "id": "hankyu_trip_00970004-2-01-1910",
+      "sha256": "f7bc844e1fa12639c69c4159a7f8c7472a16f7556593ed5df227448c44dd865a"
+    },
+    {
+      "id": "hankyu_trip_00970004-2-01-1940",
+      "sha256": "03c72589de4aaa66276fa8a311ee7ef46d3bff37c9f029e1c67bad16f87fbace"
+    },
+    {
+      "id": "hankyu_poles_00020633",
+      "sha256": "a5a05b2d39ddb6c92f91967288cd39ea907e5cc9e9cc609e6e41d927ccb0ff59"
+    },
+    {
+      "id": "hankyu_poles_00021075",
+      "sha256": "d328c1fb2caaca81782dac114883f3dc0e11f89fb06386dfdd7f0e31adff6da7"
+    },
+    {
+      "id": "hankyu_poles_00021076",
+      "sha256": "07fe11ebbb0e2a6a1e902739664266647640fbbf151c430c696230e6f48c7711"
+    }
+  ],
+  "visual_review": {
+    "matrix_pdf_pages": 18,
+    "independent_pole_pdf_pages": 9,
+    "checks": [
+      "All covered rows and route headers viewed as rendered PDF images.",
+      "All nine current pole sheets and their marker legends viewed.",
+      "Current 2025-12-21 route-marker sheet and notice reviewed together.",
+      "Blank cells and arrows excluded; minute tokens, merged row labels and direction rows checked."
+    ]
+  },
+  "structured_review": {
+    "hankyu_unique_trip_details": 38,
+    "hankyu_departures": 114,
+    "source_indices_rechecked": true,
+    "national_calendar": "Cabinet Office 2026 and 2027 CSV complete"
+  },
+  "publication_rule": "A changed source hash requires a new explicit source review. Rebuilding or fetching alone does not confer review.",
+  "visual_artifacts": [
+    {
+      "path": "data/extraction/review_matrix_1.png",
+      "sha256": "7260eae9cbcf04276299dd9f1af139c3296cc1c119c96d6c2ffd3f73beeabb67"
+    },
+    {
+      "path": "data/extraction/review_matrix_2.png",
+      "sha256": "45d1a4f6423068fda875e23786e4b3ffe91434da2a6e9f2f040972d39c85d1c0"
+    },
+    {
+      "path": "data/extraction/review_matrix_3.png",
+      "sha256": "286222211b86debf12112237291b3459f3b2ef0a7f718e234fbc5bee874d9746"
+    },
+    {
+      "path": "data/extraction/review_matrix_4.png",
+      "sha256": "48b8c65989d27688d4585a1c0848cd945f03999b0eede0efa824083190cb638c"
+    },
+    {
+      "path": "data/extraction/review_matrix_5.png",
+      "sha256": "aa79ca9ed52d25986e70ab72a8e6cd3f9e8e4d8e044fd0f9f75148cdbffa9545"
+    },
+    {
+      "path": "data/extraction/review_matrix_6.png",
+      "sha256": "ccef8c8c99b8c23ffb51d5a9a4f977e7f18139c5adb064d40a7cbba568fe8126"
+    },
+    {
+      "path": "data/extraction/review_poles_1.png",
+      "sha256": "80b0855038ac15c8d404c9b37a9d015bad6274b147372b15b20b2d64837f5695"
+    },
+    {
+      "path": "data/extraction/review_poles_4.png",
+      "sha256": "f3d1cd24ee188274370cb85726742d3183a7da3820aeb4c6b1aeb153d77f8846"
+    },
+    {
+      "path": "data/extraction/review_poles_7.png",
+      "sha256": "2e966b0a5282aa192ed3e76c1dc28b4fa5212e52d9c02d05a18c552034bc8b47"
+    }
+  ]
+}

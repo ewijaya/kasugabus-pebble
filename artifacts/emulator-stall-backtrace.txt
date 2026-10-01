@@ -1,0 +1,18 @@
+__ISB () at ../third_party/cmsis_core/CMSIS/CMSIS/Core/Include/cmsis_gcc.h:266
+warning: 266	../third_party/cmsis_core/CMSIS/CMSIS/Core/Include/cmsis_gcc.h: No such file or directory
+#0  __ISB () at ../third_party/cmsis_core/CMSIS/CMSIS/Core/Include/cmsis_gcc.h:266
+#1  vPortSuppressTicksAndSleep (xExpectedIdleTime=<optimized out>) at ../soc/qemu/freertos.c:21
+#2  0x0008ea9a in prvIdleTask (pvParameters=<optimized out>) at ../third_party/freertos/FreeRTOS-Kernel/FreeRTOS/Source/tasks.c:2771
+#3  0x00000000 in ?? ()
+vPortSuppressTicksAndSleep + 22 in section .text
+   0xc46e0 <vPortSuppressTicksAndSleep+10>:	bl	0x8ee24 <eTaskConfirmSleepModeStatus>
+   0xc46e4 <vPortSuppressTicksAndSleep+14>:	cbz	r0, 0xc46f0 <vPortSuppressTicksAndSleep+26>
+   0xc46e6 <vPortSuppressTicksAndSleep+16>:	dsb	sy
+   0xc46ea <vPortSuppressTicksAndSleep+20>:	wfi
+=> 0xc46ec <vPortSuppressTicksAndSleep+22>:	isb	sy
+   0xc46f0 <vPortSuppressTicksAndSleep+26>:	cpsie	i
+   0xc46f2 <vPortSuppressTicksAndSleep+28>:	pop	{r3, pc}
+   0xc46f4 <vPortEnableTimer>:	movs	r0, #0
+   0xc46f6 <vPortEnableTimer+2>:	bx	lr
+   0xc46f8 <dump_current_runtime_stats>:	bx	lr
+[Inferior 1 (process 1) detached]

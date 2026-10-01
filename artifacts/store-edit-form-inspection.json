@@ -1,0 +1,78 @@
+{
+  "schema": 1,
+  "inspected_at": "2026-10-01T05:46:45.827989+00:00",
+  "source_url": "https://developer.repebble.com/_next/static/chunks/app/dashboard/apps/%5Bid%5D/edit/page-21dbacbf9493d1d2.js?dpl=dpl_A7sdvQuJbqvryha9wFETBg4A9zWT",
+  "source_sha256": "50af4ad4b9a8516503cd3e02a2022ea2e387d85955e01996efc713a99c05e658",
+  "dashboard_app_schema": {
+    "id": "str",
+    "app_uuid": "str",
+    "title": "str",
+    "type": "str",
+    "description": "str",
+    "category_id": "str",
+    "hearts": "int",
+    "visible": "bool",
+    "unlisted": "bool",
+    "dmca_takedown": "bool",
+    "timeline_enabled": "bool",
+    "icon_small": "str",
+    "icon_large": "str",
+    "website": "NoneType",
+    "source": "str",
+    "created_at": "str",
+    "updated_at": "str",
+    "published_date": "NoneType",
+    "category_name": "str",
+    "supported_platforms": [
+      "str"
+    ],
+    "releases": [
+      {
+        "id": "str",
+        "version": "str",
+        "release_notes": "str",
+        "published_date": "str",
+        "created_at": "str",
+        "pbw_url": "str",
+        "pbw_size": "int",
+        "compatibility": [
+          "str"
+        ],
+        "capabilities": [
+          "str"
+        ],
+        "is_published": "bool"
+      }
+    ],
+    "assets": [
+      {
+        "id": "int",
+        "platform": "str",
+        "description": "str",
+        "screenshots": [
+          "str"
+        ],
+        "headers": [],
+        "banner": "str"
+      }
+    ],
+    "companion_apps": [],
+    "latest_release": {
+      "id": "str",
+      "version": "str",
+      "release_notes": "str",
+      "published_date": "str",
+      "created_at": "str",
+      "pbw_url": "str",
+      "pbw_size": "int",
+      "compatibility": [
+        "str"
+      ],
+      "capabilities": [
+        "str"
+      ],
+      "is_published": "bool"
+    }
+  },
+  "scope": "Read-only reference contract inspection; no listing changes; no source app ID copied to project configuration"
+}

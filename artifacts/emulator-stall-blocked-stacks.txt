@@ -1,0 +1,37 @@
+__ISB () at ../third_party/cmsis_core/CMSIS/CMSIS/Core/Include/cmsis_gcc.h:266
+warning: 266	../third_party/cmsis_core/CMSIS/CMSIS/Core/Include/cmsis_gcc.h: No such file or directory
+KernelBG saved task context:
+#0  xQueueGenericReceive (xQueue=0x2000a190 <pxReadyTasksLists>, pvBuffer=0x20000350 <xNextTaskUnblockTime>, pvBuffer@entry=0x0 <vector_table>, xTicksToWait=<optimized out>, xTicksToWait@entry=4294967295, xJustPeeking=-1515870811, xJustPeeking@entry=0) at ../third_party/freertos/FreeRTOS-Kernel/FreeRTOS/Source/queue.c:1535
+#1  0x0000fa20 in prv_flash_erase_start (addr=301797376, on_complete_cb=on_complete_cb@entry=0xfc31 <prv_blocking_erase_complete>, context=context@entry=0x0 <vector_table>, is_subsector=is_subsector@entry=true, retries=retries@entry=0 '\000') at ../src/fw/drivers/flash/flash_api.c:184
+#2  0x0000fcc0 in prv_flash_erase_blocking (sector_addr=<optimized out>, is_subsector=is_subsector@entry=true) at ../src/fw/drivers/flash/flash_api.c:311
+#3  0x000befb8 in flash_erase_subsector_blocking (subsector_addr=<optimized out>) at ../src/fw/drivers/flash/flash_api.c:373
+#4  0x0001888a in prv_erase_unit (addr=<optimized out>) at ../src/fw/debug/flash_logging.c:167
+#5  flash_logging_log_start (msg_length=msg_length@entry=66 'B') at ../src/fw/debug/flash_logging.c:393
+#6  0x00017e8c in write_message () at ../src/fw/debug/advanced_logging.c:43
+#7  handle_buffer_sync (data=0x1 <vector_table+1>) at ../src/fw/debug/advanced_logging.c:89
+#8  0x000b2dac in system_task_main (paramater=<optimized out>) at ../src/fw/services/system_task/service.c:68
+#9  0x00000000 in ?? ()
+KasugaBus saved syscall context:
+#0  xLightMutexLock (xMutex=0x2000a190 <pxReadyTasksLists>, xTicksToWait=<optimized out>, xTicksToWait@entry=4294967295) at ../third_party/freertos/FreeRTOS-Kernel/FreeRTOS/Source/light_mutex.c:289
+#1  0x0008d77e in mutex_lock (handle=0x2001940c) at ../lib/os/mutex_freertos.c:70
+#2  0x00017e04 in handle_buffer_sync (data=0xa5a5a5a5, data@entry=0x0 <vector_table>) at ../src/fw/debug/advanced_logging.c:73
+#3  0x00017fd6 in write_buffer_locking (buffer=<optimized out>, length=<optimized out>, async=<optimized out>) at ../src/fw/debug/advanced_logging.c:143
+#4  pbl_log_advanced (buffer=0x2007c24d "j\275\320\332\001*\001\016essage_outbox.c", length=66, async=true) at ../src/fw/debug/advanced_logging.c:167
+#5  0x000c374c in mcu_call_unprivileged_resume () at ../src/fw/syscall/syscall_internal.c:235
+Backtrace stopped: previous frame identical to this frame (corrupt stack?)
+KernelMain saved task context:
+#0  xLightMutexLock (xMutex=0x2000a190 <pxReadyTasksLists>, xTicksToWait=<optimized out>, xTicksToWait@entry=4294967295) at ../third_party/freertos/FreeRTOS-Kernel/FreeRTOS/Source/light_mutex.c:289
+#1  0x0008d77e in mutex_lock (handle=0x2001940c) at ../lib/os/mutex_freertos.c:70
+#2  0x00017e04 in handle_buffer_sync (data=0xa5a5a5a5, data@entry=0x0 <vector_table>) at ../src/fw/debug/advanced_logging.c:73
+#3  0x00017fd6 in write_buffer_locking (buffer=<optimized out>, length=<optimized out>, async=<optimized out>) at ../src/fw/debug/advanced_logging.c:143
+#4  pbl_log_advanced (buffer=0x20008ded <sys_log_state+1> "j\275\320\340\001E\001\227service.c", length=93, async=true) at ../src/fw/debug/advanced_logging.c:167
+#5  0x000cc81e in prv_log_internal (async=async@entry=true, log_level=log_level@entry=1 '\001', src_filename=src_filename@entry=0x171506 "../src/fw/services/app_inbox_service/service.c", src_line_number=src_line_number@entry=407, fmt=0x1716d1 "%s: Dropping data, not enough space %lu vs %lu", fmt@entry=0x2001ad5c "", args=args@entry=...) at ../src/fw/applib/logging.c:176
+#6  0x000cc88a in pbl_log (log_level=log_level@entry=1 '\001', src_filename=src_filename@entry=0x171506 "../src/fw/services/app_inbox_service/service.c", src_line_number=src_line_number@entry=407, fmt=0x1716d1 "%s: Dropping data, not enough space %lu vs %lu") at ../src/fw/applib/logging.c:306
+#7  0x000aa8c2 in prv_check_space_remaining (inbox=<optimized out>, required_free_length=required_free_length@entry=271) at ../src/fw/services/app_inbox_service/service.c:407
+#8  0x000aa926 in app_inbox_service_begin (tag=tag@entry=AppInboxServiceTagAppMessageReceiver, required_free_length=required_free_length@entry=263, writer=writer@entry=0x2001a41c) at ../src/fw/services/app_inbox_service/service.c:459
+#9  0x000bc126 in prv_app_message_receiver_prepare (session=0x2001a41c, endpoint=<optimized out>, total_payload_size=251) at ../src/fw/services/app_message/app_message_receiver.c:105
+#10 0x00096f54 in prv_prepare_receiver (payload_length=251, endpoint=0x14dd30 <s_protocol_endpoints+140>, endpoint_id=48, session=0x2001a41c, rtr=<optimized out>) at ../src/fw/services/comm_session/session_receive_router.c:121
+#11 comm_session_receive_router_write (session=0x2001a41c, data=0x20037748 "\0012\327\272w\260\325(Lȳ\\pRy\201R\311\004", data@entry=0x20037744 "", data_size=251, data_size@entry=255) at ../src/fw/services/comm_session/session_receive_router.c:191
+#12 0x0008d708 in qemu_transport_handle_received_data (data=0x20037744 "", length=255) at ../src/bluetooth-fw/qemu/qemu_transport.c:209
+#13 0x00010870 in prv_process_receive_buffer (context=<optimized out>) at ../src/fw/drivers/qemu/qemu_serial.c:297
+[Inferior 1 (process 1) detached]

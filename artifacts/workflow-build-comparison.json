@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "previous_sha256": "4679b90e11353358a85c629ceeb926cfd564556666158899d1d633bdd329f6d6",
+  "new_sha256": "2bddb0b092d51c7cdab6944c56a11bb377f4a97932643ee37541450bfc8bdb09",
+  "changed_members": [
+    "emery/pebble-app.bin",
+    "emery/manifest.json"
+  ],
+  "all_archive_member_contents_identical": false,
+  "explanation": "Only native build metadata, its manifest checksum and ZIP timestamps changed. Native code from offset168 onward, phone JavaScript and all resources are identical. Physical observations remain bound to their exact package digest.",
+  "native_changed_offsets": [
+    124,
+    125
+  ],
+  "native_after_168_identical": true,
+  "phone_javascript_identical": true,
+  "resources_identical": true
+}

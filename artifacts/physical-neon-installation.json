@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "recorded_at": "2026-10-01T05:17:34.846773+00:00",
+  "pbw_sha256": "4679b90e11353358a85c629ceeb926cfd564556666158899d1d633bdd329f6d6",
+  "bytes": 817565,
+  "installed": true,
+  "command": [
+    "pebble",
+    "install",
+    "--cloudpebble",
+    "--logs",
+    "/Users/e_wijaya_ap/Desktop/kasugabus-pebble/build/kasugabus-pebble.pbw"
+  ],
+  "installation_log": "artifacts/runtime-physical-neon.log",
+  "installation_log_sha256": "e351dea6c37b7d3b960c4d5ee0629680cbdec705c024bfe040bdc39822125b0b",
+  "followup": "Exact KasugaBus UUID AppRunStateStop and AppRunStateStart confirmed through installed SDK CloudPebbleTransport after installation.",
+  "runtime_receipt_limit": "CLI subscribed after the first READY marker; a later diagnostic connection disconnected that log transport. This is installation evidence, not a complete physical runtime audit.",
+  "physical_release_approved": false,
+  "owner_launcher_confirmation": {
+    "reported_at": "2026-10-01",
+    "statement": "Yes, the bus icon is visible and highlighted",
+    "scope": "Owner confirmation on physical Pebble Time 2 app list; does not approve publication or the full release checklist"
+  },
+  "screenshot_limit": "Both remote captures returned the Quartz watchface; no physical launcher screenshot is claimed. Actual selected/unselected launcher captures are from the Emery emulator."
+}

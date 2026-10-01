@@ -1,0 +1,12 @@
+build/
+node_modules/
+.waf*
+.lock-waf*
+__pycache__/
+.DS_Store
+*.pyc
+artifacts/test-feed/
+.release/
+core
+# Install packages remain local; publication uploads only the approved frozen PBW.
+artifacts/*.pbw

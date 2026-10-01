@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "uuid": "d7ba77b0-d528-4cc8-b35c-7052798152c9",
+  "metadata": {
+    "title": "KasugaBus",
+    "type": "watchapp",
+    "description": "Your next scheduled bus, on your wrist.\n\nKasugaBus is an interactive bus timetable app for Pebble Time 2, covering six stop groups around Minami-kasugaoka in Ibaraki, Osaka. Its Neon Transit home combines a large clock with your next scheduled departure. Open the board and full details to check the boarding point, operator, route, direction and destination.\n\nBrowse the bundled Kintetsu and Hankyu timetables offline, select a boarding point and keep your usual favourites. Phone settings let you arrange favourites, choose display preferences and save your own walking allowances. Leave-by times use those allowances only in the explicitly selected Saved origin context.\n\nBus times and service dates use Japan time; the large clock follows your watch's local time. Calendar-aware lookup distinguishes weekday, Saturday and Sunday/public-holiday services and shows unconfirmed dates. These are scheduled departures, not live arrivals, bus locations or delay predictions.\n\nOptional Nearby requests one phone location fix and ranks six verified Hankyu boarding poles by approximate straight-line distance. Kintetsu boarding points remain available through manual selection. Nearby does not estimate walking time or give roadside guidance.\n\nThe initial bundled timetable covers 1 October–27 December 2026. Source review is due 1 November; later service dates remain unconfirmed. Online timetable updates are not yet available. The bundled timetable remains usable offline.",
+    "source": "https://github.com/ewijaya/kasugabus-pebble",
+    "website": null,
+    "category": "daily",
+    "visibility": "listed",
+    "companion_android": null,
+    "companion_ios": null
+  },
+  "assets": [
+    {
+      "role": "iconSmall",
+      "path": "docs/releases/assets/icon-small.png"
+    },
+    {
+      "role": "iconLarge",
+      "path": "docs/releases/assets/icon-large.png"
+    },
+    {
+      "role": "banner",
+      "path": "docs/releases/assets/emery-banner.png",
+      "platform": "emery"
+    },
+    {
+      "role": "screenshot",
+      "path": "docs/releases/assets/emery_01_home.png",
+      "platform": "emery"
+    },
+    {
+      "role": "screenshot",
+      "path": "docs/releases/assets/emery_02_board.png",
+      "platform": "emery"
+    },
+    {
+      "role": "screenshot",
+      "path": "docs/releases/assets/emery_03_details.png",
+      "platform": "emery"
+    }
+  ]
+}

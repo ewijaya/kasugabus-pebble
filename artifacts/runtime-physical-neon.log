@@ -1,0 +1,18 @@
+CloudPebble proxy host: wss://cloudpebble-proxy.repebble.com/tool-v2
+CloudPebble auth mode: firebase-v2
+Connected to CloudPebble proxy websocket.
+Sending v2 auth frame...
+CloudPebble proxy authentication succeeded.
+Waiting for phone to connect...
+CloudPebble connection status packet: 255
+Connected.
+Installing app...
+App install succeeded.
+[14:13:45] pkjs> KasugaBus:? Pebble JS Bridge initialized.
+[14:13:45] ui.c:511> UI screen0 heap32480
+[14:13:45] ui.c:511> UI screen0 heap32480
+[14:13:45] ui.c:511> UI screen0 heap32480
+[14:14:02] ui.c:511> UI screen0 heap32480
+[14:15:02] ui.c:511> UI screen0 heap32480
+[14:16:02] ui.c:511> UI screen0 heap32480
+Disconnected.

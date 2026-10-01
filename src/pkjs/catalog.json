@@ -1,0 +1,175 @@
+{
+  "schemaVersion": 1,
+  "releaseVersion": 1,
+  "coverageId": "minami-kasugaoka-v1",
+  "boardingPoints": [
+    {
+      "id": 1,
+      "groupId": 1,
+      "operatorId": 1,
+      "name": "Kasugaoka Koen",
+      "label": "Kasugaoka Koen / Kintetsu Bus / Ibaraki via Toge",
+      "nameJa": "春日丘公園",
+      "direction": "Ibaraki via Toge",
+      "coordinate": null
+    },
+    {
+      "id": 2,
+      "groupId": 2,
+      "operatorId": 1,
+      "name": "Toge",
+      "label": "Toge / Kintetsu Bus / Ibaraki via Kita Sakuramachi",
+      "nameJa": "峠",
+      "direction": "Ibaraki via Kita Sakuramachi",
+      "coordinate": null
+    },
+    {
+      "id": 3,
+      "groupId": 3,
+      "operatorId": 1,
+      "name": "Midorigaoka",
+      "label": "Midorigaoka / Kintetsu Bus / Ibaraki via Kasugaoka Koen",
+      "nameJa": "緑ヶ丘",
+      "direction": "Ibaraki via Kasugaoka Koen",
+      "coordinate": null
+    },
+    {
+      "id": 4,
+      "groupId": 4,
+      "operatorId": 1,
+      "name": "Handai East",
+      "label": "Handai East / Kintetsu Bus / University / Mihogaoka",
+      "nameJa": "阪大東口",
+      "direction": "University / Mihogaoka",
+      "coordinate": null
+    },
+    {
+      "id": 5,
+      "groupId": 4,
+      "operatorId": 1,
+      "name": "Handai East",
+      "label": "Handai East / Kintetsu Bus / Ibaraki",
+      "nameJa": "阪大東口",
+      "direction": "Ibaraki",
+      "coordinate": null
+    },
+    {
+      "id": 6,
+      "groupId": 5,
+      "operatorId": 1,
+      "name": "Handai Hospital",
+      "label": "Handai Hospital / Kintetsu Bus / University",
+      "nameJa": "阪大医学部病院前",
+      "direction": "University",
+      "coordinate": null
+    },
+    {
+      "id": 7,
+      "groupId": 5,
+      "operatorId": 1,
+      "name": "Handai Hospital",
+      "label": "Handai Hospital / Kintetsu Bus / Ibaraki",
+      "nameJa": "阪大医学部病院前",
+      "direction": "Ibaraki",
+      "coordinate": null
+    },
+    {
+      "id": 8,
+      "groupId": 6,
+      "operatorId": 1,
+      "name": "Handai Medical",
+      "label": "Handai Medical / Kintetsu Bus / University",
+      "nameJa": "阪大医学部前",
+      "direction": "University",
+      "coordinate": null
+    },
+    {
+      "id": 9,
+      "groupId": 6,
+      "operatorId": 1,
+      "name": "Handai Medical",
+      "label": "Handai Medical / Kintetsu Bus / Ibaraki",
+      "nameJa": "阪大医学部前",
+      "direction": "Ibaraki",
+      "coordinate": null
+    },
+    {
+      "id": 101,
+      "groupId": 4,
+      "operatorId": 2,
+      "name": "Handai East",
+      "label": "Handai East / Hankyu Bus / University via hospital (north)",
+      "nameJa": "阪大東口",
+      "direction": "University via hospital (north)",
+      "coordinate": {
+        "latitude": 34.818748,
+        "longitude": 135.529914
+      }
+    },
+    {
+      "id": 102,
+      "groupId": 4,
+      "operatorId": 2,
+      "name": "Handai East",
+      "label": "Handai East / Hankyu Bus / Senri-chuo direct (south)",
+      "nameJa": "阪大東口",
+      "direction": "Senri-chuo direct (south)",
+      "coordinate": {
+        "latitude": 34.818464,
+        "longitude": 135.530164
+      }
+    },
+    {
+      "id": 103,
+      "groupId": 5,
+      "operatorId": 2,
+      "name": "Handai Hospital",
+      "label": "Handai Hospital / Hankyu Bus / University (south)",
+      "nameJa": "阪大医学部病院前",
+      "direction": "University (south)",
+      "coordinate": {
+        "latitude": 34.818914,
+        "longitude": 135.529381
+      }
+    },
+    {
+      "id": 104,
+      "groupId": 5,
+      "operatorId": 2,
+      "name": "Handai Hospital",
+      "label": "Handai Hospital / Hankyu Bus / Senri-chuo direct (north)",
+      "nameJa": "阪大医学部病院前",
+      "direction": "Senri-chuo direct (north)",
+      "coordinate": {
+        "latitude": 34.818898,
+        "longitude": 135.529181
+      }
+    },
+    {
+      "id": 105,
+      "groupId": 6,
+      "operatorId": 2,
+      "name": "Handai Medical",
+      "label": "Handai Medical / Hankyu Bus / University (west)",
+      "nameJa": "阪大医学部前",
+      "direction": "University (west)",
+      "coordinate": {
+        "latitude": 34.817864,
+        "longitude": 135.527964
+      }
+    },
+    {
+      "id": 106,
+      "groupId": 6,
+      "operatorId": 2,
+      "name": "Handai Medical",
+      "label": "Handai Medical / Hankyu Bus / Senri-chuo direct (east)",
+      "nameJa": "阪大医学部前",
+      "direction": "Senri-chuo direct (east)",
+      "coordinate": {
+        "latitude": 34.818098,
+        "longitude": 135.527814
+      }
+    }
+  ]
+}

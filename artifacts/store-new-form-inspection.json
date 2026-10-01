@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "inspected_at": "2026-10-01T05:39:41.301092+00:00",
+  "source_url": "https://developer.repebble.com/_next/static/chunks/app/dashboard/submit/page-4b5a3548c9bf15dc.js",
+  "source_sha256": "7c4dee55473316c24e6ca7d29fcb3da62edf1ecc7798802b567fecfdc4ff301d",
+  "source_bytes": 35371,
+  "method": "Read-only authenticated official frontend-source inspection; browser control unavailable; no form submission or PBW upload",
+  "new_route": "https://developer.repebble.com/dashboard/submit",
+  "create_endpoint": "/api/dashboard/apps",
+  "create_method": "POST",
+  "always_publishes_initial_release": true,
+  "visibility_choices": [
+    "listed",
+    "unlisted",
+    "hidden"
+  ],
+  "recommended_icons": {
+    "iconSmall": [
+      80,
+      80
+    ],
+    "iconLarge": [
+      144,
+      144
+    ]
+  },
+  "banner_exact": [
+    720,
+    320
+  ],
+  "emery_screenshot_exact": [
+    200,
+    228
+  ],
+  "screenshot_limit_per_platform": 5,
+  "screenshot_maximum_label": "4.4MB",
+  "chosen_category": {
+    "key": "daily",
+    "label": "Daily"
+  },
+  "creation_fields": [
+    "name",
+    "type",
+    "category",
+    "description",
+    "website",
+    "source",
+    "version",
+    "expectedUuid",
+    "releaseNotes",
+    "visibility",
+    "isPublished",
+    "pbwFile",
+    "generateIcons",
+    "iconSmall",
+    "iconLarge",
+    "screenshots_emery",
+    "banner_emery"
+  ],
+  "credentials_saved": false,
+  "creation_performed": false
+}

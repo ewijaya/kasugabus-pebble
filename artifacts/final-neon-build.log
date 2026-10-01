@@ -1,0 +1,106 @@
+...................................................................Runtime log captured: /private/var/folders/5r/5wgy3x_d64z4dm3n0d6g6zq80000gn/T/kasugabus-release-fixtures-rpiqz89e/artifacts/capture-fixture.log receipt: /private/var/folders/5r/5wgy3x_d64z4dm3n0d6g6zq80000gn/T/kasugabus-release-fixtures-rpiqz89e/artifacts/capture-fixture.log.install.json PBW: 1315773f1c3b70956718b1f14cf8a0aa5b29ee3fce5250bbfc01ef89f534117e
+usage: python3.13 -m unittest [-h] {plan,prepare,publish,verify} ...
+
+Freeze, publish and verify one approved KasugaBus PBW. Never auto-register.
+Imports and help are offline and unauthenticated. Publication is a separate,
+explicit command and never builds or rewrites its approved artifact.
+
+positional arguments:
+  {plan,prepare,publish,verify}
+    plan                Read-only release/version context; no build, bump or
+                        publication
+    prepare             Freeze an already audited exact PBW and install it
+                        physically; no public mutation
+    publish             Explicitly publish the frozen artifact; no build or
+                        auto-registration
+    verify              Read-only bounded verification, preserving partial
+                        status
+
+options:
+  -h, --help            show this help message and exit
+Candidate frozen: /var/folders/5r/5wgy3x_d64z4dm3n0d6g6zq80000gn/T/kasugabus-release-fixtures-ks8dbgb7/.release/1.0.0 {"sha256": "1315773f1c3b70956718b1f14cf8a0aa5b29ee3fce5250bbfc01ef89f534117e", "bytes": 567}
+Installation is recorded. Explicit physical approval of this SHA-256 and these destinations is still required.
+..........Verification attempt 1 {"github": {"state": "verified", "details": {"fixture": "ok"}}, "appstore": {"state": "pending verification", "reason": "fixture propagation"}}
+Verification attempt 2 {"github": {"state": "verified", "details": {"fixture": "ok"}}, "appstore": {"state": "pending verification", "reason": "fixture propagation"}}
+..
+----------------------------------------------------------------------
+Ran 79 tests in 25.010s
+
+OK
+PASS protocol preserves unsigned words through signed PebbleKit tuples
+PASS shared sender waits for transport callback after an early application ACK
+PASS shared sender bounds FIFO and handles NACK without concurrent transactions
+PASS shared sender timeout blocks new transactions until callback or reconnect
+PASS shared sender reports immediate SDK exceptions once
+PASS standard CRC32 and SHA256 vectors
+PASS valid complete binary and manifest agree
+PASS reject malformed dates, versions, hosts, lengths, compatibility and future current
+PASS binary rejects corrupt payload, references, sort, flags, time and UTF8
+PASS fixed80B atomic preference roundtrip, explicit unset versus zero
+PASS startup Nearby requires startup location while None default remains valid
+PASS invalid duplicate/unknown/outofrange/padded preferences reject
+PASS Nearby good, stale, poor, outside, missing and stable uncertainty ties
+PASS Nearby stale and poor fixes retain real bounded metadata without ranking rows
+PASS Nearby denied, unavailable, timeout, missing/throwing API and NaN fix use explicit error states
+PASS one-shot geolocation timeout and obsolete request suppression
+PASS transfer ignores old session/sequence, acknowledges chunks, retries same bytes
+PASS transfer gives up after bounded retries without COMMIT
+PASS unconfigured feed never makes network attempt or successful stamp
+PASS watch-owned one-inflight and no downgrade/rewrite
+PASS transfer requires the explicit watch request including zero
+PASS Restore during manifest or payload download aborts once and suppresses obsolete callbacks
+PASS Restore during transfer rejects old ACKs after a new check and binds BEGIN to its request
+PASS Restore between future and current downloads prevents the remaining current transfer
+PASS synchronous fetch completion cannot retain an obsolete abort handle
+25 phone unit scenarios passed
+PASS Clay page prevents duplicate, invalid and excessive walking preferences
+PASS phone configuration cancellation, invalid responses, atomic confirmation and reconnect handshake
+PASS phone Nearby respects location opt-in independently of startup
+PASS disabling location suppresses an in-flight result
+PASS Restore STATE cancels downloading and permits a new explicit check
+{"testOnly": true, "origin": "http://127.0.0.1:58780", "manifest": "http://127.0.0.1:58780/manifest.json", "fixtures": "/var/folders/5r/5wgy3x_d64z4dm3n0d6g6zq80000gn/T/kasugabus-test-feed-92z9qmq9"}
+PASS controlled HTTP current + future staged before current; commits 3,2
+PASS controlled HTTP corrupt checksum; commits 
+PASS controlled HTTP incompatible schema; commits 
+PASS controlled HTTP interrupted HTTP payload; commits 
+PASS controlled HTTP lost ACK bounded transfer; commits 
+5 real HTTP integration scenarios passed; production endpoint unchanged
+preferences/control: atomic banks, torn writes/checksums, durable uint32 requests, retained timestamps/settings, KBW2/KBW1/KBP1 compatibility and precedence, two-read load, generation/flags PASS
+automatic eligibility: offline defer, disabled, busy, rolling24h, backward clock PASS
+storage: transfer/recovery, 7 lazy-validation regressions, and 6 atomic-directory/migration suites PASS
+All local KasugaBus test suites passed
+'distclean' finished successfully (0.002s)
+
+up to date, audited 2 packages in 840ms
+
+found 0 vulnerabilities
+
+up to date, audited 2 packages in 576ms
+
+found 0 vulnerabilities
+Setting top to                           : /Users/e_wijaya_ap/Desktop/kasugabus-pebble 
+Setting out to                           : /Users/e_wijaya_ap/Desktop/kasugabus-pebble/build 
+Checking for program 'webpack'           : /Users/e_wijaya_ap/Library/Application Support/Pebble SDK/SDKs/current/node_modules/.bin/webpack 
+Found Pebble SDK for emery in:           : /Users/e_wijaya_ap/Library/Application Support/Pebble SDK/SDKs/current/sdk-core/pebble/emery 
+Checking for program 'gcc, cc'           : arm-none-eabi-gcc 
+Checking for program 'ar'                : arm-none-eabi-ar 
+'configure' finished successfully (0.231s)
+Waf: Entering directory `/Users/e_wijaya_ap/Desktop/kasugabus-pebble/build'
+[ 4/24] Compiling emery | reso: resources/images/kasugabus-menu-icon.png -> build/emery/resources/images/kasugabus-menu-icon.png.MENU_ICON.reso
+[ 7/24] Processing emery | resource_ball: build/emery/resources/timetable.bin.TIMETABLE.reso build/emery/resources/fonts/NotoSansJP-Regular.ttf.JP_16.reso build/emery/resources/images/kasugabus-menu-icon.png.MENU_ICON.reso -> build/emery/system_resources.resball
+[16/24] Compiling emery | generate_resource_id_definitions: build/emery/system_resources.resball -> build/emery/src/resource_ids.auto.c
+[17/24] Compiling emery | generate_pbpack: build/emery/system_resources.resball -> build/emery/app_resources.pbpack
+[18/24] Compiling emery | generate_resource_id_header: build/emery/system_resources.resball -> build/emery/src/resource_ids.auto.h
+[24/24] Processing emery | memory_usage_report: build/emery/pebble-app.elf build/emery/app_resources.pbpack
+-------------------------------------------------------
+EMERY APP MEMORY USAGE
+Total size of resources:        30178 bytes / 256.0KB
+Total footprint in RAM:         39170 bytes / 128.0KB
+Free RAM available (heap):      91902 bytes
+------------------------------------------------------- 
+[27/28] Processing emery | inject-metadata: build/emery/pebble-app.raw.bin build/emery/pebble-app.elf build/emery/app_resources.pbpack -> build/emery/pebble-app.bin
+[28/28] Creating app_bundle:  -> build/kasugabus-pebble.pbw
+Waf: Leaving directory `/Users/e_wijaya_ap/Desktop/kasugabus-pebble/build'
+'build' finished successfully (0.322s)
+
+Static audit passed: {"resources": 30178, "static_ram": 39170, "linker_free_ram": 91902, "native_binary": 31428, "pbw": 817565, "timetable": 24203} PBW SHA-256: 4679b90e11353358a85c629ceeb926cfd564556666158899d1d633bdd329f6d6

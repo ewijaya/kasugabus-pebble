@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "verified_at": "2026-10-01T06:23:05.072073+00:00",
+  "project": "KasugaBus",
+  "version": "1.0.0",
+  "github_repo": "ewijaya/kasugabus-pebble",
+  "uuid": "d7ba77b0-d528-4cc8-b35c-7052798152c9",
+  "store_app_id": null,
+  "store_listing_url": null,
+  "artifact": {
+    "sha256": "2bddb0b092d51c7cdab6944c56a11bb377f4a97932643ee37541450bfc8bdb09",
+    "bytes": 817565
+  },
+  "automated": {
+    "python_total": 113,
+    "release_tests": 31,
+    "registration_tests": 32,
+    "clean_output_tests": 2,
+    "phone_scenarios": 25,
+    "settings_scenarios": 5,
+    "http_scenarios": 5,
+    "portable_c": "passed"
+  },
+  "registration_behaviors": [
+    "Exact physical PBW/destination approval before New intent",
+    "Complete listing and image hashes frozen",
+    "Authenticated UUID plus Dashboard/repository/type/hardware discovery",
+    "Early existing listing adoption; no replacement artwork",
+    "Late existing listing adoption preserves metadata/assets",
+    "Exclusive fsynced UUID-wide intent prevents duplicate New across concurrent runs and versions",
+    "Assigned ID captured before artifact/Git/network validation",
+    "Lost-response and partial-listing recovery resumes same assigned ID",
+    "Unresolved own New blocks --save-match shortcut",
+    "Same-version exact release reused; draft or different artifact blocks readiness",
+    "Bounded postpublication verification and resumable documentation push"
+  ],
+  "evidence": {
+    "tests_and_clean_build": "artifacts/final-workflow-build.log",
+    "exact_runtime_audit": "artifacts/final-workflow-build-audit.json",
+    "authenticated_discovery": "artifacts/store-discovery-final.json",
+    "official_new_form": "artifacts/store-new-form-inspection.json",
+    "official_edit_form": "artifacts/store-edit-form-inspection.json",
+    "listing_assets": "docs/releases/assets/evidence.json"
+  },
+  "external_mutation": {
+    "project_git_commit_tag_push": false,
+    "app_registration": false,
+    "release_publication": false,
+    "timetable_hosting_deployment": false,
+    "live_listing_patch": false
+  },
+  "limitations": [
+    "Official frontend/API inspected read-only; browser automation was unavailable",
+    "No live New submission or PATCH performed during workflow setup",
+    "Public propagation checks tested with isolated fixtures; no KasugaBus public listing exists yet",
+    "Production feed, broader physical acceptance and seven-day use remain pending",
+    "Exact candidate release approval is still required"
+  ]
+}

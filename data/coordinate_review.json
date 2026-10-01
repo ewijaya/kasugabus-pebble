@@ -1,0 +1,58 @@
+{
+  "reviewed_at": "2026-10-01",
+  "accepted": "Only generations[isCurrent=true].poles[].latitude/longitude with a pole ID mapped to the exact timetable are accepted.",
+  "hankyu_sources": [
+    "hankyu_poles_00020633",
+    "hankyu_poles_00021075",
+    "hankyu_poles_00021076"
+  ],
+  "hankyu_rejected": "The timetable latitude/longitude and busstopLatitude/busstopLongitude are named-stop centres; opposite boarding poles share those centres. They are excluded.",
+  "kintetsu_boarding_point_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "kintetsu_result": "Excluded: no georeferenced actual pole marker or verified shared-pole relationship. No coordinates are transferred from Hankyu poles.",
+  "kintetsu_attempts": [
+    {
+      "url": "https://kintetsu-bus.jorudan.biz/map",
+      "stop_ja": "阪大東口",
+      "result": "Named-stop map centre present, iframe polelist empty.",
+      "parameters": {
+        "mode": "1",
+        "fr": "阪大東口",
+        "mape": "阪大東口",
+        "dgmpl": "阪大東口",
+        "p": "0,8,10"
+      }
+    },
+    {
+      "url": "https://www.kintetsu-bus.co.jp/pdf/ibaraki.pdf",
+      "result": "Official schematic route map has no georeferenced pole markers."
+    }
+  ],
+  "evidence_files": [
+    {
+      "path": "data/sources/jorudan_higashi_map.html",
+      "sha256": "9c34df32b808cdeb09bd018aa90fa4e014ae61b06c49c98a648d6cd819f4034c"
+    },
+    {
+      "path": "data/sources/jorudan_higashi_googlemap.html",
+      "sha256": "3511451a3ee662a2c41940757113edcf699b8560f5c55614e886362c3f47c06b"
+    },
+    {
+      "path": "data/sources/jorudan_b_openstreetmap.js",
+      "sha256": "792c3bf859e6835b251ee9349489f5294f313ca8459c9df5b9847b9e39b5f945"
+    },
+    {
+      "path": "data/sources/jorudan_b_busstatepole.js",
+      "sha256": "df3a7a31b734ddf144fcf822bfb4d47a20497dff8a6e29c138f1ef9f542bc64f"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "environment": "Emery emulator",
+  "clock": "host time.perf_counter",
+  "pbw_sha256": "49b4b8c4e2edd8cbcb45c69ea9eeeb8c7228e98a7748a2be37b1a845add5dcee",
+  "artifact_binding": "Read beside exact-PBW capture receipt; this tool never installs",
+  "start_command_to_first_home_render_ms": [
+    609.68
+  ],
+  "app_initialization_to_first_home_render_ms": [
+    579.63
+  ],
+  "interactions": [
+    {
+      "button": "select",
+      "screen": 1,
+      "press_to_render_ms": 86.39
+    },
+    {
+      "button": "select",
+      "screen": 2,
+      "press_to_render_ms": 82.73
+    },
+    {
+      "button": "back",
+      "screen": 1,
+      "press_to_render_ms": 22.42
+    },
+    {
+      "button": "back",
+      "screen": 0,
+      "press_to_render_ms": 18.4
+    }
+  ],
+  "all_launches_under_1000ms": true,
+  "all_buttons_under_200ms": true
+}

@@ -1,0 +1,6 @@
+{
+  "status": "CONFIGURED LOCALLY / NOT DEPLOYED",
+  "manifestUrl": "https://ewijaya.github.io/kasugabus-pebble/timetables/manifest.json",
+  "destination": "GitHub Pages: ewijaya/kasugabus-pebble",
+  "reason": "The owner selected GitHub Pages. The reviewed local feed and manual workflow target this URL; no timetable feed has been deployed or verified live."
+}

@@ -1,0 +1,142 @@
+__ISB () at ../third_party/cmsis_core/CMSIS/CMSIS/Core/Include/cmsis_gcc.h:266
+warning: 266	../third_party/cmsis_core/CMSIS/CMSIS/Core/Include/cmsis_gcc.h: No such file or directory
+#0  __ISB () at ../third_party/cmsis_core/CMSIS/CMSIS/Core/Include/cmsis_gcc.h:266
+#1  vPortSuppressTicksAndSleep (xExpectedIdleTime=...) at ../soc/qemu/freertos.c:21
+#2  0x0008ea9a in prvIdleTask (pvParameters=...) at ../third_party/freertos/FreeRTOS-Kernel/FreeRTOS/Source/tasks.c:2771
+#3  0x00000000 in ?? ()
+type = struct tskTaskControlBlock {
+    volatile StackType_t *pxTopOfStack;
+    xMPU_SETTINGS xMPUSettings;
+    BaseType_t xUsingStaticallyAllocatedStack;
+    ListItem_t xGenericListItem;
+    ListItem_t xEventListItem;
+    UBaseType_t uxPriority;
+    StackType_t *pxStack;
+    char pcTaskName[16];
+    UBaseType_t uxTCBNumber;
+    UBaseType_t uxTaskNumber;
+    UBaseType_t uxBasePriority;
+    UBaseType_t uxMutexesHeld;
+    void *pvThreadLocalStoragePointers[2];
+    uint32_t ulRunTimeCounter;
+}
+$1 = {
+  pxTopOfStack = 0x20038a7c,
+  xMPUSettings = {
+    xRegion = {{
+        ulRegionBaseAddress = 537195544,
+        ulRegionAttribute = 537394149
+      }, {
+        ulRegionBaseAddress = 537183256,
+        ulRegionAttribute = 537195493
+      }, {
+        ulRegionBaseAddress = 0,
+        ulRegionAttribute = 0
+      }, {
+        ulRegionBaseAddress = 0,
+        ulRegionAttribute = 0
+      }}
+  },
+  xUsingStaticallyAllocatedStack = 0,
+  xGenericListItem = {
+    xItemValue = 0,
+    pxNext = 0x2000a198 <pxReadyTasksLists+8>,
+    pxPrevious = 0x2000a198 <pxReadyTasksLists+8>,
+    pvOwner = 0x20018b98,
+    pvContainer = 0x2000a190 <pxReadyTasksLists>
+  },
+  xEventListItem = {
+    xItemValue = 5,
+    pxNext = 0x0 <vector_table>,
+    pxPrevious = 0x0 <vector_table>,
+    pvOwner = 0x20018b98,
+    pvContainer = 0x0 <vector_table>
+  },
+  uxPriority = 0,
+  pxStack = 0x200387cc,
+  pcTaskName = "IDLE", '\000' <repeats 11 times>,
+  uxTCBNumber = 2,
+  uxTaskNumber = 0,
+  uxBasePriority = 0,
+  uxMutexesHeld = 0,
+  pvThreadLocalStoragePointers = {0x0 <vector_table>, 0x0 <vector_table>},
+  ulRunTimeCounter = 1052298
+}
+$2 = {
+  uxNumberOfItems = 4,
+  pxIndex = 0x2001a590,
+  xListEnd = {
+    xItemValue = 4294967295,
+    pxNext = 0x20018ec0,
+    pxPrevious = 0x2001a590
+  }
+}
+$3 = {
+  uxNumberOfItems = 1,
+  pxIndex = 0x2000a20c <xDelayedTaskList1+8>,
+  xListEnd = {
+    xItemValue = 4294967295,
+    pxNext = 0x20018b38,
+    pxPrevious = 0x20018b38
+  }
+}
+$4 = {
+  uxNumberOfItems = 0,
+  pxIndex = 0x2000a220 <xDelayedTaskList2+8>,
+  xListEnd = {
+    xItemValue = 4294967295,
+    pxNext = 0x2000a220 <xDelayedTaskList2+8>,
+    pxPrevious = 0x2000a220 <xDelayedTaskList2+8>
+  }
+}
+$5 = {
+  uxNumberOfItems = 0,
+  pxIndex = 0x2000a234 <xPendingReadyList+8>,
+  xListEnd = {
+    xItemValue = 4294967295,
+    pxNext = 0x2000a234 <xPendingReadyList+8>,
+    pxPrevious = 0x2000a234 <xPendingReadyList+8>
+  }
+}
+$6 = {{
+    uxNumberOfItems = 1,
+    pxIndex = 0x20018bc0,
+    xListEnd = {
+      xItemValue = 4294967295,
+      pxNext = 0x20018bc0,
+      pxPrevious = 0x20018bc0
+    }
+  }, {
+    uxNumberOfItems = 0,
+    pxIndex = 0x2000a1ac <pxReadyTasksLists+28>,
+    xListEnd = {
+      xItemValue = 4294967295,
+      pxNext = 0x2000a1ac <pxReadyTasksLists+28>,
+      pxPrevious = 0x2000a1ac <pxReadyTasksLists+28>
+    }
+  }, {
+    uxNumberOfItems = 0,
+    pxIndex = 0x2000a1c0 <pxReadyTasksLists+48>,
+    xListEnd = {
+      xItemValue = 4294967295,
+      pxNext = 0x2000a1c0 <pxReadyTasksLists+48>,
+      pxPrevious = 0x2000a1c0 <pxReadyTasksLists+48>
+    }
+  }, {
+    uxNumberOfItems = 0,
+    pxIndex = 0x2000a1d4 <pxReadyTasksLists+68>,
+    xListEnd = {
+      xItemValue = 4294967295,
+      pxNext = 0x2000a1d4 <pxReadyTasksLists+68>,
+      pxPrevious = 0x2000a1d4 <pxReadyTasksLists+68>
+    }
+  }, {
+    uxNumberOfItems = 0,
+    pxIndex = 0x2000a1e8 <pxReadyTasksLists+88>,
+    xListEnd = {
+      xItemValue = 4294967295,
+      pxNext = 0x2000a1e8 <pxReadyTasksLists+88>,
+      pxPrevious = 0x2000a1e8 <pxReadyTasksLists+88>
+    }
+  }}
+[Inferior 1 (process 1) detached]

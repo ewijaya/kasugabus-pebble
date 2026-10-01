@@ -1,0 +1,4 @@
+interface:
+  display_name: "KasugaBus App Store"
+  short_description: "Register, update and verify KasugaBus safely"
+  default_prompt: "Use $kasugabus-appstore for the requested KasugaBus workflow."

@@ -1,0 +1,42 @@
+Installing app...
+App install succeeded.
+[12:01:21] main.c:560> READY init_ms=216 storage=1048576 heap=35512 message=0
+[12:01:21] ui.c:501> UI screen0 render_ms10 heap35512
+[12:01:22] ui.c:501> UI screen0 render_ms8 heap35592
+[12:01:22] ui.c:501> UI screen0 render_ms8 heap35592
+[12:01:51] ui.c:501> UI screen0 render_ms10 heap35592
+[12:01:51] ui.c:501> UI screen0 render_ms9 heap35592
+[12:01:52] ui.c:501> UI screen0 render_ms8 heap35592
+[12:01:53] ocess_manager.c:487> Heap Usage for App <KasugaBus>: Total Size <95008B> Used <59496B> Still allocated <0B>
+[12:01:53] main.c:560> READY init_ms=218 storage=1048576 heap=35512 message=0
+[12:01:53] ui.c:501> UI screen0 render_ms11 heap35512
+[12:01:53] ui.c:501> UI screen0 render_ms8 heap35592
+[12:01:53] ui.c:501> UI screen0 render_ms7 heap35592
+[12:01:53] ui.c:501> UI screen0 render_ms9 heap35592
+[12:01:53] ui.c:501> UI screen1 render_ms10 heap35592
+[12:01:54] ui.c:501> UI screen1 render_ms17 heap35592
+[12:01:54] main.c:373> Update begin v3 bytes24203 status0
+[12:01:54] ui.c:501> UI screen1 render_ms10 heap35592
+[12:01:58] main.c:398> Update commit session810003 status4 heap35592
+[12:01:58] ui.c:501> UI screen1 render_ms10 heap35592
+[12:01:58] main.c:373> Update begin v2 bytes24198 status0
+[12:01:58] ui.c:501> UI screen1 render_ms10 heap35592
+[12:02:02] main.c:398> Update commit session810002 status3 heap35592
+[12:02:03] ui.c:501> UI screen1 render_ms1014 heap35592
+[12:02:03] ui.c:501> UI screen1 render_ms12 heap35592
+[12:02:03] ui.c:501> UI screen1 render_ms10 heap35592
+[12:02:03] ui.c:501> UI screen1 render_ms10 heap35592
+[12:02:04] ui.c:501> UI screen1 render_ms14 heap35592
+[12:02:05] ui.c:501> UI screen1 render_ms11 heap35592
+[12:02:05] ui.c:501> UI screen1 render_ms11 heap35592
+[12:02:05] ocess_manager.c:487> Heap Usage for App <KasugaBus>: Total Size <95008B> Used <59496B> Still allocated <0B>
+[12:02:06] main.c:560> READY init_ms=544 storage=1048576 heap=35512 message=0
+[12:02:06] ui.c:501> UI screen0 render_ms72 heap35512
+[12:02:06] ui.c:501> UI screen0 render_ms71 heap35592
+[12:02:06] ui.c:501> UI screen0 render_ms72 heap35592
+[12:02:07] ui.c:501> UI screen0 render_ms77 heap35592
+[12:03:00] ui.c:501> UI screen0 render_ms91 heap35592
+[12:03:15] ui.c:501> UI screen0 render_ms71 heap35592
+[12:03:15] ui.c:501> UI screen0 render_ms50 heap35592
+[12:03:15] main.c:373> Update begin v5 bytes24203 status0
+[12:03:15] ui.c:501> UI screen0 render_ms51 heap35592

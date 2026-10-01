@@ -1,0 +1,181 @@
+{
+  "checked_at": "2026-10-01T05:37:22.632505+00:00",
+  "method": "Authenticated official developer/me UUID lookup, read-only; no app creation",
+  "app_uuid": "d7ba77b0-d528-4cc8-b35c-7052798152c9",
+  "saved_store_app_id": null,
+  "matching_ids": [],
+  "mapping_count": 1,
+  "app_category_options": [
+    {
+      "key": "daily",
+      "id": "5261a8fb3b773043d500000c",
+      "name": "Daily",
+      "slug": "daily",
+      "is_visible": true
+    },
+    {
+      "key": "games",
+      "id": "5261a8fb3b773043d5000012",
+      "name": "Games",
+      "slug": "games",
+      "is_visible": true
+    },
+    {
+      "key": "health-fitness",
+      "id": "5261a8fb3b773043d5000004",
+      "name": "Health & Fitness",
+      "slug": "health-fitness",
+      "is_visible": true
+    },
+    {
+      "key": "index",
+      "id": "527509e36526cda2d4000019",
+      "name": "Index",
+      "slug": "index",
+      "is_visible": true
+    },
+    {
+      "key": "notifications",
+      "id": "5261a8fb3b773043d5000001",
+      "name": "Notifications",
+      "slug": "notifications",
+      "is_visible": true
+    },
+    {
+      "key": "remotes",
+      "id": "5261a8fb3b773043d5000008",
+      "name": "Remotes",
+      "slug": "remotes",
+      "is_visible": true
+    },
+    {
+      "key": "tools-utilities",
+      "id": "5261a8fb3b773043d500000f",
+      "name": "Tools & Utilities",
+      "slug": "tools-utilities",
+      "is_visible": true
+    }
+  ],
+  "category_options": {
+    "watchapp": [
+      {
+        "id": "5261a8fb3b773043d500000c",
+        "name": "Daily",
+        "slug": "daily",
+        "is_visible": true
+      },
+      {
+        "id": "5261a8fb3b773043d5000012",
+        "name": "Games",
+        "slug": "games",
+        "is_visible": true
+      },
+      {
+        "id": "5261a8fb3b773043d5000004",
+        "name": "Health & Fitness",
+        "slug": "health-fitness",
+        "is_visible": true
+      },
+      {
+        "id": "527509e36526cda2d4000019",
+        "name": "Index",
+        "slug": "index",
+        "is_visible": true
+      },
+      {
+        "id": "5261a8fb3b773043d5000001",
+        "name": "Notifications",
+        "slug": "notifications",
+        "is_visible": true
+      },
+      {
+        "id": "5261a8fb3b773043d5000008",
+        "name": "Remotes",
+        "slug": "remotes",
+        "is_visible": true
+      },
+      {
+        "id": "5261a8fb3b773043d500000f",
+        "name": "Tools & Utilities",
+        "slug": "tools-utilities",
+        "is_visible": true
+      }
+    ],
+    "watchface": [
+      {
+        "id": "528d3ef2dc7b5f580700000a",
+        "name": "Faces",
+        "slug": "faces",
+        "is_visible": true
+      }
+    ],
+    "all": [
+      {
+        "id": "5261a8fb3b773043d500000c",
+        "name": "Daily",
+        "slug": "daily",
+        "app_type": "watchapp",
+        "is_visible": true
+      },
+      {
+        "id": "528d3ef2dc7b5f580700000a",
+        "name": "Faces",
+        "slug": "faces",
+        "app_type": "watchface",
+        "is_visible": true
+      },
+      {
+        "id": "5261a8fb3b773043d5000012",
+        "name": "Games",
+        "slug": "games",
+        "app_type": "watchapp",
+        "is_visible": true
+      },
+      {
+        "id": "52ccee3151a80d28e100003e",
+        "name": "GetSomeApps",
+        "slug": "getsomeapps",
+        "app_type": "companion-app",
+        "is_visible": true
+      },
+      {
+        "id": "5261a8fb3b773043d5000004",
+        "name": "Health & Fitness",
+        "slug": "health-fitness",
+        "app_type": "watchapp",
+        "is_visible": true
+      },
+      {
+        "id": "527509e36526cda2d4000019",
+        "name": "Index",
+        "slug": "index",
+        "app_type": "watchapp",
+        "is_visible": true
+      },
+      {
+        "id": "5261a8fb3b773043d5000001",
+        "name": "Notifications",
+        "slug": "notifications",
+        "app_type": "watchapp",
+        "is_visible": true
+      },
+      {
+        "id": "5261a8fb3b773043d5000008",
+        "name": "Remotes",
+        "slug": "remotes",
+        "app_type": "watchapp",
+        "is_visible": true
+      },
+      {
+        "id": "5261a8fb3b773043d500000f",
+        "name": "Tools & Utilities",
+        "slug": "tools-utilities",
+        "app_type": "watchapp",
+        "is_visible": true
+      }
+    ]
+  },
+  "browser_limit": "Browser control unavailable; owner screenshot shows authenticated Dashboard. No New form inspected through UI yet.",
+  "dashboard_collection_count": 1,
+  "dashboard_identity_matches": []
+}

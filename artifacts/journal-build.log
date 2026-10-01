@@ -1,0 +1,36 @@
+
+up to date, audited 2 packages in 820ms
+
+found 0 vulnerabilities
+
+up to date, audited 2 packages in 500ms
+
+found 0 vulnerabilities
+Setting top to                           : /Users/e_wijaya_ap/Desktop/kasugabus-pebble 
+Setting out to                           : /Users/e_wijaya_ap/Desktop/kasugabus-pebble/build 
+Checking for program 'webpack'           : /Users/e_wijaya_ap/Library/Application Support/Pebble SDK/SDKs/current/node_modules/.bin/webpack 
+Found Pebble SDK for emery in:           : /Users/e_wijaya_ap/Library/Application Support/Pebble SDK/SDKs/current/sdk-core/pebble/emery 
+Checking for program 'gcc, cc'           : arm-none-eabi-gcc 
+Checking for program 'ar'                : arm-none-eabi-ar 
+'configure' finished successfully (0.218s)
+Waf: Entering directory `/Users/e_wijaya_ap/Desktop/kasugabus-pebble/build'
+[12/23] Compiling emery | c: src/c/storage.c -> build/src/c/storage.c.9.o
+[15/23] Compiling emery | c: src/c/preferences.c -> build/src/c/preferences.c.9.o
+[19/23] Compiling emery | c: src/c/main.c -> build/src/c/main.c.9.o
+[20/23] Compiling emery | c: src/c/ui.c -> build/src/c/ui.c.9.o
+[22/23] Linking emery | cprogram: build/src/c/engine.c.9.o build/src/c/main.c.9.o build/src/c/policies.c.9.o build/src/c/preferences.c.9.o build/src/c/storage.c.9.o build/src/c/ui.c.9.o build/emery/appinfo.auto.c.9.o build/emery/src/resource_ids.auto.c.9.o build/src/message_keys.auto.c.9.o -> build/emery/pebble-app.elf
+/Users/e_wijaya_ap/Library/Application Support/Pebble SDK/SDKs/4.33.1/toolchain/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/14.2.1/../../../../arm-none-eabi/bin/ld: warning: /Users/e_wijaya_ap/Desktop/kasugabus-pebble/build/emery/pebble-app.elf has a LOAD segment with RWX permissions
+
+[23/23] Processing emery | memory_usage_report: build/emery/pebble-app.elf build/emery/app_resources.pbpack
+-------------------------------------------------------
+EMERY APP MEMORY USAGE
+Total size of resources:        30042 bytes / 256.0KB
+Total footprint in RAM:         38538 bytes / 128.0KB
+Free RAM available (heap):      92534 bytes
+------------------------------------------------------- 
+[24/27] Compiling emery | /Users/e_wijaya_ap/Desktop/kasugabus-pebble/build/emery/pebble-app.raw.bin: build/emery/pebble-app.elf -> build/emery/pebble-app.raw.bin
+[25/27] Processing merge_js: src/pkjs/binary.js src/pkjs/catalog.json src/pkjs/checksums.js src/pkjs/clay-config.js src/pkjs/custom-clay.js src/pkjs/feed-config.js src/pkjs/index.js src/pkjs/manifest.js src/pkjs/nearby.js src/pkjs/protocol.js src/pkjs/sender.js src/pkjs/settings.js src/pkjs/transfer.js src/pkjs/updater.js -> build/pebble-js-app.js build/pebble-js-app.js.map
+[26/27] Processing emery | inject-metadata: build/emery/pebble-app.raw.bin build/emery/pebble-app.elf build/emery/app_resources.pbpack -> build/emery/pebble-app.bin
+[27/27] Creating app_bundle:  -> build/kasugabus-pebble.pbw
+Waf: Leaving directory `/Users/e_wijaya_ap/Desktop/kasugabus-pebble/build'
+'build' finished successfully (3.710s)

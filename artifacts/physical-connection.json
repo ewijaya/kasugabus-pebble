@@ -1,0 +1,12 @@
+{
+  "checked_at": "2026-10-01T04:10:35.468364+00:00",
+  "transport": "Pebble Cloud developer connection",
+  "ping": "passed",
+  "watch_platform": "emery",
+  "watch_firmware": "v4.36.2",
+  "phone_model_user_reported": "Poco F4",
+  "phone_os_family": "Android",
+  "android_version": null,
+  "companion_version_user_reported": "1.14.0.1",
+  "app_installed_by_this_check": false
+}

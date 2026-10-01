@@ -1,0 +1,72 @@
+{
+  "name": "kasugabus",
+  "author": "KasugaBus contributors",
+  "version": "1.0.0",
+  "private": true,
+  "keywords": [
+    "pebble-app"
+  ],
+  "dependencies": {
+    "@rebble/clay": "1.1.0"
+  },
+  "scripts": {
+    "test": "python3 scripts/test.py",
+    "generate": "python3 tools/compile_timetable.py data/timetable.json -o resources/timetable.bin --catalog src/pkjs/catalog.json",
+    "build": "pebble build"
+  },
+  "pebble": {
+    "displayName": "KasugaBus",
+    "uuid": "d7ba77b0-d528-4cc8-b35c-7052798152c9",
+    "sdkVersion": "3",
+    "enableMultiJS": true,
+    "targetPlatforms": [
+      "emery"
+    ],
+    "watchapp": {
+      "watchface": false
+    },
+    "capabilities": [
+      "location",
+      "configurable"
+    ],
+    "messageKeys": {
+      "TYPE": 0,
+      "SESSION": 1,
+      "SEQ": 2,
+      "VERSION": 3,
+      "LENGTH": 4,
+      "CRC": 5,
+      "DATA": 6,
+      "STATUS": 7,
+      "REQUEST": 8,
+      "STAMP": 9,
+      "ACCURACY": 10,
+      "EFFECTIVE": 11,
+      "PENDING": 12,
+      "FLAGS": 13
+    },
+    "resources": {
+      "media": [
+        {
+          "type": "raw",
+          "name": "TIMETABLE",
+          "file": "timetable.bin"
+        },
+        {
+          "type": "font",
+          "name": "JP_16",
+          "file": "fonts/NotoSansJP-Regular.ttf",
+          "characterRegex": "[ 春日丘公園峠緑ヶ阪大東口医学部病院前]"
+        },
+        {
+          "type": "bitmap",
+          "name": "MENU_ICON",
+          "file": "images/kasugabus-menu-icon.png",
+          "menuIcon": true,
+          "memoryFormat": "Smallest",
+          "storageFormat": "png"
+        }
+      ]
+    }
+  }
+}
