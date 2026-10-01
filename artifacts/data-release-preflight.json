@@ -1,0 +1,504 @@
+{
+  "schema": 1,
+  "checkedAt": "2026-10-01T15:57:46+09:00",
+  "readOnlySourcePreflight": true,
+  "locallyPrepared": true,
+  "published": false,
+  "sourceReviewDate": "2026-10-01",
+  "reviewDue": "2026-11-01",
+  "coverageFrom": "2026-10-01",
+  "coverageThrough": "2026-12-27",
+  "baseline": {
+    "path": "hosting/sources/1.json",
+    "sourceSha256": "3d64bc01938493ac8f56ac17cd5a02b246a18df54c8e47bd9581d47c589cce9e",
+    "releaseVersion": 1,
+    "departureCount": 1411
+  },
+  "candidate": {
+    "path": "hosting/sources/2.json",
+    "sourceSha256": "a2c4e85427ce754c6aafc4b077e9f2673718230d020ab4785fb0f78b3149ce71",
+    "releaseVersion": 2,
+    "departureCount": 1411,
+    "changedJsonFields": [
+      "release_version"
+    ],
+    "changedInputByteOffsets": [
+      46
+    ],
+    "compiledPayload": {
+      "version": 2,
+      "minAppVersion": 1,
+      "effectiveFrom": "2026-10-01",
+      "coverageFrom": "2026-10-01",
+      "coverageThrough": "2026-12-27",
+      "sourceVerified": "2026-10-01",
+      "reviewDue": "2026-11-01",
+      "url": "https://ewijaya.github.io/kasugabus-pebble/timetables/releases/2-5c7adc806702a76e.bin",
+      "bytes": 24203,
+      "sha256": "5c7adc806702a76ea4e97e35fc41227c1b1bcf6ca6daec28ca7a0b1d24cbff61",
+      "crc32": 4116084579
+    },
+    "binaryChangedOffsets": [
+      12,
+      13,
+      14,
+      15,
+      16
+    ]
+  },
+  "reviewReport": "hosting/reviews/2-review.json",
+  "zeroDepartureDiff": {
+    "previousVersion": 1,
+    "version": 2,
+    "departuresAdded": [],
+    "departuresRemoved": [],
+    "changedSections": []
+  },
+  "reviewedSourceHashes": {
+    "kintetsu_0": "6c902ec1d78e1935b0477ffdd4cb6eed1d65593bff5187e2231a8a3f318a3bb3",
+    "kintetsu_1": "c9b890ea9be8cd930aadbe6c33b8dc9928ee76ecb485724af5b35b8a1cd5981b",
+    "kintetsu_2": "0a409f331f3c8963f168856fbcb604db3986439ac93e8bb7e85b0538e4ae861d",
+    "kintetsu_3": "c9a89e66af2712c8cd0b737fab9acd5dcd66daadeca22207eb02e112642877c6",
+    "kintetsu_4": "c7ae18fa6e4a0ba2baf3b97694a09d2d46882b1b29d99d15a839ad562db9009b",
+    "hankyu_route": "f3c7a80c64a0c5dd17e6def2b2f7b090a5bfeea29a186035c8cef95ea49ac119",
+    "kintetsu_directory": "3376204f5b78041d7d8442ad07530bc2529a4f8392c907dbb198c86b07d79de6",
+    "kintetsu_route": "d3f9cc3f39a4675bede7856c9896df17a2d60f0ff324bf95b4d9042bfb5bc6fe",
+    "kintetsu_notices": "293b8d6aaf15efa6cdbaa9c8524d8174c3b5297b4893ae278fc9a521ce751309",
+    "hankyu_directory": "1414f855971732bd5d9aef0edad762df12ffb6ce197764bdb0959ce78c29369c",
+    "hankyu_notices": "bab35b6d313fb9058002291a4d44f0796534db472401d6a52939958e3a489cd4",
+    "holiday_calendar_page": "565ed19991424566812ce202196adc2a5f7932d9e607940ce28df76456413e43",
+    "kintetsu_map": "4fda178d9e22efebe5db199cecc78cf08ecd33fd5e04c9563875421051ce577e",
+    "hankyu_083801": "82802b3c5dbdb4f5f54d5e893b8e4954871e6aa1ef35e4a38521e69b3a55373d",
+    "hankyu_083802": "811e77233e367e881733e1b9def978f644bb88412ada749e60b9c32caa68a1ea",
+    "hankyu_138401": "abffe356134468d44bab8938365d25721f0f79a68a53888317d9b173a2b4a3e7",
+    "hankyu_138402": "95786ff19309eb6a4cac3fc7e988a7d0007b2cbb5417d99b74e438ea900999f3",
+    "hankyu_138501": "10589bfaaa743bf555a0adeb384744986c7a0ef267862182ccf25ee8221989e8",
+    "hankyu_138502": "94b4e90916f4ebb7e3f6753757fb706e64218210550a078a183515829bb1a2ba",
+    "hankyu_stop_00020633": "878fccc92aff911dfde37ff75df0228d3ade1623c2604db6a3e6f6690dfd4104",
+    "hankyu_stop_00021075": "f58478f08fde3433b0910d7dd386199f4c47fc5ca1643276f7be9749d763d1b8",
+    "hankyu_stop_00021076": "a4ddc37d945542c6314a14dbbbae8e6100c31985efda3e30ecc8d269af607fcc",
+    "kintetsu_loop_notice": "e7079929de90ffe04930181559adfe508827ceffa4f8940a129952b5792b4e7b",
+    "kintetsu_loop_timetable": "4b489e1bda474c623672532485b1ab7e906be101f3739dd08e093f42441d8cbc",
+    "holidays": "cec37a743c96995cdb9cb52b685c9003634682a9b0e1a640a6b9b96881fe964a",
+    "kintetsu_stop_1": "b486d277a6c11fc3ff9441eb5dcf3ed173de817f8c93f81bc61f92bdc8f10845",
+    "kintetsu_stop_1_direction_1": "26fa1dae3b25cf758ae57b3bed0f9d3ea66c287b00c4b699e8990f669e73619d",
+    "kintetsu_stop_2": "73bd8ed7a614c82fd17048eb784ba85dbc5e56212f4ecc1f13abe98f9bc4a61c",
+    "kintetsu_stop_2_direction_1": "f8a10b12644d5d6d52e4342300d8daf2b487dc4cefa879a3b6bfc56dcd2db66a",
+    "kintetsu_stop_3": "480e2579d220058b473022c8482d69ddb0b342453fce05e50def5ae30278c7b3",
+    "kintetsu_stop_3_direction_1": "b50400c9937a9a1f73ee6b9b9464b0e66dfce71604d7ac5ef1f73ee8df43385d",
+    "kintetsu_stop_4": "7cb2bca993f4fbba1954d96a04d1de0e35fc929ca366d8227c2f9f26c4bd985d",
+    "kintetsu_stop_4_direction_1": "7a321950f05e5bea2940e8e1e154a84951471702f46b32bb4a969495f2980dff",
+    "kintetsu_stop_4_direction_2": "c95ee6a7c8f8cd089f760d33f53f6b55f6f6f1dacdab84f75a4e0039d3ead1b8",
+    "kintetsu_stop_5": "9deb8340a8a062da3f2cd14a9148a8ed63531a21040c0b73d85d0617961169ec",
+    "kintetsu_stop_5_direction_1": "8227c53dd6460c1e019e3aa2239ad3af5e26bbbfda1c2fcd008b58391198f7b2",
+    "kintetsu_stop_5_direction_2": "00ef41126771f8b15f8ce594ec4334832488fc78764319e34a0ea1caa3700af4",
+    "kintetsu_stop_6": "03538c1f70f376eac2d15c14a425149ccae63b86de0f39bbc12bd2cd14dc306c",
+    "kintetsu_stop_6_direction_1": "948ce8f72b8fcd898bb18fe5eaeb2478d4e6674b9fe73dc1e1b412de6ed03cd2",
+    "kintetsu_stop_6_direction_2": "91dee04e353b26817b0ae633c9254d3dee9b0a5f81aeb852e0ddee0b534c5ed5",
+    "hankyu_trip_00970003-1-01-1009": "b2e6e9300afe4d39a3db7181400ff0b4d0f358c5276f00b2894cb080e6ded47c",
+    "hankyu_trip_00970003-1-01-1109": "09267655d227e1b9fabdf086e1733373ef9dbd30081da335283da7f5b349d7b2",
+    "hankyu_trip_00970003-1-01-1209": "f3396d1c36926ceb31f4537dc47df299448341dee7eee6a65daa58195e28a0df",
+    "hankyu_trip_00970003-1-01-1309": "bb7a96298c7bfcc43a113c41294b85904383f4f5a3bb6675038bfb9a1986e81d",
+    "hankyu_trip_00970003-1-01-1409": "f1a4a8d8795ad6d68b5f01842c49315695809ac7731f55bdb19d4fd59cf1d14d",
+    "hankyu_trip_00970003-1-01-1509": "d9c5843946cdcfb59b69b6aae83b1fd90130f9335488b25be2bc0c97b2c740aa",
+    "hankyu_trip_00970003-1-01-1609": "1323cbdc485482c90837538ec36d411e83caa22c658e9b28a0a85cebb3b71d49",
+    "hankyu_trip_00970003-1-01-1709": "5aa59d3da6a40a90ad625a90d4923d8cc92c48aed5045be733f467558ab5ce8d",
+    "hankyu_trip_00970004-1-01-0719": "1883b2a4566c1d841cf09f5d6c1fa7580c553795573e4c4b33a767e55fe3a696",
+    "hankyu_trip_00970004-1-01-0731": "86f0a460bb6412e4107a5a18be614d59eb51c09f1170e236739e5150d5957777",
+    "hankyu_trip_00970004-1-01-0743": "0a644f28e0cb9a6031eb59e797174da9238415debbc90db3c6d1e4a00f79c69a",
+    "hankyu_trip_00970004-1-01-0755": "1ddb298572d2b751433aba9267e8b74cff10cb72520d38ea947b56fa4a426397",
+    "hankyu_trip_00970004-1-01-0807": "8799dc76dd749e0197ce01ca1da1b9fbf4033a5d2a6f705f483b36d4710b5674",
+    "hankyu_trip_00970004-1-01-0819": "2d1b82f1f450516275219aed768ac21b80ab152a08032017002a6a0a56a50d49",
+    "hankyu_trip_00970004-1-01-0831": "12c9578066195350bc6684213d21fc8f1a5af0c7fc6b3df88676a39553ffa0ca",
+    "hankyu_trip_00970004-1-01-0846": "a0ffba6368e1c135c50f2134ddd240fd003bb2b17a998a31d77eae2eb04aa34a",
+    "hankyu_trip_00970004-1-01-0906": "3df761c3af10d9e89fdd877c5a8756b99cd7edb1886825a69221ef8cebd05b3a",
+    "hankyu_trip_00970004-1-01-0930": "36b3aa7fecbb43c702521b413900593cd5871b9db4fd222b105781af340a0ea7",
+    "hankyu_trip_00970004-1-01-0948": "c80ecaea95ae220ba289738a46f81aa6febbccb4e454a9510dc42d8df9970977",
+    "hankyu_trip_00970002-2-01-0830": "d1c08a42d003e4a5ff2bea786dc80c1a7f4d673ae95c37a7faf3538b23870da8",
+    "hankyu_trip_00970004-2-01-0948": "36846ffc0012bd87ca80f37a2ff63aeb13c6a8892b39207b037ff6bc4119009c",
+    "hankyu_trip_00970002-2-01-0936": "0ef97b51b5ea95beec7cd95d76c6d4f78569cd07407fc5ded57a49172c5099d1",
+    "hankyu_trip_00970004-2-01-1033": "b0cf1894a85d6669cde2ae46ed30fbf9b44c06050fc6e8f193b48ea9431557ae",
+    "hankyu_trip_00970002-2-01-1036": "1eab5b10ec48dcbc7b1b449232fe959ac6191677ff6dca3acb25876cb70b3eab",
+    "hankyu_trip_00970004-2-01-1137": "2a6f9f7b13a1dbabbffbf6b8e856f50a59362cc4d4b51af350a85d216c6dc653",
+    "hankyu_trip_00970002-2-01-1136": "bda91adfb0fb77cb591d44eb562c6bb0d1938fe0b504fff7d6149084f5d81ec1",
+    "hankyu_trip_00970004-2-01-1237": "11d9647bf5aafaf5de9ea312d21ae02f2e82b01c7ea8c24773db14b33a6fe200",
+    "hankyu_trip_00970002-2-01-1236": "d97b2588c90269ebfee09689c67129805e1c88f54fee318e33f6c0416acfed03",
+    "hankyu_trip_00970004-2-01-1337": "dd1c3f2faa9f0e1d0af4d220f88b9fdafd80ba068a51f487603b65d5773e8fab",
+    "hankyu_trip_00970002-2-01-1336": "94ea57abf239f38597192626ab6a20b9b13d70b4b6b969f5aec7fee349620ed8",
+    "hankyu_trip_00970002-2-01-1436": "46018750244ddb540b6584e85687bd16d79496cd7c2cbbc7dbd87662aaeee87a",
+    "hankyu_trip_00970002-2-01-1536": "4f7f797bea4517c3ece2903ea87ea0192b4442da77229cfa1cb7e1543c040cd7",
+    "hankyu_trip_00970004-2-01-1725": "feead9f4cc367033c36e71fffbbe748a45a32f093a6d471fa1a5228cf4ac716f",
+    "hankyu_trip_00970004-2-01-1740": "c28e096f7d2ecf8d9aff60aa381b9b4564e5f71f6a7077792ebef5f3b3bf1cf6",
+    "hankyu_trip_00970004-2-01-1820": "39036a62efc0d3c754a393b3dca3270c5c8ca2ac0c0609ed3e8f9633160d1f3c",
+    "hankyu_trip_00970004-2-01-1840": "274a32e6576bc3019d6e4361de4a51967a0283726843e6b42d3521d52e821009",
+    "hankyu_trip_00970004-2-01-1910": "f7bc844e1fa12639c69c4159a7f8c7472a16f7556593ed5df227448c44dd865a",
+    "hankyu_trip_00970004-2-01-1940": "03c72589de4aaa66276fa8a311ee7ef46d3bff37c9f029e1c67bad16f87fbace",
+    "hankyu_poles_00020633": "a5a05b2d39ddb6c92f91967288cd39ea907e5cc9e9cc609e6e41d927ccb0ff59",
+    "hankyu_poles_00021075": "d328c1fb2caaca81782dac114883f3dc0e11f89fb06386dfdd7f0e31adff6da7",
+    "hankyu_poles_00021076": "07fe11ebbb0e2a6a1e902739664266647640fbbf151c430c696230e6f48c7711"
+  },
+  "liveSourceChecks": [
+    {
+      "sourceId": "kintetsu_0",
+      "url": "https://www.kintetsu-bus.co.jp/storage/uploads/pdf/01KGH380Q17Z132DVWHS0B2H2Q.pdf",
+      "finalUrl": "https://www.kintetsu-bus.co.jp/storage/uploads/pdf/01KGH380Q17Z132DVWHS0B2H2Q.pdf",
+      "checkedAt": "2026-10-01T15:57:46+09:00",
+      "bytes": 145704,
+      "sha256": "6c902ec1d78e1935b0477ffdd4cb6eed1d65593bff5187e2231a8a3f318a3bb3",
+      "reviewedSha256": "6c902ec1d78e1935b0477ffdd4cb6eed1d65593bff5187e2231a8a3f318a3bb3",
+      "bytesMatchReviewedSource": true
+    },
+    {
+      "sourceId": "kintetsu_1",
+      "url": "https://www.kintetsu-bus.co.jp/storage/uploads/pdf/01KJYVJ0SM6A5Z6KB2NNGQJGRP.pdf",
+      "finalUrl": "https://www.kintetsu-bus.co.jp/storage/uploads/pdf/01KJYVJ0SM6A5Z6KB2NNGQJGRP.pdf",
+      "checkedAt": "2026-10-01T15:57:46+09:00",
+      "bytes": 128629,
+      "sha256": "c9b890ea9be8cd930aadbe6c33b8dc9928ee76ecb485724af5b35b8a1cd5981b",
+      "reviewedSha256": "c9b890ea9be8cd930aadbe6c33b8dc9928ee76ecb485724af5b35b8a1cd5981b",
+      "bytesMatchReviewedSource": true
+    },
+    {
+      "sourceId": "kintetsu_2",
+      "url": "https://www.kintetsu-bus.co.jp/storage/uploads/pdf/01KGH38V361WR40M2G7A8QPCBM.pdf",
+      "finalUrl": "https://www.kintetsu-bus.co.jp/storage/uploads/pdf/01KGH38V361WR40M2G7A8QPCBM.pdf",
+      "checkedAt": "2026-10-01T15:57:46+09:00",
+      "bytes": 469555,
+      "sha256": "0a409f331f3c8963f168856fbcb604db3986439ac93e8bb7e85b0538e4ae861d",
+      "reviewedSha256": "0a409f331f3c8963f168856fbcb604db3986439ac93e8bb7e85b0538e4ae861d",
+      "bytesMatchReviewedSource": true
+    },
+    {
+      "sourceId": "kintetsu_3",
+      "url": "https://www.kintetsu-bus.co.jp/storage/uploads/pdf/01KGH38V399YCY05HJDWT5SJKW.pdf",
+      "finalUrl": "https://www.kintetsu-bus.co.jp/storage/uploads/pdf/01KGH38V399YCY05HJDWT5SJKW.pdf",
+      "checkedAt": "2026-10-01T15:57:46+09:00",
+      "bytes": 293149,
+      "sha256": "c9a89e66af2712c8cd0b737fab9acd5dcd66daadeca22207eb02e112642877c6",
+      "reviewedSha256": "c9a89e66af2712c8cd0b737fab9acd5dcd66daadeca22207eb02e112642877c6",
+      "bytesMatchReviewedSource": true
+    },
+    {
+      "sourceId": "kintetsu_4",
+      "url": "https://www.kintetsu-bus.co.jp/storage/uploads/pdf/01KGH38V3AF9HMN83KKM3J33E0.pdf",
+      "finalUrl": "https://www.kintetsu-bus.co.jp/storage/uploads/pdf/01KGH38V3AF9HMN83KKM3J33E0.pdf",
+      "checkedAt": "2026-10-01T15:57:46+09:00",
+      "bytes": 256299,
+      "sha256": "c7ae18fa6e4a0ba2baf3b97694a09d2d46882b1b29d99d15a839ad562db9009b",
+      "reviewedSha256": "c7ae18fa6e4a0ba2baf3b97694a09d2d46882b1b29d99d15a839ad562db9009b",
+      "bytesMatchReviewedSource": true
+    },
+    {
+      "sourceId": "holidays",
+      "url": "https://www8.cao.go.jp/chosei/shukujitsu/syukujitsu.csv",
+      "finalUrl": "https://www8.cao.go.jp/chosei/shukujitsu/syukujitsu.csv",
+      "checkedAt": "2026-10-01T15:57:46+09:00",
+      "bytes": 21538,
+      "sha256": "cec37a743c96995cdb9cb52b685c9003634682a9b0e1a640a6b9b96881fe964a",
+      "reviewedSha256": "cec37a743c96995cdb9cb52b685c9003634682a9b0e1a640a6b9b96881fe964a",
+      "bytesMatchReviewedSource": true
+    },
+    {
+      "sourceId": "hankyu_083801",
+      "url": "https://transfer-cloud.navitime.biz/hankyubus/courses/timetables?busstop=00020633&timetable-id=083801",
+      "finalUrl": "https://transfer-cloud.navitime.biz/hankyubus/courses/timetables?busstop=00020633&timetable-id=083801",
+      "checkedAt": "2026-10-01T15:57:46+09:00",
+      "bytes": 63816,
+      "sha256": "7dd07040231fef148d7bb737b82b55910716e63ad5a1c065683d0a2284c1b9ae",
+      "reviewedSha256": "82802b3c5dbdb4f5f54d5e893b8e4954871e6aa1ef35e4a38521e69b3a55373d",
+      "bytesMatchReviewedSource": false,
+      "timetableObjectMatchesReviewedSource": true,
+      "timetableObjectSha256": "7a55b1beeda1625e40178a2fa44c9f3f2df96c5b9b000798ae70031e3eebf5c5",
+      "scheduleCount": 1,
+      "departureCount": 19
+    },
+    {
+      "sourceId": "hankyu_083802",
+      "url": "https://transfer-cloud.navitime.biz/hankyubus/courses/timetables?busstop=00020633&timetable-id=083802",
+      "finalUrl": "https://transfer-cloud.navitime.biz/hankyubus/courses/timetables?busstop=00020633&timetable-id=083802",
+      "checkedAt": "2026-10-01T15:57:46+09:00",
+      "bytes": 59553,
+      "sha256": "811e77233e367e881733e1b9def978f644bb88412ada749e60b9c32caa68a1ea",
+      "reviewedSha256": "811e77233e367e881733e1b9def978f644bb88412ada749e60b9c32caa68a1ea",
+      "bytesMatchReviewedSource": true,
+      "timetableObjectMatchesReviewedSource": true,
+      "timetableObjectSha256": "c03ecb7dddb8548ada6aac1014ced0a635066a9ce0ef517aed8853c50c74a515",
+      "scheduleCount": 1,
+      "departureCount": 19
+    },
+    {
+      "sourceId": "hankyu_138401",
+      "url": "https://transfer-cloud.navitime.biz/hankyubus/courses/timetables?busstop=00021075&timetable-id=138401",
+      "finalUrl": "https://transfer-cloud.navitime.biz/hankyubus/courses/timetables?busstop=00021075&timetable-id=138401",
+      "checkedAt": "2026-10-01T15:57:46+09:00",
+      "bytes": 63871,
+      "sha256": "abffe356134468d44bab8938365d25721f0f79a68a53888317d9b173a2b4a3e7",
+      "reviewedSha256": "abffe356134468d44bab8938365d25721f0f79a68a53888317d9b173a2b4a3e7",
+      "bytesMatchReviewedSource": true,
+      "timetableObjectMatchesReviewedSource": true,
+      "timetableObjectSha256": "3039641f0d949fe868245c7b78abc3c071d72880e7adc69b6be5718abb7e96ad",
+      "scheduleCount": 1,
+      "departureCount": 19
+    },
+    {
+      "sourceId": "hankyu_138402",
+      "url": "https://transfer-cloud.navitime.biz/hankyubus/courses/timetables?busstop=00021075&timetable-id=138402",
+      "finalUrl": "https://transfer-cloud.navitime.biz/hankyubus/courses/timetables?busstop=00021075&timetable-id=138402",
+      "checkedAt": "2026-10-01T15:57:46+09:00",
+      "bytes": 59879,
+      "sha256": "3e1f91ebc7e80f9b8a4b92fa836a378f514c706cd708d0671e7c2545e2f06895",
+      "reviewedSha256": "95786ff19309eb6a4cac3fc7e988a7d0007b2cbb5417d99b74e438ea900999f3",
+      "bytesMatchReviewedSource": false,
+      "timetableObjectMatchesReviewedSource": true,
+      "timetableObjectSha256": "73ad6b1a51438ce5052d8b24827ae414aa7aa45af8cac0b17a73450e69634855",
+      "scheduleCount": 1,
+      "departureCount": 19
+    },
+    {
+      "sourceId": "hankyu_138501",
+      "url": "https://transfer-cloud.navitime.biz/hankyubus/courses/timetables?busstop=00021076&timetable-id=138501",
+      "finalUrl": "https://transfer-cloud.navitime.biz/hankyubus/courses/timetables?busstop=00021076&timetable-id=138501",
+      "checkedAt": "2026-10-01T15:57:46+09:00",
+      "bytes": 63760,
+      "sha256": "10589bfaaa743bf555a0adeb384744986c7a0ef267862182ccf25ee8221989e8",
+      "reviewedSha256": "10589bfaaa743bf555a0adeb384744986c7a0ef267862182ccf25ee8221989e8",
+      "bytesMatchReviewedSource": true,
+      "timetableObjectMatchesReviewedSource": true,
+      "timetableObjectSha256": "955ba3d2168603069c0f70f48c519a22bc038458458a0ee221e05876e15daa15",
+      "scheduleCount": 1,
+      "departureCount": 19
+    },
+    {
+      "sourceId": "hankyu_138502",
+      "url": "https://transfer-cloud.navitime.biz/hankyubus/courses/timetables?busstop=00021076&timetable-id=138502",
+      "finalUrl": "https://transfer-cloud.navitime.biz/hankyubus/courses/timetables?busstop=00021076&timetable-id=138502",
+      "checkedAt": "2026-10-01T15:57:46+09:00",
+      "bytes": 59808,
+      "sha256": "94b4e90916f4ebb7e3f6753757fb706e64218210550a078a183515829bb1a2ba",
+      "reviewedSha256": "94b4e90916f4ebb7e3f6753757fb706e64218210550a078a183515829bb1a2ba",
+      "bytesMatchReviewedSource": true,
+      "timetableObjectMatchesReviewedSource": true,
+      "timetableObjectSha256": "e699bc865a6d50068052405238f635f7f08aaa3d63875bee246be8f5843c079a",
+      "scheduleCount": 1,
+      "departureCount": 19
+    }
+  ],
+  "liveDirectoryAndNoticeChecks": [
+    {
+      "url": "https://www.kintetsu-bus.co.jp/route/timetables",
+      "finalUrl": "https://www.kintetsu-bus.co.jp/route/timetables",
+      "checkedAt": "2026-10-01T15:57:46+09:00",
+      "bytes": 51664,
+      "sha256": "3376204f5b78041d7d8442ad07530bc2529a4f8392c907dbb198c86b07d79de6"
+    },
+    {
+      "url": "https://www.kintetsu-bus.co.jp/topics",
+      "finalUrl": "https://www.kintetsu-bus.co.jp/topics",
+      "checkedAt": "2026-10-01T15:57:46+09:00",
+      "bytes": 58037,
+      "sha256": "293b8d6aaf15efa6cdbaa9c8524d8174c3b5297b4893ae278fc9a521ce751309"
+    },
+    {
+      "url": "https://www.hankyubus.co.jp/rosen/timetable/",
+      "finalUrl": "https://www.hankyubus.co.jp/rosen/timetable/",
+      "checkedAt": "2026-10-01T15:57:46+09:00",
+      "bytes": 212580,
+      "sha256": "1414f855971732bd5d9aef0edad762df12ffb6ce197764bdb0959ce78c29369c"
+    },
+    {
+      "url": "https://www.hankyubus.co.jp/news/",
+      "finalUrl": "https://www.hankyubus.co.jp/news/",
+      "checkedAt": "2026-10-01T15:57:46+09:00",
+      "bytes": 11726,
+      "sha256": "bab35b6d313fb9058002291a4d44f0796534db472401d6a52939958e3a489cd4"
+    },
+    {
+      "url": "https://www.hankyubus.co.jp/news/news-data.json",
+      "finalUrl": "https://www.hankyubus.co.jp/news/news-data.json",
+      "checkedAt": "2026-10-01T15:57:46+09:00",
+      "bytes": 62174,
+      "sha256": "7455406562455e4eef151e8ba127b6aa029fe869247c4210d337d60d8d85485f"
+    },
+    {
+      "url": "https://www.hankyubus.co.jp/news/20261001_suita_jikokuhenko.html",
+      "finalUrl": "https://www.hankyubus.co.jp/news/20261001_suita_jikokuhenko.html",
+      "checkedAt": "2026-10-01T15:57:46+09:00",
+      "bytes": 11765,
+      "sha256": "16c85862afb5095718b4ac6b13deb434084aba2b56f6c201cb89f135c2bf4ddb"
+    },
+    {
+      "url": "https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html",
+      "finalUrl": "https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html",
+      "checkedAt": "2026-10-01T15:57:46+09:00",
+      "bytes": 20682,
+      "sha256": "565ed19991424566812ce202196adc2a5f7932d9e607940ce28df76456413e43"
+    }
+  ],
+  "hankyuDynamicNoticeEvidence": {
+    "loaderUrl": "https://www.hankyubus.co.jp/assets/js/articles.js?v=20260929",
+    "jsonUrl": "https://www.hankyubus.co.jp/news/news-data.json",
+    "itemCount": 216,
+    "recentItems": [
+      {
+        "id": 736,
+        "category": "路線バス",
+        "date": "2026.09.30",
+        "title": "【2026年10月】西宮市内線［24］　誠成公倫会館行　運休日のお知らせ",
+        "url": "/news/202610_nishinomiya_calendar.pdf",
+        "target": "_blank",
+        "year": 2026
+      },
+      {
+        "id": 733,
+        "category": "路線バス",
+        "date": "2026.09.28",
+        "title": "【2026年10月11日】伊射奈岐神社周辺の迂回運行について",
+        "url": "/news/pdf/20261011_izanagijinzya_ukaiunko.pdf",
+        "target": "_blank",
+        "year": 2026
+      },
+      {
+        "id": 731,
+        "category": "路線バス",
+        "date": "2026.09.25",
+        "title": "【2026年10月1日から】北摂霊園線「箕面萱野駅～勝尾寺」の完全キャッシュレス化について",
+        "url": "/news/2026101.html",
+        "target": "",
+        "year": 2026
+      },
+      {
+        "id": 727,
+        "category": "路線バス",
+        "date": "2026.09.18",
+        "title": "【2026年10月1日から】北摂霊園線 停留所の新設について",
+        "url": "/news/2026101_1.html",
+        "target": "",
+        "year": 2026
+      },
+      {
+        "id": 726,
+        "category": "路線バス",
+        "date": "2026.09.18",
+        "title": "【2026年10月1日から】吹田営業所管轄路線 時刻の変更について",
+        "url": "/news/20261001_suita_jikokuhenko.html",
+        "target": "",
+        "year": 2026
+      },
+      {
+        "id": 722,
+        "category": "路線バス",
+        "date": "2026.09.18",
+        "title": "【2026年10月1日から】唐櫃営業所管轄路線 時刻の変更について",
+        "url": "/news/20261001_karatohenko.html",
+        "target": "",
+        "year": 2026
+      },
+      {
+        "id": 729,
+        "category": "その他",
+        "date": "2026.09.16",
+        "title": "【2026年10月31日】「阪急バスグループお客様感謝Day 2026」を開催いたします",
+        "url": "/news/20261031day_2026.html",
+        "target": "",
+        "year": 2026
+      },
+      {
+        "id": 728,
+        "category": "路線バス",
+        "date": "2026.09.15",
+        "title": "【2026年9月25日】 池田市 交通安全パレードに伴う停留所の移設について",
+        "url": "/news/pdf/20260925_ikedashi_ukaiunko.pdf",
+        "target": "_blank",
+        "year": 2026
+      },
+      {
+        "id": 723,
+        "category": "その他",
+        "date": "2026.09.14",
+        "title": "【2026年9月15日、16日】ＪＲ芦屋駅前ショップ寺下タバコ店横　自動定期券発行機　臨時休業のお知らせ",
+        "url": "/news/202691516.html",
+        "target": "",
+        "year": 2026
+      },
+      {
+        "id": 721,
+        "category": "路線バス",
+        "date": "2026.09.11",
+        "title": "【2026年9月27日】不発弾処理に伴う運休について",
+        "url": "/news/2026927.html",
+        "target": "",
+        "year": 2026
+      },
+      {
+        "id": 720,
+        "category": "路線バス",
+        "date": "2026.09.11",
+        "title": "【2026年10月4日】箕面まつり開催に伴う交通規制による運行の変更について",
+        "url": "/news/pdf/20261004_minohfestival_ukairosen.pdf",
+        "target": "_blank",
+        "year": 2026
+      },
+      {
+        "id": 719,
+        "category": "路線バス",
+        "date": "2026.09.11",
+        "title": "【2026年9月26日】関西学生対校女子駅伝開催に伴う停留所休止について",
+        "url": "/news/pdf/20260926_kansaimarathon_ukaiunko.pdf",
+        "target": "_blank",
+        "year": 2026
+      },
+      {
+        "id": 718,
+        "category": "路線バス",
+        "date": "2026.09.10",
+        "title": "【2026年10月6日（火）から】川西能勢口案内所　火曜日営業再開について",
+        "url": "/news/20261006_kawanishinoseguchi_kayosaikai.pdf",
+        "target": "_blank",
+        "year": 2026
+      },
+      {
+        "id": 717,
+        "category": "路線バス",
+        "date": "2026.09.10",
+        "title": "【2026年9月30日～10月4日】宝塚ゴルフ場停留所休止のお知らせ",
+        "url": "/news/20260930_takarazuka_teiryujokyushi.html",
+        "target": "",
+        "year": 2026
+      },
+      {
+        "id": 716,
+        "category": "その他",
+        "date": "2026.09.08",
+        "title": "【2026年9月22日（火・祝）】「秋の交通安全フェア」に参加します",
+        "url": "/news/2026922.html",
+        "target": "",
+        "year": 2026
+      },
+      {
+        "id": 710,
+        "category": "路線バス",
+        "date": "2026.09.07",
+        "title": "2026年お彼岸の運行について（北摂霊園線・長尾山霊園線）",
+        "url": "/news/2026_2.html",
+        "target": "",
+        "year": 2026
+      }
+    ],
+    "relevantNoticeReviewed": {
+      "url": "https://www.hankyubus.co.jp/news/20261001_suita_jikokuhenko.html",
+      "published": "2026-09-18",
+      "effective": "2026-10-01",
+      "scope": "Suita line, not the covered Hospital 72/164/171 service"
+    },
+    "assessment": "No applicable new departure/calendar change found in the reviewed current directory and notice indexes. Notice list HTML is a JavaScript shell; actual JSON items were checked."
+  },
+  "assessment": "The complete 2026-10-01 reviewed source evidence remains sufficient for the unchanged Oct1–Dec27 bounded snapshot. No year-end coverage is inferred. Version2 is a monotonic delivery-verification reissue, not an operator schedule revision.",
+  "validation": {
+    "baselineSourceReconciliationPassed": true,
+    "productionManifestAndBinaryValidatorsPassed": true,
+    "byteIdenticalKintetsuPdfs": 5,
+    "byteIdenticalHolidayCsv": true,
+    "identicalHankyuTimetableObjects": 6,
+    "standardV2DataValidatorLimitation": "tools/data_validate.py reconstructs hardcoded release_version1; v2 audited by complete equality to freshly validated v1 except its release number."
+  }
+}

@@ -1,17 +1,22 @@
 # GitHub Pages timetable hosting
 
-The owner selected GitHub Pages for `ewijaya/kasugabus-pebble`. Hosting is
-**CONFIGURED LOCALLY / NOT DEPLOYED**. `hosting/feed-config.json` and
-`src/pkjs/feed-config.js` target
+The owner-selected dedicated GitHub Pages site is **LIVE** at
 `https://ewijaya.github.io/kasugabus-pebble/timetables/manifest.json`.
-The reviewed feed and manual workflow are ready locally; Pages has not been
-enabled or deployed by this work, and no live feed has been verified. The existing
-[publishing procedure](../docs/PUBLISHING.md) still governs source review.
-The files currently in `hosting/public` are a locally prepared, unpublished v1
-snapshot tied to `data/reconciliation.json`. A configured URL does not imply
-that a live endpoint exists. Checks will report a request failure until the
-endpoint serves a valid feed; such failures retain existing watch data and do
-not set the successful-check timestamp.
+The first reviewed v1 feed was deployed on 1 October 2026 by
+[workflow 36827444799](https://github.com/ewijaya/kasugabus-pebble/actions/runs/36827444799).
+The source repository is public, Pages uses the Actions build type with HTTPS,
+and the `github-pages` environment permits only branch `main`. No additional
+manual reviewer gate was added; deployment itself was explicitly authorized.
+
+[Live HTTP evidence](../artifacts/hosting-v1-http.json) and
+[preservation validation](../artifacts/hosting-v1-live-validation.json) confirm
+HTTP 200, no redirects, exact SHA-256/CRC/length, JSON/binary MIME types and
+`Access-Control-Allow-Origin: *`. Pages supplies `Cache-Control: max-age=600`
+for both manifest and payloads. The generic desired header rules are not applied
+by Pages; ten-minute caching is accepted for this daily/manual schedule feed,
+and may delay visibility of a newly published revision. Payload filenames are
+immutable and all prior files remain available. Actual companion transfer and
+phone CORS behavior are separate checks.
 
 ## What the manual workflow does
 
@@ -88,8 +93,7 @@ the first deployment too.
 For a previously deployed site, add `--check-live`. This performs bounded HTTPS
 GETs to the exact manifest/inventory URLs, forbids redirects, and fails on
 network errors or one missing file. It never uploads anything. Both files being
-404 requires the separate `--allow-first-deployment` confirmation. No live-host
-check has been claimed for this locally configured feed; remote guard tests use
+404 requires the separate `--allow-first-deployment` confirmation. The live-host check is now recorded above; isolated regression tests still use
 mocked reads.
 
 Every prior inventory entry must remain present with unchanged bytes in the
@@ -153,9 +157,8 @@ history guard or overwrite the site.
    deployed feed before releasing it. This endpoint change needs a new PBW;
    subsequent timetable-only releases use the same trusted HTTPS origin.
 
-The selected manifest is
-`https://ewijaya.github.io/kasugabus-pebble/timetables/manifest.json`
-**configured locally and not deployed**.
+The selected manifest is live at
+`https://ewijaya.github.io/kasugabus-pebble/timetables/manifest.json`.
 
 ## Local review evidence
 
@@ -175,8 +178,7 @@ Running the workflow's staging code locally produced exactly the four expected
 files: index, manifest, inventory and that payload, with an unchanged manifest
 and no symlinks or hard links. Review reports remained outside the artifact.
 
-These checks used local files and mocked remote reads. No GitHub workflow was
-dispatched, site enabled, or upload/deployment performed. The owner-selected
-production URL is configured locally in both feed configuration files.
+Those original setup checks used local files and mocked remote reads. The
+subsequent authorized live deployment and HTTP checks are recorded above.
 Live response headers, Pages permissions and the actual phone's cross-origin
 behavior remain checks for an owner-approved deployment.

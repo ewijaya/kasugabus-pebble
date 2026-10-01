@@ -1,14 +1,13 @@
 # Timetable release publishing
 
 The owner selected GitHub Pages at
-`https://ewijaya.github.io/kasugabus-pebble/timetables/` on 2026-10-01.
-`src/pkjs/feed-config.js` now pins its HTTPS `manifest.json` URL. This is a
-**local configuration change, not a deployment**: the feed has not been
-published or verified live. Until the endpoint serves a valid feed, updates
-report the normal HTTP/network failure and retain the installed timetable;
-failed requests never advance the successful-check timestamp. Hosting setup
-and deployment still need the owner's authorization. There is no hosting
-credential in the app, and the preparation tools do not upload anything.
+`https://ewijaya.github.io/kasugabus-pebble/timetables/` and authorized deployment
+on 1 October 2026. The reviewed feed is live. The pinned phone URL is unchanged;
+timetable-only revisions require no PBW reinstall. Exact HTTPS payload checks,
+MIME types and wildcard CORS passed; Pages caches responses for up to ten minutes.
+See [hosting evidence](../hosting/README.md). Keep actual companion/watch transfer
+results separate from these host checks. There are no hosting credentials in the
+app, and the local preparation tools themselves do not upload anything.
 
 Serve the manifest and immutable payloads on the same exact
 HTTPS origin, without redirects. Apply the vendor-neutral header rules in
@@ -165,8 +164,7 @@ tracking, screenshot fallback/cleanup, and reader termination reporting
 without connecting to a watch. The final phone suite has 25 unit scenarios,
 five settings integration checks and five real HTTP-feed scenarios.
 
-This evidence does not establish physical-phone HTTPS/XHR, CORS, GPS behavior
-or live GitHub Pages headers. The selected production feed is locally
-configured and remains unpublished/unverified live. Those companion and
-hosting checks must be recorded separately before claiming deployment or
-physical-device validation complete.
+The controlled evidence does not establish physical-phone HTTPS/XHR, GPS
+behavior or seven-day acceptance. Live GitHub Pages headers and exact payloads
+were subsequently verified; see [hosting evidence](../hosting/README.md).
+Actual companion and physical-device checks remain separately identified.

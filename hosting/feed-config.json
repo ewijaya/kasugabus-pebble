@@ -1,6 +1,6 @@
 {
-  "status": "CONFIGURED LOCALLY / NOT DEPLOYED",
+  "status": "LIVE HTTPS / COMPANION VERIFICATION IN PROGRESS",
   "manifestUrl": "https://ewijaya.github.io/kasugabus-pebble/timetables/manifest.json",
   "destination": "GitHub Pages: ewijaya/kasugabus-pebble",
-  "reason": "The owner selected GitHub Pages. The reviewed local feed and manual workflow target this URL; no timetable feed has been deployed or verified live."
+  "reason": "The owner-authorized dedicated GitHub Pages site serves the reviewed feed. Exact HTTPS bytes, MIME types and wildcard CORS headers passed live checks on 2026-10-01. Cache-Control is max-age=600; actual phone behavior is recorded separately."
 }

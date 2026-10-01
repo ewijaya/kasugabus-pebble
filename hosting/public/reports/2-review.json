@@ -1,0 +1,182 @@
+{
+  "releaseVersion": 2,
+  "sourceSha256": "a2c4e85427ce754c6aafc4b077e9f2673718230d020ab4785fb0f78b3149ce71",
+  "departureCount": 1411,
+  "reconciled": true,
+  "reviewer": "Codex: version-only delivery verification of the reviewed 2026-10-01 source",
+  "reviewedAt": "2026-10-01",
+  "counts": [
+    {
+      "boarding_point_id": 1,
+      "service_id": 1,
+      "count": 46
+    },
+    {
+      "boarding_point_id": 1,
+      "service_id": 2,
+      "count": 37
+    },
+    {
+      "boarding_point_id": 2,
+      "service_id": 1,
+      "count": 46
+    },
+    {
+      "boarding_point_id": 2,
+      "service_id": 2,
+      "count": 37
+    },
+    {
+      "boarding_point_id": 3,
+      "service_id": 1,
+      "count": 46
+    },
+    {
+      "boarding_point_id": 3,
+      "service_id": 2,
+      "count": 37
+    },
+    {
+      "boarding_point_id": 4,
+      "service_id": 3,
+      "count": 81
+    },
+    {
+      "boarding_point_id": 4,
+      "service_id": 4,
+      "count": 50
+    },
+    {
+      "boarding_point_id": 4,
+      "service_id": 5,
+      "count": 43
+    },
+    {
+      "boarding_point_id": 5,
+      "service_id": 3,
+      "count": 83
+    },
+    {
+      "boarding_point_id": 5,
+      "service_id": 4,
+      "count": 52
+    },
+    {
+      "boarding_point_id": 5,
+      "service_id": 5,
+      "count": 45
+    },
+    {
+      "boarding_point_id": 6,
+      "service_id": 3,
+      "count": 81
+    },
+    {
+      "boarding_point_id": 6,
+      "service_id": 4,
+      "count": 50
+    },
+    {
+      "boarding_point_id": 6,
+      "service_id": 5,
+      "count": 43
+    },
+    {
+      "boarding_point_id": 7,
+      "service_id": 3,
+      "count": 80
+    },
+    {
+      "boarding_point_id": 7,
+      "service_id": 4,
+      "count": 50
+    },
+    {
+      "boarding_point_id": 7,
+      "service_id": 5,
+      "count": 43
+    },
+    {
+      "boarding_point_id": 8,
+      "service_id": 3,
+      "count": 81
+    },
+    {
+      "boarding_point_id": 8,
+      "service_id": 4,
+      "count": 50
+    },
+    {
+      "boarding_point_id": 8,
+      "service_id": 5,
+      "count": 43
+    },
+    {
+      "boarding_point_id": 9,
+      "service_id": 3,
+      "count": 80
+    },
+    {
+      "boarding_point_id": 9,
+      "service_id": 4,
+      "count": 50
+    },
+    {
+      "boarding_point_id": 9,
+      "service_id": 5,
+      "count": 43
+    },
+    {
+      "boarding_point_id": 101,
+      "service_id": 6,
+      "count": 19
+    },
+    {
+      "boarding_point_id": 102,
+      "service_id": 6,
+      "count": 19
+    },
+    {
+      "boarding_point_id": 103,
+      "service_id": 6,
+      "count": 19
+    },
+    {
+      "boarding_point_id": 104,
+      "service_id": 6,
+      "count": 19
+    },
+    {
+      "boarding_point_id": 105,
+      "service_id": 6,
+      "count": 19
+    },
+    {
+      "boarding_point_id": 106,
+      "service_id": 6,
+      "count": 19
+    }
+  ],
+  "matrixCellCount": 1297,
+  "independentPoleDayCount": 1408,
+  "hankyuTripCount": 114,
+  "sourceCount": 81,
+  "verifiedCoordinateCount": 6,
+  "checks": [
+    "all source checksums",
+    "all extraction checksums",
+    "every numeric matrix cell",
+    "every independent pole minute and marker",
+    "every Hankyu trip and boarded route",
+    "full ordered patterns and loop transitions",
+    "all Hankyu downstream calls",
+    "actual pole IDs and coordinates",
+    "complete official holiday CSV coverage",
+    "operator and calendar coverage",
+    "no weekday fallback on Hankyu weekends",
+    "complete JSON and input bytes preserved except release_version 1 to 2; zero departure/calendar/metadata diff"
+  ],
+  "releasePurpose": "delivery_verification_reissue",
+  "baseReleaseVersion": 1,
+  "baseSourceSha256": "3d64bc01938493ac8f56ac17cd5a02b246a18df54c8e47bd9581d47c589cce9e"
+}

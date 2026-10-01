@@ -1,0 +1,58 @@
+{
+  "checkedAt": "2026-10-01T06:57:24.224553+00:00",
+  "workflow": "https://github.com/ewijaya/kasugabus-pebble/actions/runs/36827444799",
+  "responses": [
+    {
+      "url": "https://ewijaya.github.io/kasugabus-pebble/timetables/manifest.json",
+      "status": 200,
+      "bytes": 565,
+      "sha256": "cc95fe69a00e6b404165565bb9ffbb94e999b6d60f9ee219749b10364bfa0e55",
+      "crc32": 1618506786,
+      "headers": {
+        "Content-Type": "application/json; charset=utf-8",
+        "Content-Length": "565",
+        "Cache-Control": "max-age=600",
+        "Access-Control-Allow-Origin": "*",
+        "ETag": "\"6abe0423-235\"",
+        "Age": "1",
+        "Last-Modified": "Thu, 01 Oct 2026 06:56:35 GMT",
+        "Strict-Transport-Security": null
+      }
+    },
+    {
+      "url": "https://ewijaya.github.io/kasugabus-pebble/timetables/inventory.json",
+      "status": 200,
+      "bytes": 239,
+      "sha256": "becf54b494dd9e45fc6851a5cd92f4701cc9acf4449584075925e8435b4579d1",
+      "crc32": 559685081,
+      "headers": {
+        "Content-Type": "application/json; charset=utf-8",
+        "Content-Length": "239",
+        "Cache-Control": "max-age=600",
+        "Access-Control-Allow-Origin": "*",
+        "ETag": "\"6abe0423-ef\"",
+        "Age": "0",
+        "Last-Modified": "Thu, 01 Oct 2026 06:56:35 GMT",
+        "Strict-Transport-Security": null
+      }
+    },
+    {
+      "url": "https://ewijaya.github.io/kasugabus-pebble/timetables/releases/1-cb75a4f850d74c45.bin",
+      "status": 200,
+      "bytes": 24203,
+      "sha256": "cb75a4f850d74c45db26f62f569737e0d9346b4817ba502777608ff7a5ed56b8",
+      "crc32": 1478585781,
+      "headers": {
+        "Content-Type": "application/octet-stream",
+        "Content-Length": "24203",
+        "Cache-Control": "max-age=600",
+        "Access-Control-Allow-Origin": "*",
+        "ETag": "\"6abe0423-5e8b\"",
+        "Age": "0",
+        "Last-Modified": "Thu, 01 Oct 2026 06:56:35 GMT",
+        "Strict-Transport-Security": null
+      }
+    }
+  ],
+  "physicalCompanionObserved": false
+}
