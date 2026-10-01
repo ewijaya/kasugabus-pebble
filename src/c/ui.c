@@ -118,7 +118,9 @@ static int heading(GContext *c,const char *title,const char *sub) {
   y+=title_height+2;
   if(sub&&sub[0]) {
     int sub_height=height(sub,184,meta_size());
-    text(c,sub,8,y,184,sub_height,meta_size(),colors.foreground);
+    /* Use the same unconstrained canvas as measurement: tight WordWrap
+     * rectangles can lose a subtitle line after native scrolled redraws. */
+    text(c,sub,8,y,184,30000,meta_size(),colors.foreground);
     y+=sub_height+2;
   }
   line(c,y,colors.navigation);
@@ -703,19 +705,19 @@ static void board_filter_label(char *label,size_t n) {
     char reference[64];all_label(reference,sizeof(reference));snprintf(label,n,"Scheduled | JST\n%s",reference);return;
   }
   if(!app.route_filter) {
-    snprintf(label,n,"%s",kb_pref_text_size(&app.prefs)==KB_TEXT_STANDARD?"Scheduled times | JST":"");
+    snprintf(label,n,"Scheduled | JST");
     return;
   }
   const kb_dataset_t *d=app_dataset();kb_operator_t o;
-  if(d&&kb_operator_get(d,app.route_operator,&o))snprintf(label,n,"%.24s %.64s | JST",o.short_name,app.route_number);
-  else snprintf(label,n,"Bus %.84s | JST",app.route_number);
+  if(d&&kb_operator_get(d,app.route_operator,&o))snprintf(label,n,"Scheduled | JST\n%.24s %.64s",o.short_name,app.route_number);
+  else snprintf(label,n,"Scheduled | JST\nBus %.84s",app.route_number);
 }
 static void board(GContext *c) {
   bool merged=app.screen==KB_SCREEN_ALL_BOARD;
   if(merged)ui_refresh();
   kb_query_state_t summary={0};kb_trip_t first;int summary_result=0;
   if(merged)summary_result=all_summary(&first,&summary);
-  char filter_label[100];board_filter_label(filter_label,sizeof(filter_label));
+  char filter_label[140];board_filter_label(filter_label,sizeof(filter_label));
   const char *title=merged?"All departures":"Departures";
   int top=heading(c,title,filter_label);
   int bottom=footer_top()-2,y=top;
