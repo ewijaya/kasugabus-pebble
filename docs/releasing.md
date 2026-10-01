@@ -75,6 +75,16 @@ changes or discard work to satisfy a preflight guard without authorization.
 `python3 scripts/release.py plan` is offline and read-only. `plan --remote
 --destination github` adds a read-only existing-release check, using the actual
 configured repository. A GitHub profile URL alone is not a repository remote.
+For any authenticated App Store operation, including `plan --remote
+--destination appstore`, use the installed Pebble Tool interpreter. Homebrew
+`python3` does not contain the Tool's isolated `pebble_tool` module:
+
+```sh
+KASUGABUS_RELEASE_PYTHON="$HOME/.local/share/uv/tools/pebble-tool/bin/python"
+"$KASUGABUS_RELEASE_PYTHON" scripts/release.py plan --remote \
+  --destination github --destination appstore
+```
+
 For an unregistered app, use the installed Pebble Tool interpreter for
 `scripts/release.py discover-registration`. It inspects authenticated UUID
 lookup and the Dashboard collection without a candidate, physical approval,
@@ -248,6 +258,37 @@ operator/direction labels, offline operation and settings/update recovery.
 An installation success is not this approval. Review the frozen listing and
 artwork alongside the PBW before initial publication.
 
+## Requested artwork changes on an existing listing
+
+Ordinary `prepare`/`publish` preserves icons, banners and screenshots. A user's
+specific artwork request may replace the named assets without changing other
+listing fields or the app ID. Do not run the New flow or pretend an artwork
+change is an unchanged listing.
+
+Before candidate approval, record the proposed roles, platform, source paths,
+dimensions, byte sizes and SHA-256 values in a version-specific artwork
+manifest under `docs/releases/`. Commit this manifest and its actual images
+with the release source. Use screenshots from the new native app, with no
+claim that preview screenshots establish the final PBW's runtime audit. Copy
+the reviewed manifest and images alongside the frozen candidate and compare
+their hashes before upload. The frozen source commit binds the proposal;
+obtain artwork approval together with the exact PBW approval.
+
+First finish the ordinary frozen-PBW publication and preservation verification.
+Then use the authenticated Dashboard's **Edit Listing** to replace only the
+approved assets. Preserve the existing icon unless its change was requested,
+all unrelated metadata, companions and previous releases. Save a credential-free
+before/after record and inspect downloaded artwork for dimensions, order and
+visual agreement. The server may optimize PNG bytes, so record uploaded and
+downloaded hashes separately. Recheck the exact PBW digest, Dashboard, both
+catalog views and public page after the artwork change.
+
+Journal whether the artwork edit is pending, submitted or verified. After a
+lost response, inspect the existing listing before retrying the edit. Resume
+with read-only `release.py verify` once ordinary publication is complete;
+do not reset its original preservation baseline to accept a deliberate later
+artwork change, and do not repeat the release upload to update artwork.
+
 ## First-registration history and recovery
 
 KasugaBus's first registration is complete. The following procedure documents
@@ -409,6 +450,10 @@ the source before an annotated tag, attaches that
 same PBW to the GitHub Release, and uses the installed
 `PublishCommand._upload_release` method to upload that same file to the
 configured **existing** KasugaBus listing. Its signature is checked at runtime.
+An adapter overrides only the inspected `_post_with_wait_bar` transport: the
+authenticated POST must match the configured official upload URL, sends
+`allow_redirects=False`, and rejects every 3xx response. The inherited uploader
+still opens the frozen PBW. Installed dependencies are not modified.
 The top-level `pebble publish` rebuilds, can normalize a PBW and auto-create
 accounts/listings, so it is excluded from this workflow. Existing differing
 versions, drafts and assets stop the workflow rather than being overwritten.
@@ -437,7 +482,12 @@ alternatives require their own verified server semantics/field bindings;
 they are not selected by this configuration.
 
 The helper compares all unrelated metadata, including unknown fields and
-assets, before and after upload/PATCH. Every prior release ID/version/artifact
+assets, before and after upload/PATCH. It saves the original metadata/history
+baseline in the candidate journal before the first mutation and reuses it on
+every retry. It is bound to the app ID, UUID, version and PBW digest. A failed
+upload must not silently establish a new baseline from changed remote data.
+Missing, malformed or mismatched baselines stop for review; restoring the
+original remote fields permits a safe retry. Every prior release ID/version/artifact
 URL/publication state/notes must remain an unchanged subset after adding a
 release. It never replaces screenshots, icons,
 banners, headers, companion metadata, category, visibility or previous

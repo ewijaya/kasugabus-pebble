@@ -123,6 +123,10 @@ Nearby keeps fixes and coordinates transient, accepts fixes no older than
 120 seconds and accuracy at most 100 m, and reports outside coverage when the
 nearest verified pole is over 2 km away. Explicit Nearby refresh can request a
 fix while startup lookup is off. No location is included in feed traffic.
+Version2 additionally permits an explicitly saved home reference in private
+phone storage, with a clear action. Only derived distances/status reach the
+watch; home data is never included in a timetable or app release. See
+[the reference-location contract](PROTOCOL.md#version-2-reference-location-extension).
 
 ## Recorded integration evidence
 

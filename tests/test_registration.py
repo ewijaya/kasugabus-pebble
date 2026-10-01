@@ -381,15 +381,23 @@ class RegistrationTests(unittest.TestCase):
             def upload(api_base, app_id, firebase_id_token, pbw_path, version, release_notes, is_published, gif_paths, screenshot_paths, replace_screenshots):
                 self.assertEqual(Path(pbw_path).read_bytes(), (self.folder / common.ARTIFACT).read_bytes())
                 self.assertEqual((gif_paths, screenshot_paths, replace_screenshots), ([], [], False))
-            publisher = types.SimpleNamespace(_upload_release=Mock(wraps=upload))
+            upload_calls = Mock(wraps=upload)
+            class Publisher:
+                @classmethod
+                def _post_with_wait_bar(cls, url, headers, data, files, timeout, label):
+                    raise AssertionError("This adoption double never sends HTTP")
+                @classmethod
+                def _upload_release(cls, api_base, app_id, firebase_id_token, pbw_path, version, release_notes, is_published, gif_paths, screenshot_paths, replace_screenshots):
+                    return upload_calls(api_base, app_id, firebase_id_token, pbw_path, version, release_notes, is_published, gif_paths, screenshot_paths, replace_screenshots)
+            publisher = Publisher
             def observed_app(*_):
                 result = copy.deepcopy(app)
                 if session.patch.called:
                     result["description"] = state["description"]
                 return result
-            with patch.dict(sys.modules, {"pebble_tool.commands.publish": types.SimpleNamespace(PublishCommand=publisher)}), patch.object(release.inspect, "signature", return_value=__import__("inspect").signature(upload)), patch.object(release, "dashboard_app", side_effect=observed_app):
+            with patch.dict(sys.modules, {"pebble_tool.commands.publish": types.SimpleNamespace(PublishCommand=publisher)}), patch.object(release, "dashboard_app", side_effect=observed_app):
                 release.upload_store(self.folder, state)
-            publisher._upload_release.assert_called_once()
+            upload_calls.assert_called_once()
         self.assertFalse((self.folder / "listing-confirmation.json").exists())
         fields = session.patch.call_args.kwargs["files"]
         self.assertEqual(set(fields), {"title", "description", "website", "source", "visibility", "companionAndroidName", "companionAndroidUrl", "companionAndroidRequired"})

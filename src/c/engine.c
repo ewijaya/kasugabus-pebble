@@ -220,6 +220,72 @@ bool kb_pattern_calls(const kb_dataset_t *d,uint8_t pattern,uint8_t group) {
   for(size_t i=0;i<u16(p+12);i++) if(row(d,T_CALL,u16(p+10)+i)[1]==group) return true;
   return false;
 }
+static bool route_digit(char c) { return c>='0'&&c<='9'; }
+static int route_number_compare(const char *a,const char *b) {
+  const char *original_a=a,*original_b=b;
+  while(*a&&*b) {
+    if(route_digit(*a)&&route_digit(*b)) {
+      const char *end_a=a,*end_b=b;
+      while(route_digit(*end_a))end_a++;
+      while(route_digit(*end_b))end_b++;
+      while(a<end_a&&*a=='0')a++;
+      while(b<end_b&&*b=='0')b++;
+      size_t length_a=(size_t)(end_a-a),length_b=(size_t)(end_b-b);
+      if(length_a!=length_b)return length_a<length_b?-1:1;
+      int compare=memcmp(a,b,length_a);
+      if(compare)return compare;
+      a=end_a;b=end_b;
+    } else {
+      if((unsigned char)*a!=(unsigned char)*b)return (unsigned char)*a<(unsigned char)*b?-1:1;
+      a++;b++;
+    }
+  }
+  if(*a||*b)return *a?1:-1;
+  return strcmp(original_a,original_b); /* Keep leading-zero labels distinct. */
+}
+static int route_pattern_compare(const kb_dataset_t *d,uint8_t a,uint8_t b) {
+  const uint8_t *pa=find_id(d,T_PATTERN,a),*pb=find_id(d,T_PATTERN,b);
+  if(pa[1]!=pb[1])return pa[1]<pb[1]?-1:1;
+  return route_number_compare(str(d,u16(pa+2)),str(d,u16(pb+2)));
+}
+static size_t route_ids(const kb_dataset_t *d,uint8_t *ids) {
+  if(!d||!d->bytes)return 0;
+  bool used[256]={false};size_t count=0;
+  for(size_t i=0;i<d->counts[T_DEPARTURE];i++)used[row(d,T_DEPARTURE,i)[3]]=true;
+  for(size_t i=0;i<d->counts[T_PATTERN];i++) {
+    const uint8_t *pattern=row(d,T_PATTERN,i);
+    if(!used[pattern[0]])continue;
+    size_t position=0;
+    while(position<count&&route_pattern_compare(d,ids[position],pattern[0])<0)position++;
+    if(position<count&&route_pattern_compare(d,ids[position],pattern[0])==0)continue;
+    memmove(ids+position+1,ids+position,count-position);
+    ids[position]=pattern[0];count++;
+  }
+  return count;
+}
+size_t kb_route_count(const kb_dataset_t *d) {
+  uint8_t ids[256];return route_ids(d,ids);
+}
+bool kb_route_at(const kb_dataset_t *d,size_t index,kb_route_t *out) {
+  if(!out)return false;
+  uint8_t ids[256];size_t count=route_ids(d,ids);
+  if(index>=count)return false;
+  const uint8_t *pattern=find_id(d,T_PATTERN,ids[index]);
+  out->operator_id=pattern[1];out->number=str(d,u16(pattern+2));return true;
+}
+bool kb_boarding_point_has_route(const kb_dataset_t *d,uint8_t point,uint8_t operator_id,const char *number) {
+  if(!d||!d->bytes||!point||!operator_id||!number||!number[0])return false;
+  const uint8_t *bp=find_id(d,T_POINT,point);
+  if(!bp||bp[2]!=operator_id)return false;
+  for(size_t i=0;i<d->counts[T_DEPARTURE];i++) {
+    const uint8_t *departure=row(d,T_DEPARTURE,i);
+    if(departure[2]<point)continue;
+    if(departure[2]>point)break;
+    const uint8_t *pattern=find_id(d,T_PATTERN,departure[3]);
+    if(pattern[1]==operator_id&&!strcmp(str(d,u16(pattern+2)),number))return true;
+  }
+  return false;
+}
 kb_day_type_t kb_calendar_day(const kb_dataset_t *d,uint8_t operator_id,int32_t day) {
   const uint8_t *op; if(!d||!d->bytes||(op=find_id(d,T_OPERATOR,operator_id))==NULL||day<d->valid_from||day>d->valid_until||day<i32(op+8)||day>i32(op+12)) return KB_DAY_UNKNOWN;
   for(size_t i=0;i<d->counts[T_EXCEPTION];i++) { const uint8_t *p=row(d,T_EXCEPTION,i); if(i32(p)>day) break; if(i32(p)==day&&p[4]==operator_id) return (kb_day_type_t)p[5]; }
@@ -239,15 +305,37 @@ static int trip_compare(const kb_trip_t *a,const kb_trip_t *b) {
   return 0;
 }
 bool kb_trip_same_identity(const kb_trip_t *a,const kb_trip_t *b) { return a&&b&&trip_compare(a,b)==0; }
-static kb_query_result_t query_next(const kb_query_t *q,const kb_trip_t *after,kb_trip_t *out,kb_query_state_t *state,bool home) {
+static void historical_operators(const kb_query_t *q,int32_t today,const uint16_t *ids,size_t count,uint8_t *operators) {
+  /* A point removed by today's snapshot may still have a verified 24:00+
+   * departure from a preceding service date. Bind missing identities to the
+   * most recent retained snapshot that can contain such trips. A current
+   * identity always wins, so reuse by a different operator is not conflated. */
+  for(unsigned ago=1;ago<=2;ago++) {
+    bool missing=false;
+    for(size_t i=0;i<count;i++)if(!operators[i])missing=true;
+    if(!missing)return;
+    const kb_dataset_t *d=q->resolve(q->context,today-(int32_t)ago);
+    if(!d||!d->bytes||d->max_minute<ago*1440)continue;
+    for(size_t i=0;i<count;i++)if(!operators[i]) {
+      const uint8_t *bp=find_id(d,T_POINT,(uint8_t)ids[i]);
+      if(bp)operators[i]=bp[2];
+    }
+  }
+}
+static kb_query_result_t query_next(const kb_query_t *q,const kb_trip_t *after,kb_trip_t *out,kb_query_state_t *state,bool home,uint8_t route_operator,const char *route_number) {
   kb_query_state_t s; kb_trip_t best; bool found=false,known_today=false,any_today=false;
   int32_t today; uint8_t operator_id;
   memset(&s,0,sizeof(s)); s.today_type=KB_DAY_UNKNOWN; s.first_unconfirmed_day=KB_DATE_UNKNOWN;
   if(!q||!q->resolve||!out) { if(state) *state=s; return KB_QUERY_UNAVAILABLE; }
   today=kb_jst_day(q->now_utc);
   const kb_dataset_t *current=q->resolve(q->context,today); const uint8_t *current_bp;
-  if(!current||!current->bytes||(current_bp=find_id(current,T_POINT,q->boarding_point_id))==NULL) { if(state) *state=s; return KB_QUERY_UNAVAILABLE; }
-  operator_id=current_bp[2];
+  if(!current||!current->bytes) { if(state) *state=s; return KB_QUERY_UNAVAILABLE; }
+  current_bp=find_id(current,T_POINT,q->boarding_point_id);
+  operator_id=current_bp?current_bp[2]:0;
+  uint16_t point_id=q->boarding_point_id;
+  historical_operators(q,today,&point_id,1,&operator_id);
+  if(!operator_id) { if(state) *state=s; return KB_QUERY_UNAVAILABLE; }
+  if(route_number&&(!route_number[0]||route_operator!=operator_id)) { if(state) *state=s; return KB_QUERY_UNAVAILABLE; }
   for(int32_t day=today-2;day<=today+KB_LOOKAHEAD_DAYS;day++) {
     const kb_dataset_t *d=q->resolve(q->context,day); const uint8_t *bp; kb_day_type_t type; bool overridden=false;
     if(day<today && (!d || d->max_minute < (uint32_t)(today-day)*1440)) continue;
@@ -270,6 +358,10 @@ static kb_query_result_t query_next(const kb_query_t *q,const kb_trip_t *after,k
       const uint8_t *p=row(d,T_DEPARTURE,i);
       if(p[2]<q->boarding_point_id) continue;
       if(p[2]>q->boarding_point_id) break;
+      if(route_number) {
+        const uint8_t *pattern=find_id(d,T_PATTERN,p[3]);
+        if(pattern[1]!=route_operator||strcmp(str(d,u16(pattern+2)),route_number)) continue;
+      }
       const uint8_t *svc=find_id(d,T_SERVICE,p[4]);
       if(day<i32(svc+4)||day>i32(svc+8)||!(svc[2]&(1u<<type))) continue;
       if(q->destination_group_id&&!kb_pattern_calls(d,p[3],q->destination_group_id)) continue;
@@ -291,15 +383,127 @@ static kb_query_result_t query_next(const kb_query_t *q,const kb_trip_t *after,k
   return s.coverage_limited?KB_QUERY_UNCONFIRMED:KB_QUERY_NO_MORE;
 }
 kb_query_result_t kb_query_next(const kb_query_t *q,const kb_trip_t *after,kb_trip_t *out,kb_query_state_t *state) {
-  return query_next(q,after,out,state,false);
+  return query_next(q,after,out,state,false,0,NULL);
 }
 kb_query_result_t kb_query_home(const kb_query_t *q,kb_trip_t *out,kb_query_state_t *state) {
-  return query_next(q,NULL,out,state,true);
+  return query_next(q,NULL,out,state,true,0,NULL);
 }
 kb_query_result_t kb_upcoming_at(const kb_query_t *q,size_t index,kb_trip_t *out,kb_query_state_t *state) {
   kb_trip_t previous; bool has_previous=false;
   if(!out) return KB_QUERY_UNAVAILABLE;
   for(size_t i=0;i<=index;i++) { kb_query_result_t r=kb_query_next(q,has_previous?&previous:NULL,out,state); if(r!=KB_QUERY_FOUND) return r; previous=*out; has_previous=true; }
+  return KB_QUERY_FOUND;
+}
+kb_query_result_t kb_query_route_next(const kb_query_t *q,uint8_t operator_id,const char *number,const kb_trip_t *after,kb_trip_t *out,kb_query_state_t *state) {
+  /* NULL is invalid for this explicitly filtered API, not an implicit clear. */
+  return query_next(q,after,out,state,false,operator_id,number?number:"");
+}
+kb_query_result_t kb_upcoming_route_at(const kb_query_t *q,uint8_t operator_id,const char *number,size_t index,kb_trip_t *out,kb_query_state_t *state) {
+  kb_trip_t previous; bool has_previous=false;
+  if(!out)return KB_QUERY_UNAVAILABLE;
+  for(size_t i=0;i<=index;i++) {
+    kb_query_result_t result=kb_query_route_next(q,operator_id,number,has_previous?&previous:NULL,out,state);
+    if(result!=KB_QUERY_FOUND)return result;
+    previous=*out;has_previous=true;
+  }
+  return KB_QUERY_FOUND;
+}
+static uint32_t merged_distance(const kb_trip_t *trip,const uint8_t *selected,const uint32_t *metres) {
+  uint8_t entry=selected[trip->boarding_point_id];
+  return metres&&entry?metres[entry-1]:UINT32_MAX;
+}
+static int merged_compare(const kb_trip_t *a,const kb_trip_t *b,const uint8_t *selected,const uint32_t *metres) {
+  if(a->departure_utc!=b->departure_utc)return a->departure_utc<b->departure_utc?-1:1;
+  uint32_t da=merged_distance(a,selected,metres),db=merged_distance(b,selected,metres);
+  if(da!=db)return da<db?-1:1;
+  return trip_compare(a,b);
+}
+kb_query_result_t kb_query_merged_next(const kb_query_t *q,const uint16_t *ids,const uint32_t *metres,
+    size_t count,const kb_trip_t *after,kb_trip_t *out,kb_query_state_t *state) {
+  kb_query_state_t s;memset(&s,0,sizeof(s));
+  s.today_type=KB_DAY_UNKNOWN;s.first_unconfirmed_day=KB_DATE_UNKNOWN;
+  if(state)*state=s;
+  if(!q||!q->resolve||!out||count>KB_MERGED_MAX_POINTS||(count&&!ids))return KB_QUERY_UNAVAILABLE;
+  if(!count)return KB_QUERY_NO_MORE;
+  uint8_t selected[256]={0},operators[KB_MERGED_MAX_POINTS]={0};
+  bool blocked[KB_MERGED_MAX_POINTS]={false};
+  for(size_t i=0;i<count;i++) {
+    if(!ids[i]||ids[i]>255||selected[ids[i]])return KB_QUERY_UNAVAILABLE;
+    selected[ids[i]]=(uint8_t)(i+1);
+  }
+  int32_t today=kb_jst_day(q->now_utc);
+  const kb_dataset_t *current=q->resolve(q->context,today);
+  if(!current||!current->bytes)return KB_QUERY_UNAVAILABLE;
+  /* Copy identities before the resolver reuses its buffer for another day. */
+  for(size_t i=0;i<count;i++) {
+    const uint8_t *bp=find_id(current,T_POINT,(uint8_t)ids[i]);
+    if(bp)operators[i]=bp[2];
+  }
+  historical_operators(q,today,ids,count,operators);
+  kb_trip_t best;bool found=false,any_today=false;size_t known_today=0;
+  for(int32_t day=today-2;day<=today+KB_LOOKAHEAD_DAYS;day++) {
+    const kb_dataset_t *d=q->resolve(q->context,day);
+    if(day<today&&(!d||!d->bytes||d->max_minute<(uint32_t)(today-day)*1440))continue;
+    kb_day_type_t types[KB_MERGED_MAX_POINTS];bool overridden[KB_MERGED_MAX_POINTS]={false};
+    size_t active=0;
+    for(size_t i=0;i<count;i++) {
+      types[i]=KB_DAY_UNKNOWN;
+      if(blocked[i])continue;
+      const uint8_t *bp=d&&d->bytes?find_id(d,T_POINT,(uint8_t)ids[i]):NULL;
+      if(bp&&operators[i]&&bp[2]==operators[i]) {
+        types[i]=kb_calendar_day(d,operators[i],day);
+        const uint8_t *op=find_id(d,T_OPERATOR,operators[i]);
+        if(day==today&&q->override.jst_day==today&&day_valid((uint8_t)q->override.day_type)&&
+            q->override.day_type!=KB_DAY_UNKNOWN&&op&&day>=i32(op+8)&&day<=i32(op+12)) {
+          types[i]=q->override.day_type;overridden[i]=true;
+        }
+      }
+      if(day==today) {
+        if(i==0)s.today_type=types[i];
+        else if(s.today_type!=types[i])s.today_type=KB_DAY_UNKNOWN;
+        known_today+=types[i]!=KB_DAY_UNKNOWN;s.override_used|=overridden[i];
+      }
+      if(types[i]==KB_DAY_UNKNOWN) {
+        if(day>=today) {
+          blocked[i]=true;s.coverage_limited=true;
+          if(s.first_unconfirmed_day==KB_DATE_UNKNOWN)s.first_unconfirmed_day=day;
+        }
+      } else active++;
+    }
+    if(d&&d->bytes)for(size_t i=0;i<d->counts[T_DEPARTURE];i++) {
+      const uint8_t *p=row(d,T_DEPARTURE,i);uint8_t entry=selected[p[2]];
+      if(!entry)continue;
+      size_t index=(size_t)entry-1;kb_day_type_t type=types[index];
+      if(type==KB_DAY_UNKNOWN||type==KB_DAY_NONE)continue;
+      const uint8_t *svc=find_id(d,T_SERVICE,p[4]);
+      if(day<i32(svc+4)||day>i32(svc+8)||!(svc[2]&(1u<<type)))continue;
+      if(q->destination_group_id&&!kb_pattern_calls(d,p[3],q->destination_group_id))continue;
+      if(day==today)any_today=true;
+      kb_trip_t trip;memset(&trip,0,sizeof(trip));trip.departure_utc=kb_service_epoch(day,u16(p));
+      if(q->now_utc>=trip.departure_utc+60)continue;
+      trip.service_day=day;trip.release_version=d->release_version;trip.minute=u16(p);
+      trip.boarding_point_id=p[2];trip.pattern_id=p[3];trip.service_id=p[4];
+      trip.day_type=type;trip.overridden=overridden[index];
+      if(after&&merged_compare(&trip,after,selected,metres)<=0)continue;
+      if(!found||merged_compare(&trip,&best,selected,metres)<0){best=trip;found=true;}
+    }
+    if(day>=today&&!active)break;
+    if(!state&&day>=today&&found&&best.departure_utc<kb_service_epoch(day+1,0))break;
+  }
+  s.today_no_service=known_today==count&&!any_today;
+  if(state)*state=s;
+  if(found){*out=best;return KB_QUERY_FOUND;}
+  return s.coverage_limited?KB_QUERY_UNCONFIRMED:KB_QUERY_NO_MORE;
+}
+kb_query_result_t kb_upcoming_merged_at(const kb_query_t *q,const uint16_t *ids,const uint32_t *metres,
+    size_t count,size_t index,kb_trip_t *out,kb_query_state_t *state) {
+  kb_trip_t previous;bool has_previous=false;
+  if(!out)return KB_QUERY_UNAVAILABLE;
+  for(size_t i=0;i<=index;i++) {
+    kb_query_result_t result=kb_query_merged_next(q,ids,metres,count,has_previous?&previous:NULL,out,state);
+    if(result!=KB_QUERY_FOUND)return result;
+    previous=*out;has_previous=true;
+  }
   return KB_QUERY_FOUND;
 }
 const kb_dataset_t *kb_trip_dataset(const kb_query_t *q,const kb_trip_t *trip) {

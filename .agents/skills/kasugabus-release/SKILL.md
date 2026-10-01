@@ -53,6 +53,12 @@ Only record approval flags after consent was given. `release.py publish`
 checks artifact, notes, config, audit/source fingerprint and source commit;
 requires explicit approval of the exact frozen destination list; uses the installed
 uploader on the frozen file; and journals partial progress. Do not substitute
+mutable source artwork for a reviewed asset change. For an explicitly requested
+existing-listing artwork update, follow the separate, hash-bound Dashboard
+procedure in `docs/releasing.md`; the ordinary uploader preserves artwork.
+Its original preservation baseline survives failed retries, and the installed
+SDK upload adapter refuses redirects before forwarding credentials. Do not reset
+that baseline to silence a mismatch. Do not substitute
 mutable `build/` output, automatically overwrite differing releases or silently
 publish a draft. `verify --attempts 3` is read-only remote verification with
 bounded retry; it does not upload or build. Keep a partial release pending until

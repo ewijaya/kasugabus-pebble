@@ -84,7 +84,7 @@ static int select_for_day(kb_store_t *s,int32_t day) {
 }
 static bool load_slot(kb_store_t *s,int slot) {
   if(s->cache_slot==slot)return true;
-  s->cache_slot=-1;
+  s->cache_slot=KB_STORE_CACHE_INVALID;
   kb_slot_t *m=&s->slots[slot];
   for(uint32_t n=0,seq=0;n<m->length;seq++) {
     unsigned len=m->length-n;
@@ -118,14 +118,20 @@ static void check_all(kb_store_t *s) {
    * descriptors make the sole good older future copy appear disposable. */
   while(kb_store_check_next(s)) { }
 }
-bool kb_store_init(kb_store_t *s,kb_store_io_t io,const uint8_t *baseline,size_t len,uint8_t *cache) {
+static bool init_store(kb_store_t *s,kb_store_io_t io,const uint8_t *baseline,size_t len,uint8_t *cache,kb_baseline_read_fn read,void *context) {
   memset(s,0,sizeof(*s));
   s->io=io;
   s->cache=cache;
-  s->cache_slot=-1;
+  s->cache_slot=KB_STORE_CACHE_INVALID;
+  s->baseline_read=read;
+  s->baseline_context=context;
   s->directory_bank=-1;
   s->capacity_ok=io.capacity>=KB_STORAGE_REQUIRED;
   s->baseline_valid=kb_dataset_open(&s->baseline,baseline,len)==KB_OK&&s->baseline.minimum_app_version<=1&&!strcmp(kb_coverage_id(&s->baseline),"minami-kasugaoka-v1");
+  if(read&&s->baseline_valid) {
+    s->baseline_crc=kb_crc32(baseline,len);
+    s->cache_slot=KB_STORE_CACHE_BASELINE;
+  }
   uint8_t banks[2][KB_STORE_DIRECTORY_SIZE];
   bool any=false,valid[2],read_failed=false;
   for(int bank=0;bank<2;bank++) {
@@ -199,16 +205,50 @@ bool kb_store_init(kb_store_t *s,kb_store_io_t io,const uint8_t *baseline,size_t
    * candidate before it may erase/reuse storage. */
   return s->baseline_valid;
 }
+bool kb_store_init(kb_store_t *s,kb_store_io_t io,const uint8_t *baseline,size_t len,uint8_t *cache) {
+  return init_store(s,io,baseline,len,cache,NULL,NULL);
+}
+bool kb_store_init_reader(kb_store_t *s,kb_store_io_t io,kb_baseline_read_fn read,void *context,size_t len,uint8_t *cache) {
+  if(!s)return false;
+  if(!cache) {
+    memset(s,0,sizeof(*s));
+    s->io=io;
+    s->directory_generation=UINT32_MAX;
+    s->directory_bank=-1;
+    s->cache_slot=KB_STORE_CACHE_INVALID;
+    s->recovery_notice=true;
+    return false;
+  }
+  /* Do not parse stale/partial cache contents after a failed resource read.
+   * Persisted snapshots still initialize and can recover an unavailable bundle. */
+  const uint8_t *baseline=NULL;
+  if(read&&cache&&len>=KB_HEADER_SIZE&&len<=KB_MAX_DATASET_BYTES&&read(context,cache,len)==(int)len)baseline=cache;
+  bool valid=init_store(s,io,baseline,len,cache,read,context);
+  if(!valid)s->recovery_notice=true;
+  return valid;
+}
+static const kb_dataset_t *resolve_baseline(kb_store_t *s,int32_t day) {
+  if(!s->baseline_valid||s->baseline.effective_from>day)return NULL;
+  if(s->baseline_read&&s->cache_slot!=KB_STORE_CACHE_BASELINE) {
+    s->cache_slot=KB_STORE_CACHE_INVALID;
+    if(s->baseline_read(s->baseline_context,s->cache,s->baseline.size)!=(int)s->baseline.size||kb_crc32(s->cache,s->baseline.size)!=s->baseline_crc) {
+      s->recovery_notice=true;
+      return NULL;
+    }
+    s->cache_slot=KB_STORE_CACHE_BASELINE;
+  }
+  return &s->baseline;
+}
 const kb_dataset_t *kb_store_resolve(void *ctx,int32_t day) {
   kb_store_t *s=ctx;
   for(int tries=0;tries<KB_STORE_SLOTS;tries++) {
     int slot=select_for_day(s,day);
-    if(slot<0)return s->baseline_valid&&s->baseline.effective_from<=day?&s->baseline:NULL;
+    if(slot<0)return resolve_baseline(s,day);
     if(load_slot(s,slot))return &s->cached;
     s->slots[slot].valid=false;
     s->recovery_notice=true;
   }
-  return s->baseline_valid&&s->baseline.effective_from<=day?&s->baseline:NULL;
+  return resolve_baseline(s,day);
 }
 uint32_t kb_store_pending(kb_store_t *s,int32_t day,int32_t *effective) {
   for(int tries=0;tries<KB_STORE_SLOTS;tries++) {
@@ -404,7 +444,9 @@ bool kb_store_tick(kb_store_t *s,int64_t now) {
 }
 void kb_store_abort(kb_store_t *s) {
   s->transfer.running=false;
-  s->cache_slot=-1;
+  /* Chunk writes touch persistence, not RAM. Preserve an untouched resource
+   * cache; COMMIT/load_slot already invalidate it before reading any payload. */
+  if(s->cache_slot!=KB_STORE_CACHE_BASELINE)s->cache_slot=KB_STORE_CACHE_INVALID;
 }
 bool kb_store_restore(kb_store_t *s) {
   kb_store_abort(s);

@@ -1,0 +1,10 @@
+Use case: text-localization.
+Asset type: RePebble App Store banner, wide 9:4 aspect ratio, to be delivered at 720 by 320 pixels.
+Input image: the existing KasugaBus banner is the edit target. Preserve its recognizable frontal white pixel-bus mark, black background, large white pixel-style KasugaBus wordmark, and the cyan/electric-lime geometric transit lines with the magenta square. Keep the established composition and clean crisp pixel-inspired Neon Transit look.
+Primary request: replace the generic tagline with clear local neighborhood coverage. The app serves only the Minami-kasugaoka neighborhood in Ibaraki city, Osaka, Japan. Do not imply coverage of all Osaka or Japan.
+Text, verbatim and correctly spelled:
+Largest main wordmark: "KasugaBus"
+Prominent cyan secondary line below it: "Minami-kasugaoka"
+Smaller, clearly readable white line below that: "Local bus timetables · Ibaraki, Osaka, Japan"
+Remove the previous "Scheduled buses. On your wrist." tagline completely.
+Fit the three text lines in the right-hand area with ample clear margins and good reading hierarchy. The local neighborhood name must be immediately noticeable at 720x320, not hidden in fine print. Preserve the bus silhouette and brand colors. Adjust text spacing and the decorative lines only as needed for the extra text line; do not add any other objects. Use an opaque black background. No flags, maps, extra place names, route numbers, timetable times, watch hardware, fake screenshots, glow, gradient or watermark. This is promotional artwork, not an app screenshot.

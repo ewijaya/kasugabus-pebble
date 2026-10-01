@@ -513,6 +513,60 @@ def upload_github(folder, state):
         run("gh", "release", "create", tag, str(folder / ARTIFACT), "--verify-tag", "--title", "KasugaBus " + tag, "--notes-file", str(notes_path), "--latest")
 
 
+def store_preservation(folder, state, app, config):
+    """Keep the pre-mutation listing/history baseline across failed retries."""
+    identity = {"schema": 1, "app_id": config["store_app_id"], "uuid": UUID,
+        "version": state["version"], "artifact_sha256": state["artifact"]["sha256"]}
+    baseline = state.get("store_preservation")
+    if "store_preservation" not in state:
+        require(not state.get("status", {}).get("appstore"),
+            "Missing pre-mutation store baseline; inspect the previously attempted release before retry")
+        baseline = dict(identity, metadata=preserved_fields(app), history=prior_release_history(app))
+        # Persist before upload/PATCH: a lost response must not reset the baseline.
+        save(folder, dict(state, store_preservation=baseline))
+        state["store_preservation"] = baseline
+    require(isinstance(baseline, dict) and set(baseline) == set(identity) | {"metadata", "history"} and
+        all(baseline.get(key) == value for key, value in identity.items()) and
+        isinstance(baseline["metadata"], dict) and isinstance(baseline["history"], dict),
+        "Store preservation baseline is missing, malformed, or belongs to another candidate")
+    require_store_preservation(app, baseline)
+    return baseline
+
+
+def require_store_preservation(app, baseline):
+    history = prior_release_history(app)
+    require(all(history.get(key) == value for key, value in baseline["history"].items()),
+        "A previous release was deleted or changed; stop for review")
+    require(preserved_fields(app) == baseline["metadata"],
+        "Store upload/listing changed unrelated metadata/assets; restore the saved baseline before retry")
+
+
+def guarded_store_publisher(publisher, config):
+    """Override only the inspected SDK POST transport; never follow redirects."""
+    expected_upload = {"api_base", "app_id", "firebase_id_token", "pbw_path", "version", "release_notes", "is_published", "gif_paths", "screenshot_paths", "replace_screenshots"}
+    expected_post = {"url", "headers", "data", "files", "timeout", "label"}
+    require(set(inspect.signature(publisher._upload_release).parameters) == expected_upload,
+        "Installed uploader signature changed; inspect the local implementation before proceeding")
+    require(set(inspect.signature(publisher._post_with_wait_bar).parameters) == expected_post,
+        "Installed upload transport signature changed; inspect it before proceeding")
+    approved_url = config["appstore_api"] + "/api/dashboard/apps/" + config["store_app_id"] + "/releases"
+
+    class GuardedPublisher(publisher):
+        @classmethod
+        def _post_with_wait_bar(cls, url, headers, data, files, timeout, label):
+            import requests
+            require(url == approved_url and config["appstore_api"] == "https://appstore-api.repebble.com",
+                "Store upload URL differs from the approved official destination")
+            response = requests.post(url, headers=headers, data=data, files=files,
+                timeout=timeout, allow_redirects=False)
+            if 300 <= response.status_code < 400:
+                response.close()
+                raise RuntimeError("Store upload redirect rejected; inspect the remote release before retry")
+            return response
+
+    return GuardedPublisher
+
+
 def upload_store(folder, state):
     from pebble_tool.commands.publish import PublishCommand
     config = registration.transitioned_config(state)
@@ -522,27 +576,24 @@ def upload_store(folder, state):
         require(digest(json.dumps(preserved_fields(before), sort_keys=True).encode()) == state["registration"].get("preserved_sha256"), "Adopted listing metadata/assets changed; inspect before publication")
     require(all(semver(r["version"]) <= semver(state["version"]) for r in before.get("releases", [])), "A newer store release appeared; inspect it before publication")
     fields = listing_fields(before, state["description"], config) if before.get("description") != state["description"] else None
-    preserved = preserved_fields(before)
+    baseline = store_preservation(folder, state, before, config)
     existing = next((r for r in before.get("releases", []) if r["version"] == state["version"]), None)
     if existing:
         require(existing.get("is_published"), "Existing draft needs review; never silently publish it")
         require(digest(get_public(asset_url(existing.get("pbw_url"), config), state["artifact"]["bytes"]).content) == state["artifact"]["sha256"], "Store version exists with a different artifact")
     else:
-        expected = {"api_base", "app_id", "firebase_id_token", "pbw_path", "version", "release_notes", "is_published", "gif_paths", "screenshot_paths", "replace_screenshots"}
-        require(set(inspect.signature(PublishCommand._upload_release).parameters) == expected, "Installed uploader signature changed; inspect the local implementation before proceeding")
-        PublishCommand._upload_release(api_base=config["appstore_api"], app_id=config["store_app_id"], firebase_id_token=token,
+        publisher = guarded_store_publisher(PublishCommand, config)
+        publisher._upload_release(api_base=config["appstore_api"], app_id=config["store_app_id"], firebase_id_token=token,
             pbw_path=str(folder / ARTIFACT), version=state["version"], release_notes=state["notes"], is_published=True,
             gif_paths=[], screenshot_paths=[], replace_screenshots=False)
     after_upload = dashboard_app(session, config)
-    require_prior_history(before, after_upload)
-    require(preserved_fields(after_upload) == preserved, "Release upload changed unrelated listing metadata/assets; stop for review")
+    require_store_preservation(after_upload, baseline)
     if before.get("description") != state["description"]:
         response = session.patch(config["dashboard"] + "/api/dashboard/apps/" + config["store_app_id"], files={k: (None, value) for k, value in fields.items()}, timeout=30, allow_redirects=False)
         require(not 300 <= response.status_code < 400, "Dashboard PATCH redirect rejected")
         response.raise_for_status()
     after = dashboard_app(session, config)
-    require_prior_history(before, after)
-    require(preserved_fields(after) == preserved, "Listing update changed unrelated metadata/assets; stop for review")
+    require_store_preservation(after, baseline)
     require(after.get("description") == state["description"], "Dashboard description has not synchronized")
 
 

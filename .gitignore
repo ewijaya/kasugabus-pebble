@@ -10,3 +10,6 @@ artifacts/test-feed/
 core
 # Install packages remain local; publication uploads only the approved frozen PBW.
 artifacts/*.pbw
+# Bulk native verification captures; reviewed listing screenshots are copied
+# into the versioned release assets after exact-candidate acceptance.
+artifacts/screenshots/verify-*

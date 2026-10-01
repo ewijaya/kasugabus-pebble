@@ -84,6 +84,15 @@ banners/headers/screenshots and prior releases. Never supply guessed empty
 defaults. Tokens remain in memory and go only to official auth/API hosts.
 Existing draft or mismatched PBW needs review, not an automatic overwrite.
 
+When the user specifically requests updated artwork, freeze the named new
+assets with a version-specific hash manifest and obtain their approval with
+the exact PBW. Complete the normal release/preservation flow first, then use
+Dashboard Edit Listing for only those assets. Preserve all other fields and
+record a separate before/after read-back. Follow the resumable artwork procedure
+in `docs/releasing.md`; do not reset the uploader's original preservation
+baseline or repeat New. A later `verify` is read-only and does not require an
+artwork upload to be repeated.
+
 Verify Dashboard app plus Emery assets, general and `?hardware=emery` public
 catalog (`/api/v1/apps/uuid/UUID`), downloaded PBW digest and canonical public
 listing/changelog. Match the returned app ID/UUID and actual latest version/

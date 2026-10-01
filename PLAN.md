@@ -135,3 +135,26 @@ remain tied to their original builds. Broader physical GPS/permission, settings
 persistence, connection-loss, future activation/update recovery, outdoor/glance
 readability, battery and seven-day use remain outstanding. The accepted initial
 publication does not mark the full personal-use milestone complete.
+
+## Version 2.0.0 milestones — in progress
+
+The owner requested 2.0.0 through the full release workflow. This is one
+combined update: larger text with Large selected by default, four dark/light
+themes, clear Nearby location/startup controls, bus-number browsing, a merged
+All departures board with phone-private home reference, and a
+neighbourhood-specific banner. The original plan and 1.0.0 release evidence
+remain unchanged.
+
+1. Implement and verify schema-compatible preferences, phone/watch appearance
+   controls, adaptive layouts and Nearby guidance. Preserve saved choices and
+   timetable data. Audit the four project release skills and their helpers.
+2. Build for Emery with the installed SDK, inspect native screenshots for all
+   size/theme combinations and long guidance, then repeat offline/calendar,
+   production-feed and interrupted/future-update flows on the final PBW.
+3. Freeze and physically install one candidate, review the new listing/assets
+   and obtain exact-candidate approval. Publish that same PBW to the existing
+   GitHub/RePebble destinations, then verify all surfaces with bounded retries.
+
+Detailed decisions and progress: [accessibility update](docs/ACCESSIBILITY_V2.md)
+and [skill audit](docs/SKILLS_AUDIT.md). Physical field/endurance checks remain
+separate from the automated and emulator results.

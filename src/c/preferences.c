@@ -9,10 +9,12 @@ static void put16(uint8_t *p,uint16_t n) {
 }
 void kb_preferences_default(kb_preferences_t *p,uint16_t id) {
   memset(p,0,sizeof(*p));
-  p->bytes[0]=1;
+  p->bytes[0]=2;
   p->bytes[1]=KB_PREF_AUTO;
   p->bytes[4]=2;
   p->bytes[5]=id?1:0;
+  p->bytes[6]=KB_TEXT_LARGE;
+  p->bytes[7]=KB_THEME_NEON_DARK;
   put16(p->bytes+2,id);
   put16(p->bytes+8,id);
 }
@@ -22,12 +24,26 @@ uint16_t kb_pref_default(const kb_preferences_t *p) {
 uint16_t kb_pref_favourite(const kb_preferences_t *p,unsigned n) {
   return n<p->bytes[5]?u16(p->bytes+8+2*n):0;
 }
+unsigned kb_pref_text_size(const kb_preferences_t *p) {
+  return p->bytes[6];
+}
+unsigned kb_pref_theme(const kb_preferences_t *p) {
+  return p->bytes[7];
+}
+static void pref_appearance(kb_preferences_t *p,unsigned text_size,unsigned theme) {
+  p->bytes[0]=2;
+  p->bytes[6]=(uint8_t)text_size;
+  p->bytes[7]=(uint8_t)theme;
+  p->bytes[1]=(uint8_t)((p->bytes[1]&~KB_PREF_CONTRAST)|
+    (theme>=KB_THEME_HIGH_CONTRAST_DARK?KB_PREF_CONTRAST:0));
+}
 int kb_pref_walk(const kb_preferences_t *p,uint16_t id) {
   for(unsigned i=0;i<12;i++)if(u16(p->bytes+32+4*i)==id&&id)return p->bytes[34+4*i];
   return -1;
 }
 bool kb_preferences_parse(kb_preferences_t *out,const uint8_t *b,unsigned n,kb_id_exists_fn exists,void *ctx) {
-  if(n!=80||b[0]!=1||(b[1]&~31)||b[4]>30||b[5]>12||b[6]||b[7])return false;
+  if(n!=KB_PREF_BYTES||(b[0]!=1&&b[0]!=2)||(b[1]&~31)||b[4]>30||b[5]>12)return false;
+  if(b[0]==1?(b[6]||b[7]):(b[6]>KB_TEXT_EXTRA_LARGE||b[7]>KB_THEME_HIGH_CONTRAST_LIGHT))return false;
   if((b[1]&KB_PREF_NEARBY_START)&&!(b[1]&KB_PREF_LOCATION))return false;
   uint16_t id=u16(b+2);
   if(id&&exists&&!exists(ctx,id))return false;
@@ -46,7 +62,18 @@ bool kb_preferences_parse(kb_preferences_t *out,const uint8_t *b,unsigned n,kb_i
       for(unsigned j=0;j<i;j++)if(u16(b+32+4*j)==id)return false;
     }
   }
-  memcpy(out->bytes,b,80);
+  unsigned text_size=b[0]==1?KB_TEXT_LARGE:b[6];
+  unsigned theme=b[0]==1?((b[1]&KB_PREF_CONTRAST)?KB_THEME_HIGH_CONTRAST_DARK:KB_THEME_NEON_DARK):b[7];
+  memmove(out->bytes,b,KB_PREF_BYTES);
+  pref_appearance(out,text_size,theme);
+  return true;
+}
+bool kb_pref_set_appearance(kb_preferences_t *p,unsigned text_size,unsigned theme) {
+  kb_preferences_t checked;
+  if(text_size>KB_TEXT_EXTRA_LARGE||theme>KB_THEME_HIGH_CONTRAST_LIGHT||
+    !kb_preferences_parse(&checked,p->bytes,KB_PREF_BYTES,NULL,NULL))return false;
+  pref_appearance(&checked,text_size,theme);
+  *p=checked;
   return true;
 }
 unsigned kb_pref_missing(const kb_preferences_t *p,kb_id_exists_fn exists,void *ctx) {
@@ -126,7 +153,7 @@ bool kb_control_commit(kb_control_t *out,const kb_control_t *candidate,uint32_t 
   uint8_t next=1-*slot;
   memcpy(bytes,"KBW2",4);
   pref_put32(bytes+4,*generation+1);
-  memcpy(bytes+8,candidate->preferences.bytes,80);
+  memcpy(bytes+8,checked.bytes,KB_PREF_BYTES);
   pref_put32(bytes+88,candidate->last_attempt);
   pref_put32(bytes+92,candidate->last_success);
   pref_put32(bytes+96,candidate->hint_seen?1u:0u);
@@ -134,6 +161,7 @@ bool kb_control_commit(kb_control_t *out,const kb_control_t *candidate,uint32_t 
   pref_put32(bytes+104,pref_crc(bytes,104));
   if(write(ctx,10+next,bytes,sizeof(bytes))!=sizeof(bytes))return false;
   *out=*candidate;
+  out->preferences=checked;
   (*generation)++;
   *slot=next;
   return true;
@@ -161,10 +189,10 @@ bool kb_preferences_commit(kb_preferences_t *out,const kb_preferences_t *candida
   next=1-*slot;
   memcpy(b,"KBP1",4);
   pref_put32(b+4,*generation+1);
-  memcpy(b+8,candidate->bytes,80);
+  memcpy(b+8,checked.bytes,KB_PREF_BYTES);
   pref_put32(b+88,pref_crc(b,88));
   if(write(ctx,10+next,b,sizeof(b))!=sizeof(b))return false;
-  *out=*candidate;
+  *out=checked;
   (*generation)++;
   *slot=next;
   return true;

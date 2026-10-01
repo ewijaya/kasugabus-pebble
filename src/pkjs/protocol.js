@@ -4,11 +4,13 @@ module.exports = {
     DATA: 6, STATUS: 7, REQUEST: 8, STAMP: 9, ACCURACY: 10, EFFECTIVE: 11,
     PENDING: 12, FLAGS: 13 },
   type: { HELLO: 1, STATE: 2, CHECK: 3, FEED: 4, BEGIN: 5, CHUNK: 6,
-    COMMIT: 7, ACK: 8, LOCATION: 9, NEARBY: 10, SETTINGS: 11 },
+    COMMIT: 7, ACK: 8, LOCATION: 9, NEARBY: 10, SETTINGS: 11,
+    REFERENCE_LOCATION: 14, REFERENCE_RESULT: 15, HOME_CHANGED: 16 },
   feed: { CHECKING: 0, DOWNLOADING: 1, CHECKED: 2, UPDATED: 3, UNAVAILABLE: 4,
     FAILED: 5, INCOMPATIBLE: 6, NOT_CONFIGURED: 7, TRANSFERRING: 8 },
   nearby: { GOOD: 0, ACCURACY: 1, STALE: 2, DENIED: 3, TIMEOUT: 4,
     UNAVAILABLE: 5, OUTSIDE: 6, NO_COORDINATES: 7, DISABLED: 8 },
+  reference: { CURRENT: 0, HOME: 1, HOME_UNSET: 9 },
   get: function(payload, name) {
     var value=typeof payload[name] !== 'undefined' ? payload[name] : payload[this.keys[name]];
     // PebbleKit hosts can expose a uint32 tuple through a signed JS integer.

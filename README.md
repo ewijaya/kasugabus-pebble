@@ -5,6 +5,8 @@ KasugaBus **v1.0.0** for Emery is available from [GitHub Releases](https://githu
 
 This initial release retains the stated physical and seven-day validation limitations.
 
+Version **2.0.0** is in preparation with adjustable text sizes, four dark/light themes and a banner identifying the Minami-kasugaoka coverage area. Open **Settings → Text size** for Standard, Large (default) or Extra Large; **Settings → Colour theme** offers Neon Dark, Neon Light, High Contrast Dark and High Contrast Light. These choices are also available in phone settings. See [the accessibility update](docs/ACCESSIBILITY_V2.md).
+
 A large clock and one scheduled departure form the Neon Transit home screen. The departure board, full details, favourites, all-stop picker, Nearby, trip context and data status work through the watch buttons. Timetables run offline; phone location, Clay settings and timetable downloads add optional connected functions.
 
 ![KasugaBus 1.0.0 — native Emery emulator capture](artifacts/screenshots/release-1.0.0-home.png)
@@ -20,7 +22,11 @@ Nearby ranks the **six verified Hankyu poles**. Kintetsu poles remain available 
 - **Home:** Up/Down cycle saved favourites; Select opens the board; Back exits.
 - **Hold Select:** Stops, Trip context, Data status and Settings. The board also has a regular Stops & tools row, so holding is optional for stop selection.
 - **Lists:** Up/Down choose; Select opens; Back returns. Details and Data status scroll.
+- **Bus numbers in 2.0.0:** Stops → Bus numbers → operator/number → boarding point/direction opens a filtered departure board. This uses the number when boarding, and stays within the six covered stop groups.
+- **All departures in 2.0.0:** Open KasugaBus, hold Select → Stops → All departures → location reference → boarding points → Show departures. Select toggles a boarding point; Up/Down scrolls long entries before moving to another row. Selected boarding opportunities are merged by scheduled time, with approximate distance breaking equal-time ties. Every row shows time/countdown, operator, number, boarding stop/direction and distance; unverified coordinates show Distance unknown. Manual selection and favourites work without location. Hold Select on the point list or merged board for location and calendar guidance.
+- **Saved home location:** explicitly save the current phone position as home, or clear it, in phone settings. Coordinates remain only on the phone. The watch stores your selected boarding IDs and reference choice; distances are temporary. This reference is separate from the Saved origin walking-allowance context.
 - **Nearby:** requests one phone fix on entry or explicit refresh. Manual stop selection always works.
+- **Nearby settings in 2.0.0:** "Use phone location for Nearby" enables manual requests; "Open Nearby on startup" is optional and turns off when location is disabled. Ordinary settings open/save does not request location; explicitly choosing Save current phone location as home does. Your phone's location permission remains separate.
 - **Saved origin:** leave-by appears only after a per-boarding-point walking time is configured. General/Nearby and At stop do not reuse it.
 - **Data status:** Select checks the timetable feed. Source verification, review date, successful feed check and pending effective date are separate.
 - **Companion app settings:** favourite order/default, walking allowances/buffer, optional Nearby startup, display preferences and automatic checks use Clay.

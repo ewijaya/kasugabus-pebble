@@ -28,6 +28,9 @@ static int p_remove(void *c,uint32_t k) {
   (void)c;
   return persist_delete(k);
 }
+static int baseline_read(void *context,void *buffer,size_t length) {
+  return (int)resource_load((ResHandle)context,(uint8_t *)buffer,length);
+}
 static uint32_t u32(const uint8_t *b) {
   return (uint32_t)b[0]|((uint32_t)b[1]<<8)|((uint32_t)b[2]<<16)|((uint32_t)b[3]<<24);
 }
@@ -74,14 +77,49 @@ bool app_save_preferences(const kb_preferences_t *p) {
   kb_control_t candidate=s_control;
   candidate.preferences=*p;
   bool ok=save_control(&candidate);
+  if(ok)ui_apply_appearance();
   if(ok&&disabling_location) {
     app.location_request++;
     app.nearby_waiting=false;
     app.nearby_count=0;
     app.nearby_status=8;
+    app_clear_all_distances(8);
   }
   if(!ok)snprintf(app.notice,sizeof(app.notice),"Settings not saved");
   return ok;
+}
+void app_clear_all_distances(unsigned status) {
+  ui_remember_all_point();
+  app.all_request++;
+  app.all_waiting=false;app.all_nearby_count=0;app.all_version=0;
+  app.all_stamp=0;app.all_accuracy=0;app.all_status=(int)status;
+  if(app.screen==KB_SCREEN_ALL_BOARD||app.screen==KB_SCREEN_ALL_POINTS)ui_refresh();
+}
+static void log_all_ids(void) {
+  if(!app.all_prefs.count)APP_LOG(APP_LOG_LEVEL_INFO,"All ids0 empty");
+  for(unsigned start=0;start<app.all_prefs.count;start+=16) {
+    char ids[70];unsigned used=0;ids[0]=0;
+    for(unsigned i=start;i<app.all_prefs.count&&i<start+16;i++)used+=(unsigned)snprintf(ids+used,sizeof(ids)-used,"%s%u",i==start?"":" ",app.all_prefs.ids[i]);
+    APP_LOG(APP_LOG_LEVEL_INFO,"All ids%u %s",start,ids);
+  }
+}
+uint32_t app_all_distance(uint16_t id) {
+  if(!(app.prefs.bytes[1]&KB_PREF_LOCATION)||app.all_prefs.reference==KB_ALL_REFERENCE_MANUAL||
+    app.all_waiting||app.all_status>1||!app.all_stamp||app.all_version!=app.active_version)return UINT32_MAX;
+  if(app.all_prefs.reference==KB_ALL_REFERENCE_CURRENT&&time(NULL)-(int64_t)app.all_stamp>120)return UINT32_MAX;
+  for(unsigned i=0;i<app.all_nearby_count;i++)if(app.all_nearby[i].id==id)return app.all_nearby[i].metres;
+  return UINT32_MAX;
+}
+bool app_save_all_preferences(const kb_all_preferences_t *candidate) {
+  bool changed=app.all_prefs.reference!=candidate->reference;
+  if(!kb_all_preferences_commit(&app.all_prefs,candidate,&app.all_generation,&app.all_slot,p_write,NULL)) {
+    snprintf(app.notice,sizeof(app.notice),"Selection not saved");return false;
+  }
+  app.notice[0]=0;
+  if(changed)app_clear_all_distances(2);
+  APP_LOG(APP_LOG_LEVEL_INFO,"All saved generation%lu reference%u count%u",(unsigned long)app.all_generation,app.all_prefs.reference,app.all_prefs.count);
+  log_all_ids();
+  return true;
 }
 void app_dismiss_hint(void) {
   if(!app.first_use)return;
@@ -112,6 +150,15 @@ static void load_preferences(void) {
   app.request=s_control.update_request;
   app.first_use=!s_control.hint_seen;
   app.point=kb_pref_default(&app.prefs);
+}
+static void load_all_preferences(void) {
+  kb_all_load_result_t loaded=kb_all_preferences_load(&app.all_prefs,&app.all_generation,&app.all_slot,p_read,NULL);
+  if(loaded==KB_ALL_EMPTY) {
+    for(unsigned i=0;i<app.prefs.bytes[5];i++)app.all_prefs.ids[app.all_prefs.count++]=kb_pref_favourite(&app.prefs,i);
+  }
+  else if(loaded==KB_ALL_INVALID)snprintf(app.notice,sizeof(app.notice),"All selection needs recovery");
+  APP_LOG(APP_LOG_LEVEL_INFO,"All loaded generation%lu reference%u count%u",(unsigned long)app.all_generation,app.all_prefs.reference,app.all_prefs.count);
+  log_all_ids();
 }
 /* Small FIFO: protocol ACKs and commands share the AppMessage outbox. */ typedef struct  {
   uint16_t present;
@@ -154,8 +201,17 @@ static void bytes(message_t *m,const void *b,unsigned n) {
     m->len=n;
   }
 }
+static bool location_message_active(const message_t *m) {
+  if(m->value[0]==14)return app.all_waiting&&m->value[8]==app.all_request&&m->value[3]==app.all_version&&m->value[13]==app.all_prefs.reference;
+  if(m->value[0]==9)return app.nearby_waiting&&m->value[8]==app.location_request&&m->value[3]==app.location_version;
+  return true;
+}
 static void send_next(void) {
-  if(s_sending||!s_count)return;
+  if(s_sending)return;
+  while(s_count&&!location_message_active(&s_queue[s_head])) {
+    s_head=(s_head+1)%8;s_count--;
+  }
+  if(!s_count)return;
   DictionaryIterator *it;
   AppMessageResult r=app_message_outbox_begin(&it);
   if(r!=APP_MSG_OK) {
@@ -179,6 +235,9 @@ static void ack(uint32_t session,uint16_t seq,int status,unsigned phase) {
   field(m,7,status);
   field(m,13,phase);
   send_next();
+}
+static void settings_ack(uint32_t token,int status) {
+  message_t *m=enqueue(8);field(m,8,token);field(m,7,status);field(m,13,11);send_next();
 }
 static unsigned s_catalogue_index;
 static uint32_t s_catalogue_version;
@@ -305,6 +364,7 @@ void app_restore_timetable(void) {
   app.nearby_count=0;
   app.nearby_waiting=false;
   app.nearby_status=2;
+  app_clear_all_distances(2);
   app_send_state();
 }
 void app_check_updates(bool manual) {
@@ -355,6 +415,7 @@ void app_check_updates(bool manual) {
   app_redraw();
 }
 void app_request_location(void) {
+  app_clear_all_distances(2);
   app.nearby_waiting=false;
   app.trip_context=KB_CONTEXT_NEARBY;
   if(!(app.prefs.bytes[1]&KB_PREF_LOCATION)) {
@@ -414,6 +475,32 @@ void app_request_location(void) {
   ensure_deadline();
   app_redraw();
 }
+void app_request_all_location(void) {
+  app.location_request++;app.nearby_waiting=false;app.nearby_count=0;app.nearby_status=2;
+  app_clear_all_distances(2);
+  if(app.all_prefs.reference==KB_ALL_REFERENCE_MANUAL) {app_redraw();return;}
+  if(!(app.prefs.bytes[1]&KB_PREF_LOCATION)) {app.all_status=8;app_redraw();return;}
+  if(!app.phone_ready) {
+    app.all_status=5;
+    if(connection_service_peek_pebble_app_connection()) {s_request_hello=true;app_send_state();}
+    app_redraw();return;
+  }
+  const kb_dataset_t *d=app_dataset();
+  if(!d) {app.all_status=7;app_redraw();return;}
+  uint8_t b[256];unsigned n=0;
+  for(size_t i=0;i<kb_boarding_point_count(d);i++) {
+    kb_boarding_point_t p;kb_boarding_point_at(d,i,&p);
+    if(p.has_coordinate&&n+10<=sizeof(b)) {
+      put16(b+n,p.id);put32(b+n+2,p.latitude_e6*10);put32(b+n+6,p.longitude_e6*10);n+=10;
+    }
+  }
+  if(!n) {app.all_status=7;app_redraw();return;}
+  message_t *m=enqueue(14);
+  if(!m) {app.all_status=5;app_redraw();return;}
+  app.all_version=d->release_version;app.active_version=d->release_version;
+  field(m,8,app.all_request);field(m,3,app.all_version);field(m,13,app.all_prefs.reference);
+  bytes(m,b,n);app.all_waiting=true;app.all_started=time(NULL);send_next();ensure_deadline();app_redraw();
+}
 static void deadline(void *ctx) {
   (void)ctx;
   s_deadline=NULL;
@@ -430,6 +517,7 @@ static void deadline(void *ctx) {
     app.nearby_status=4;
     changed=true;
   }
+  if(app.all_waiting&&now-app.all_started>=16) {app_clear_all_distances(4);changed=true;}
   if(app.checking&&now-app.check_started>90&&!app.store.transfer.running) {
     app.checking=false;
     app.update_status=5;
@@ -439,7 +527,7 @@ static void deadline(void *ctx) {
     s_auto_waiting=false;
     app_check_updates(false);
   }
-  if(app.checking||app.store.transfer.running||app.nearby_waiting||(s_auto_waiting&&app.phone_ready))ensure_deadline();
+  if(app.checking||app.store.transfer.running||app.nearby_waiting||app.all_waiting||(s_auto_waiting&&app.phone_ready))ensure_deadline();
   if(changed)app_redraw();
 }
 static bool number(DictionaryIterator *it,unsigned key,uint32_t *out) {
@@ -450,7 +538,7 @@ static bool number(DictionaryIterator *it,unsigned key,uint32_t *out) {
 }
 static void inbox(DictionaryIterator *it,void *ctx) {
   (void)ctx;
-  uint32_t type=0,session=0,seq=0,status=0,version=0,length=0,crc=0,request=0,stamp=0,accuracy=0;
+  uint32_t type=0,session=0,seq=0,status=0,version=0,length=0,crc=0,request=0,stamp=0,accuracy=0,flags=0;
   number(it,0,&type);
   number(it,1,&session);
   number(it,2,&seq);
@@ -461,6 +549,7 @@ static void inbox(DictionaryIterator *it,void *ctx) {
   number(it,8,&request);
   number(it,9,&stamp);
   number(it,10,&accuracy);
+  number(it,13,&flags);
   Tuple *data=dict_find(it,6);
   bool payload=data&&data->type==TUPLE_BYTE_ARRAY;
   int64_t now=time(NULL);
@@ -525,6 +614,7 @@ static void inbox(DictionaryIterator *it,void *ctx) {
       app.nearby_count=0;
       app.nearby_waiting=false;
       app.nearby_status=2;
+      app_clear_all_distances(2);
       if(app.screen==KB_SCREEN_NEARBY)app.selected=0;
       app.update_status=3;
       snprintf(app.notice,sizeof(app.notice),r==4?"Future timetable ready":"Timetable updated");
@@ -566,13 +656,52 @@ static void inbox(DictionaryIterator *it,void *ctx) {
     }
     if(app.screen==KB_SCREEN_NEARBY&&!kept&&app.selected>(int)count)app.selected=0;
   }
-  else if(type==11&&payload) {
+  else if(type==11) {
     kb_preferences_t p;
-    if(kb_preferences_parse(&p,data->value->data,data->length,app_point_exists,NULL)) {
-      if(app_save_preferences(&p))snprintf(app.notice,sizeof(app.notice),"Settings saved");
-      app_send_state();
+    int result=2;
+    if(payload&&kb_preferences_parse(&p,data->value->data,data->length,app_point_exists,NULL)) {
+      result=app_save_preferences(&p)?0:5;
+      if(!result)snprintf(app.notice,sizeof(app.notice),"Settings saved");
     }
     else snprintf(app.notice,sizeof(app.notice),"Settings rejected");
+    if(number(it,8,&request))settings_ack(request,result);
+    app_send_state();
+  }
+  else if(type==15) {
+    const kb_dataset_t *d=app_dataset();
+    if(!number(it,8,&request)||!number(it,3,&version)||!number(it,7,&status)||
+      !(app.prefs.bytes[1]&KB_PREF_LOCATION)||!app.all_waiting||request!=app.all_request||
+      !number(it,13,&flags)||flags!=app.all_prefs.reference||!d||version!=d->release_version||
+      version!=app.all_version||status>9)return;
+    if(status<=1&&(!number(it,9,&stamp)||!number(it,10,&accuracy)))return;
+    if(status==2) {
+      bool has_stamp=dict_find(it,9)!=NULL,has_accuracy=dict_find(it,10)!=NULL;
+      if(has_stamp!=has_accuracy)return;
+      if(has_stamp) {if(!number(it,9,&stamp)||!number(it,10,&accuracy))return;}
+      else stamp=accuracy=0;
+    }
+    if(status==0&&(!stamp||stamp>(uint32_t)now+30||!payload||!data->length))return;
+    if(status!=0&&payload&&data->length)return;
+    unsigned count=payload?data->length/6:0;
+    if((payload&&data->length%6)||count>KB_MAX_POINTS)return;
+    kb_near_t temp[KB_MAX_POINTS];
+    for(unsigned i=0;i<count;i++) {
+      temp[i].id=u16(data->value->data+6*i);temp[i].metres=u32(data->value->data+6*i+2);
+      kb_boarding_point_t p;
+      if(!kb_boarding_point_get(d,temp[i].id,&p)||!p.has_coordinate||temp[i].metres>40075000)return;
+      for(unsigned j=0;j<i;j++)if(temp[j].id==temp[i].id)return;
+    }
+    ui_remember_all_point();
+    app.all_waiting=false;app.all_status=(int)status;app.all_stamp=stamp;app.all_accuracy=accuracy;
+    if(status==0&&app.all_prefs.reference==KB_ALL_REFERENCE_CURRENT&&(!stamp||now-stamp>120))app.all_status=2;
+    if(status==0&&accuracy>100&&app.all_status==0)app.all_status=1;
+    app.all_nearby_count=app.all_status==0?count:0;
+    if(app.all_nearby_count)memcpy(app.all_nearby,temp,count*sizeof(*temp));
+    APP_LOG(APP_LOG_LEVEL_INFO,"All distance reference%u request%lu status%d count%u",app.all_prefs.reference,(unsigned long)request,app.all_status,app.all_nearby_count);
+    ui_refresh();
+  }
+  else if(type==16&&number(it,7,&status)&&(status==0||status==9)) {
+    if(app.all_prefs.reference==KB_ALL_REFERENCE_HOME)app_clear_all_distances(status==9?9:2);
   }
   if(type!=6||app.screen==KB_SCREEN_STATUS)app_redraw();
 }
@@ -595,7 +724,8 @@ static void failed(DictionaryIterator *it,AppMessageResult reason,void *ctx) {
   bool connected=connection_service_peek_pebble_app_connection();
   if(s_count) {
     message_t *m=&s_queue[s_head];
-    if(connected&&m->retries++<3) {
+    bool active=location_message_active(m);
+    if(connected&&active&&m->retries++<3) {
       if(!s_send_retry)s_send_retry=app_timer_register(300,send_retry,NULL);
       return;
     }
@@ -604,11 +734,17 @@ static void failed(DictionaryIterator *it,AppMessageResult reason,void *ctx) {
       app.update_status=connected?5:4;
       if(m->automatic&&!connected)s_auto_waiting=true;
     }
+    if(active&&m->value[0]==14)app_clear_all_distances(5);
+    if(active&&m->value[0]==9) {
+      app.nearby_waiting=false;app.nearby_count=0;app.nearby_status=5;
+      app.location_stamp=0;app.accuracy=0;
+    }
     s_head=(s_head+1)%8;
     s_count--;
   }
   if(!connected) {
     app.phone_ready=false;
+    app_clear_all_distances(5);
     s_catalogue_pending=false;
   }
   app_redraw();
@@ -627,9 +763,11 @@ static void tick(struct tm *t,TimeUnits u) {
     app.nearby_count=0;
     app.nearby_waiting=false;
     app.nearby_status=2;
+    app_clear_all_distances(2);
     if(app.screen==KB_SCREEN_NEARBY)app.selected=0;
     app_send_state();
   }
+  if(app.all_prefs.reference==KB_ALL_REFERENCE_CURRENT&&app.all_stamp&&app.all_status<=1&&time(NULL)-(int64_t)app.all_stamp>120)app_clear_all_distances(2);
   ui_refresh();
   app_redraw();
 }
@@ -647,6 +785,7 @@ static void connection(bool connected) {
     app.phone_ready=false;
     app.nearby_waiting=false;
     app.nearby_status=5;
+    app_clear_all_distances(5);
   }
   else {
     s_request_hello=true;
@@ -658,18 +797,18 @@ static void init(void) {
   APP_LOG(APP_LOG_LEVEL_DEBUG,"INIT entered");
   memset(&app,0,sizeof(app));
   app.nearby_status=5;
+  app.all_status=5;
   app.update_status=9;
   app.trip_context=KB_CONTEXT_NEARBY;
   app.override.day_type=KB_DAY_UNKNOWN;
   ResHandle handle=resource_get_handle(RESOURCE_ID_TIMETABLE);
   size_t size=resource_size(handle);
-  app.baseline_bytes=malloc(size);
   app.cache=malloc(KB_MAX_DATASET_BYTES);
-  if(app.baseline_bytes&&app.cache&&resource_load(handle,app.baseline_bytes,size)==size) {
+  if(app.cache) {
     kb_store_io_t io= {
       NULL,p_read,p_write,p_remove,persist_get_max_size()
     };
-    kb_store_init(&app.store,io,app.baseline_bytes,size,app.cache);
+    kb_store_init_reader(&app.store,io,baseline_read,handle,size,app.cache);
   }
   else {
     /* Recovery controls remain safe even when no store could be initialized. */
@@ -677,7 +816,9 @@ static void init(void) {
     snprintf(app.notice,sizeof(app.notice),"Timetable unavailable");
   }
   load_preferences();
+  load_all_preferences();
   app.location_request=(uint32_t)time(NULL);
+  app.all_request=(uint32_t)time(NULL);
   app_message_register_inbox_received(inbox);
   app_message_register_outbox_sent(sent);
   app_message_register_outbox_failed(failed);
@@ -707,6 +848,5 @@ int main(void) {
   if(app.japanese)fonts_unload_custom_font(app.japanese);
   layer_destroy(app.layer);
   window_destroy(app.window);
-  free(app.baseline_bytes);
   free(app.cache);
 }

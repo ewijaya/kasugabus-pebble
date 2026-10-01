@@ -15,6 +15,7 @@
 #define KB_DATE_UNKNOWN INT32_MIN
 #define KB_COORD_UNKNOWN INT32_MIN
 #define KB_LOOKAHEAD_DAYS 7
+#define KB_MERGED_MAX_POINTS 32
 
 typedef enum { KB_DAY_NONE = 0, KB_DAY_WEEKDAY = 1, KB_DAY_SATURDAY = 2,
   KB_DAY_SUNDAY_HOLIDAY = 3, KB_DAY_UNKNOWN = 255 } kb_day_type_t;
@@ -50,6 +51,9 @@ typedef struct {
   const char *route, *destination, *destination_ja, *route_transitions;
   uint16_t first_call, call_count;
 } kb_pattern_t;
+/* A route number is scoped to its operator and is the number when boarding,
+ * not a downstream route transition. Strings borrow the supplied dataset. */
+typedef struct { uint8_t operator_id; const char *number; } kb_route_t;
 typedef struct {
   const char *name, *url;
   int32_t revision_on, verified_on, review_by;
@@ -71,6 +75,10 @@ bool kb_stop_group_get(const kb_dataset_t *data, uint8_t id, kb_stop_group_t *ou
 bool kb_boarding_point_get(const kb_dataset_t *data, uint8_t id, kb_boarding_point_t *out);
 bool kb_pattern_get(const kb_dataset_t *data, uint8_t id, kb_pattern_t *out);
 bool kb_pattern_calls(const kb_dataset_t *data, uint8_t pattern_id, uint8_t group_id);
+size_t kb_route_count(const kb_dataset_t *data);
+bool kb_route_at(const kb_dataset_t *data, size_t index, kb_route_t *out);
+bool kb_boarding_point_has_route(const kb_dataset_t *data, uint8_t point_id,
+                                uint8_t operator_id, const char *number);
 
 /* A resolver may reuse its cache on every invocation. Trips therefore contain
  * identity values, never borrowed dataset pointers. */
@@ -112,6 +120,22 @@ kb_query_result_t kb_query_home(const kb_query_t *query, kb_trip_t *out,
                               kb_query_state_t *state);
 kb_query_result_t kb_upcoming_at(const kb_query_t *query, size_t index,
                                kb_trip_t *out, kb_query_state_t *state);
+/* Filter by stable operator/number values across current/future snapshots.
+ * number must be caller-owned: the resolver may invalidate borrowed strings. */
+kb_query_result_t kb_query_route_next(const kb_query_t *query, uint8_t operator_id,
+    const char *number, const kb_trip_t *after, kb_trip_t *out, kb_query_state_t *state);
+kb_query_result_t kb_upcoming_route_at(const kb_query_t *query, uint8_t operator_id,
+    const char *number, size_t index, kb_trip_t *out, kb_query_state_t *state);
+/* Merge boarding opportunities, ordered by epoch, approximate distance, then
+ * stable trip identity. NULL metres / UINT32_MAX means Distance unknown.
+ * IDs and distances are caller-owned parallel arrays; coordinates never enter
+ * this API. A calendar gap blocks only the affected boarding point. */
+kb_query_result_t kb_query_merged_next(const kb_query_t *query,
+    const uint16_t *ids, const uint32_t *metres, size_t count,
+    const kb_trip_t *after, kb_trip_t *out, kb_query_state_t *state);
+kb_query_result_t kb_upcoming_merged_at(const kb_query_t *query,
+    const uint16_t *ids, const uint32_t *metres, size_t count, size_t index,
+    kb_trip_t *out, kb_query_state_t *state);
 const kb_dataset_t *kb_trip_dataset(const kb_query_t *query, const kb_trip_t *trip);
 bool kb_trip_same_identity(const kb_trip_t *a, const kb_trip_t *b);
 

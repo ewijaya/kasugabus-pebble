@@ -131,5 +131,187 @@ static void test_kbw1_compatibility_and_format_precedence(void){
   assert(kb_control_load(&loaded,&generation,&slot,rd,NULL)==KB_CONTROL_LEGACY&&generation==8&&slot==1);
   assert_control(&loaded,&other);
 }
+static void appearance_fixture(kb_preferences_t *p){
+  kb_preferences_default(p,102);
+  p->bytes[1]=KB_PREF_AUTO|KB_PREF_LOCATION|KB_PREF_NEARBY_START|KB_PREF_REDUCED_MOTION;
+  p->bytes[4]=13;p->bytes[5]=3;
+  p->bytes[8]=103;p->bytes[10]=101;p->bytes[12]=102;
+  p->bytes[32]=101;p->bytes[34]=9;
+  p->bytes[36]=102;p->bytes[38]=0;
+  p->bytes[40]=103;p->bytes[42]=120;
+}
+static void assert_nonappearance_fields(const kb_preferences_t *a,const kb_preferences_t *b){
+  assert((a->bytes[1]&~KB_PREF_CONTRAST)==(b->bytes[1]&~KB_PREF_CONTRAST));
+  assert(!memcmp(a->bytes+2,b->bytes+2,4));
+  assert(!memcmp(a->bytes+8,b->bytes+8,72));
+}
+static void assert_appearance(const kb_preferences_t *p,unsigned text_size,unsigned theme){
+  assert(p->bytes[0]==2&&kb_pref_text_size(p)==text_size&&kb_pref_theme(p)==theme);
+  assert(((p->bytes[1]&KB_PREF_CONTRAST)!=0)==(theme>=KB_THEME_HIGH_CONTRAST_DARK));
+}
+static void test_appearance_defaults_and_schema1_migration(void){
+  kb_preferences_t defaults,old,normalized;
+  kb_preferences_default(&defaults,0);assert_appearance(&defaults,KB_TEXT_LARGE,KB_THEME_NEON_DARK);
+  assert(defaults.bytes[5]==0&&kb_pref_default(&defaults)==0);
+  kb_preferences_default(&defaults,101);assert_appearance(&defaults,KB_TEXT_LARGE,KB_THEME_NEON_DARK);
+  assert(kb_pref_default(&defaults)==101&&kb_pref_favourite(&defaults,0)==101);
+  for(unsigned contrast=0;contrast<2;contrast++){
+    appearance_fixture(&old);old.bytes[0]=1;old.bytes[6]=old.bytes[7]=0;
+    if(contrast)old.bytes[1]|=KB_PREF_CONTRAST;
+    kb_preferences_t original=old;
+    assert(kb_preferences_parse(&normalized,old.bytes,80,exists,(void *)103));
+    unsigned theme=contrast?KB_THEME_HIGH_CONTRAST_DARK:KB_THEME_NEON_DARK;
+    assert_appearance(&normalized,KB_TEXT_LARGE,theme);
+    assert_nonappearance_fields(&normalized,&original);
+    assert(!memcmp(&old,&original,sizeof(old)));
+    /* The parser is also safe when the source and destination alias. */
+    assert(kb_preferences_parse(&old,old.bytes,80,exists,(void *)103));
+    assert(!memcmp(&old,&normalized,sizeof(old)));
+    for(unsigned rank=1;rank<=3;rank++)for(unsigned bank=0;bank<2;bank++){
+      reset_records();kb_control_t stored={0},loaded;
+      stored.preferences=original;stored.last_attempt=0x80000000u;
+      stored.last_success=UINT32_MAX;stored.update_request=0xfedcba98u;stored.hint_seen=true;
+      fixture_control(bank,rank,23,&stored);
+      uint8_t before[2][108];memcpy(before,records,sizeof(before));
+      uint32_t generation;uint8_t slot;
+      assert(kb_control_load(&loaded,&generation,&slot,rd,NULL)==(rank==1?KB_CONTROL_LEGACY:KB_CONTROL_CURRENT));
+      assert(generation==23&&slot==bank&&read_count==2&&read_keys[0]==10&&read_keys[1]==11&&write_count==0);
+      assert(!memcmp(before,records,sizeof(before)));
+      kb_control_t expected=stored;expected.preferences=normalized;
+      if(rank==1){expected.last_attempt=expected.last_success=0;expected.hint_seen=false;}
+      if(rank<3)expected.update_request=0;
+      assert_control(&loaded,&expected);
+      /* A later ordinary commit saves normalized v2 bytes and all control fields. */
+      kb_control_t candidate=expected;candidate.preferences=original;
+      assert(kb_control_commit(&loaded,&candidate,&generation,&slot,wr,NULL));
+      assert(generation==24&&lengths[slot]==108&&records[slot][8]==2);
+      assert_control(&loaded,&expected);
+      read_count=0;
+      assert(kb_control_load(&loaded,&generation,&slot,rd,NULL)==KB_CONTROL_CURRENT&&read_count==2);
+      assert_control(&loaded,&expected);
+    }
+    /* The retained KBP1 writer likewise cannot re-save unnormalized v1 bytes. */
+    reset_records();uint32_t generation=0;uint8_t slot=0;old=original;
+    assert(kb_preferences_commit(&old,&original,&generation,&slot,wr,NULL));
+    assert(lengths[slot]==92&&records[slot][8]==2&&!memcmp(&old,&normalized,sizeof(old)));
+    kb_preferences_load(&old,&generation,&slot,rd,NULL);
+    assert(!memcmp(&old,&normalized,sizeof(old)));
+  }
+}
+static void test_appearance_all_combinations_and_canonicalization(void){
+  for(unsigned text_size=KB_TEXT_STANDARD;text_size<=KB_TEXT_EXTRA_LARGE;text_size++){
+    for(unsigned theme=KB_THEME_NEON_DARK;theme<=KB_THEME_HIGH_CONTRAST_LIGHT;theme++){
+      reset_records();kb_control_t current={0},candidate={0},reopened;
+      appearance_fixture(&candidate.preferences);kb_preferences_t original=candidate.preferences;
+      candidate.last_attempt=1790859000u;candidate.last_success=1790800000u;
+      candidate.update_request=UINT32_MAX;candidate.hint_seen=true;
+      assert(kb_pref_set_appearance(&candidate.preferences,text_size,theme));
+      assert_appearance(&candidate.preferences,text_size,theme);
+      assert_nonappearance_fields(&candidate.preferences,&original);
+      kb_control_t expected=candidate;
+      /* Theme remains authoritative even when an old contrast toggle disagrees. */
+      candidate.preferences.bytes[1]^=KB_PREF_CONTRAST;
+      kb_preferences_t parsed;
+      assert(kb_preferences_parse(&parsed,candidate.preferences.bytes,80,exists,(void *)103));
+      assert(!memcmp(&parsed,&expected.preferences,sizeof(parsed)));
+      uint32_t generation=0;uint8_t slot=0;
+      assert(kb_control_commit(&current,&candidate,&generation,&slot,wr,NULL));
+      assert_control(&current,&expected);
+      assert(!memcmp(records[slot]+8,expected.preferences.bytes,80));
+      read_count=0;
+      assert(kb_control_load(&reopened,&generation,&slot,rd,NULL)==KB_CONTROL_CURRENT);
+      assert(read_count==2&&write_count==1&&generation==1);
+      assert_control(&reopened,&expected);
+    }
+  }
+}
+static void assert_bad_preferences(const kb_preferences_t *bad,const kb_preferences_t *retained){
+  kb_preferences_t parsed=*retained;
+  assert(!kb_preferences_parse(&parsed,bad->bytes,80,exists,(void *)103));
+  assert(!memcmp(&parsed,retained,sizeof(parsed)));
+  parsed=*bad;
+  assert(!kb_pref_set_appearance(&parsed,KB_TEXT_LARGE,KB_THEME_NEON_DARK));
+  assert(!memcmp(&parsed,bad,sizeof(parsed)));
+}
+static void test_appearance_invalid_values_preserve_records(void){
+  kb_preferences_t valid,bad;appearance_fixture(&valid);
+  for(unsigned schema=0;schema<=255;schema++)if(schema!=1&&schema!=2){
+    bad=valid;bad.bytes[0]=(uint8_t)schema;assert_bad_preferences(&bad,&valid);
+  }
+  for(unsigned value=3;value<=255;value++){
+    bad=valid;bad.bytes[6]=(uint8_t)value;assert_bad_preferences(&bad,&valid);
+  }
+  for(unsigned value=4;value<=255;value++){
+    bad=valid;bad.bytes[7]=(uint8_t)value;assert_bad_preferences(&bad,&valid);
+  }
+  bad=valid;bad.bytes[0]=1;bad.bytes[6]=1;bad.bytes[7]=0;assert_bad_preferences(&bad,&valid);
+  bad.bytes[6]=0;bad.bytes[7]=1;assert_bad_preferences(&bad,&valid);
+  /* Migration still rejects pre-existing malformed flags, favourites and walking data. */
+  for(unsigned schema=1;schema<=2;schema++){
+    bad=valid;bad.bytes[0]=(uint8_t)schema;if(schema==1)bad.bytes[6]=bad.bytes[7]=0;
+    kb_preferences_t base=bad;
+    bad.bytes[1]|=32;assert_bad_preferences(&bad,&valid);
+    bad=base;bad.bytes[1]=KB_PREF_NEARBY_START;assert_bad_preferences(&bad,&valid);
+    bad=base;bad.bytes[4]=31;assert_bad_preferences(&bad,&valid);
+    bad=base;bad.bytes[5]=13;assert_bad_preferences(&bad,&valid);
+    bad=base;bad.bytes[10]=bad.bytes[8];assert_bad_preferences(&bad,&valid);
+    bad=base;bad.bytes[14]=104;assert_bad_preferences(&bad,&valid);
+    bad=base;bad.bytes[34]=121;assert_bad_preferences(&bad,&valid);
+    bad=base;bad.bytes[35]=1;assert_bad_preferences(&bad,&valid);
+    bad=base;bad.bytes[36]=101;assert_bad_preferences(&bad,&valid);
+    bad=base;bad.bytes[44]=0;bad.bytes[46]=1;assert_bad_preferences(&bad,&valid);
+  }
+  unsigned invalid_values[]={3,4,255,UINT32_MAX};
+  for(unsigned i=0;i<sizeof(invalid_values)/sizeof(invalid_values[0]);i++){
+    bad=valid;assert(!kb_pref_set_appearance(&bad,invalid_values[i],KB_THEME_NEON_DARK));
+    assert(!memcmp(&bad,&valid,sizeof(bad)));
+    if(invalid_values[i]>KB_THEME_HIGH_CONTRAST_LIGHT){
+      assert(!kb_pref_set_appearance(&bad,KB_TEXT_LARGE,invalid_values[i]));
+      assert(!memcmp(&bad,&valid,sizeof(bad)));
+    }
+  }
+  /* A malformed v2 record with a valid journal checksum cannot displace older settings. */
+  reset_records();kb_control_t old={0},newer,loaded;old.preferences=valid;
+  old.last_attempt=99;old.last_success=98;old.update_request=97;old.hint_seen=true;
+  newer=old;newer.last_attempt=100;newer.update_request=101;
+  fixture_control(0,3,1,&old);fixture_control(1,3,2,&newer);
+  records[1][8+6]=3;fix_crc(1);uint32_t generation;uint8_t slot;
+  assert(kb_control_load(&loaded,&generation,&slot,rd,NULL)==KB_CONTROL_CURRENT&&generation==1&&slot==0);
+  assert_control(&loaded,&old);
+  fixture_control(1,3,2,&newer);records[1][8+7]=4;fix_crc(1);
+  assert(kb_control_load(&loaded,&generation,&slot,rd,NULL)==KB_CONTROL_CURRENT&&generation==1&&slot==0);
+  assert_control(&loaded,&old);
+}
+static void test_appearance_atomic_restart_and_torn_write(void){
+  reset_records();kb_control_t current={0},candidate,reopened;
+  appearance_fixture(&current.preferences);current.last_attempt=123;current.last_success=122;
+  current.update_request=0x80000000u;current.hint_seen=true;
+  uint32_t generation=0;uint8_t slot=0;
+  assert(kb_control_commit(&current,&current,&generation,&slot,wr,NULL));
+  kb_control_t saved=current;uint32_t saved_generation=generation;uint8_t saved_slot=slot;
+  candidate=current;
+  assert(kb_pref_set_appearance(&candidate.preferences,KB_TEXT_EXTRA_LARGE,KB_THEME_HIGH_CONTRAST_LIGHT));
+  fail_write=true;
+  assert(!kb_control_commit(&current,&candidate,&generation,&slot,wr,NULL));
+  assert_control(&current,&saved);assert(generation==saved_generation&&slot==saved_slot);
+  fail_write=false;
+  unsigned torn_lengths[]={8,14,15,87,100,104,107};
+  for(unsigned i=0;i<sizeof(torn_lengths)/sizeof(torn_lengths[0]);i++){
+    short_write=torn_lengths[i];
+    assert(!kb_control_commit(&current,&candidate,&generation,&slot,wr,NULL));
+    assert_control(&current,&saved);assert(generation==saved_generation&&slot==saved_slot);
+    read_count=0;
+    assert(kb_control_load(&reopened,&generation,&slot,rd,NULL)==KB_CONTROL_CURRENT&&read_count==2);
+    assert_control(&reopened,&saved);
+  }
+  short_write=0;assert(kb_control_commit(&current,&candidate,&generation,&slot,wr,NULL));
+  assert_control(&current,&candidate);read_count=0;
+  assert(kb_control_load(&reopened,&generation,&slot,rd,NULL)==KB_CONTROL_CURRENT&&read_count==2);
+  assert_control(&reopened,&candidate);
+  assert_appearance(&reopened.preferences,KB_TEXT_EXTRA_LARGE,KB_THEME_HIGH_CONTRAST_LIGHT);
+  records[slot][8+7]^=1; /* A corrupted appearance byte must not survive its checksum. */
+  assert(kb_control_load(&reopened,&generation,&slot,rd,NULL)==KB_CONTROL_CURRENT&&generation==1);
+  assert_control(&reopened,&saved);
+}
 int main(void){kb_preferences_t a,b;kb_preferences_default(&a,1);assert(kb_pref_default(&a)==1);assert(kb_pref_walk(&a,1)==-1);assert(kb_preferences_parse(&b,a.bytes,80,exists,(void*)3));a.bytes[32]=1;a.bytes[34]=5;assert(kb_preferences_parse(&b,a.bytes,80,exists,(void*)3));assert(kb_pref_walk(&b,1)==5);a.bytes[34]=255;assert(!kb_preferences_parse(&b,a.bytes,80,exists,(void*)3));assert(kb_pref_walk(&b,1)==5);assert(!kb_preferences_parse(&b,a.bytes,79,exists,(void*)3));a.bytes[34]=5;a.bytes[5]=2;a.bytes[10]=1;assert(!kb_preferences_parse(&b,a.bytes,80,exists,(void*)3));assert(kb_pref_missing(&b,exists,(void*)0)==3);
- uint32_t generation=0;uint8_t slot=0;kb_preferences_default(&a,1);assert(kb_preferences_commit(&a,&b,&generation,&slot,wr,NULL));assert(generation==1&&kb_pref_walk(&a,1)==5);kb_preferences_t candidate=b;candidate.bytes[34]=8;fail_write=true;assert(!kb_preferences_commit(&a,&candidate,&generation,&slot,wr,NULL));assert(generation==1&&kb_pref_walk(&a,1)==5);kb_preferences_load(&a,&generation,&slot,rd,NULL);assert(generation==1&&kb_pref_walk(&a,1)==5);fail_write=false;assert(kb_preferences_commit(&a,&candidate,&generation,&slot,wr,NULL));assert(generation==2&&kb_pref_walk(&a,1)==8);records[slot][88]^=1;kb_preferences_load(&a,&generation,&slot,rd,NULL);assert(generation==1&&kb_pref_walk(&a,1)==5);test_control_atomic_and_retained_fields();test_control_legacy_migration_and_generation();test_control_invalid_records();test_kbw1_compatibility_and_format_precedence();puts("preferences/control: atomic banks, torn writes/checksums, durable uint32 requests, retained timestamps/settings, KBW2/KBW1/KBP1 compatibility and precedence, two-read load, generation/flags PASS");}
+ uint32_t generation=0;uint8_t slot=0;kb_preferences_default(&a,1);assert(kb_preferences_commit(&a,&b,&generation,&slot,wr,NULL));assert(generation==1&&kb_pref_walk(&a,1)==5);kb_preferences_t candidate=b;candidate.bytes[34]=8;fail_write=true;assert(!kb_preferences_commit(&a,&candidate,&generation,&slot,wr,NULL));assert(generation==1&&kb_pref_walk(&a,1)==5);kb_preferences_load(&a,&generation,&slot,rd,NULL);assert(generation==1&&kb_pref_walk(&a,1)==5);fail_write=false;assert(kb_preferences_commit(&a,&candidate,&generation,&slot,wr,NULL));assert(generation==2&&kb_pref_walk(&a,1)==8);records[slot][88]^=1;kb_preferences_load(&a,&generation,&slot,rd,NULL);assert(generation==1&&kb_pref_walk(&a,1)==5);test_control_atomic_and_retained_fields();test_control_legacy_migration_and_generation();test_control_invalid_records();test_kbw1_compatibility_and_format_precedence();test_appearance_defaults_and_schema1_migration();test_appearance_all_combinations_and_canonicalization();test_appearance_invalid_values_preserve_records();test_appearance_atomic_restart_and_torn_write();puts("preferences/control: atomic banks, schema 1-to-2 appearance migration, all 12 size/theme combinations, invalid-value rejection, torn appearance writes, durable requests and retained settings, KBW2/KBW1/KBP1 compatibility, two-read load PASS");}

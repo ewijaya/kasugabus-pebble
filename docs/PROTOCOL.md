@@ -1,4 +1,4 @@
-# KasugaBus communication contract (schema 1)
+# KasugaBus communication contract
 
 All key numbers fixed in package.json. AppMessage envelopes use TYPE=0, SESSION=1, SEQ=2, VERSION=3, LENGTH=4, CRC=5, DATA=6, STATUS=7, REQUEST=8, STAMP=9, ACCURACY=10, EFFECTIVE=11, PENDING=12, FLAGS=13. Dataset versions uint32; effective and coverage dates in binary are JST days since Unix epoch. CRC32 is corruption detection, transport trust is fixed-host HTTPS. Chunk payload 192 bytes; watch persistent record size256. Firmware minimum requires persist_get_max_size and measured enough capacity (8 complete payload slots plus metadata/preferences, 266240 bytes).
 
@@ -12,9 +12,46 @@ this distinguishes a delayed duplicate BEGIN ACK from the first chunk ACK.
 
 FEED status: 0 checking,1 downloading,2 checked(no new),3 updated,4 unavailable,5 failed,6 app-update-required,7 not-configured,8 transferring. Only 2 or3 STAMP sets successful feed-check timestamp; source review dates independent. A watch CHECK is sent only after HELLO (reconnect HELLO supported); watch persists automatic attempt timestamp when a CHECK is queued after phone readiness. Manual bypasses rolling24h; one request/transfer at once. Phone uses one bounded attempt.
 
-LOCATION DATA carries verified poles from selected dataset as packed (id:u16,lat_e7:i32,lon_e7:i32) records. Phone must use these rather than old bundle coordinates. NEARBY DATA packed (id:u16,distance_metres:u32) records. status0 good,1 low accuracy,2 stale,3 denied,4 timeout,5 unavailable,6 outside area,7 no coordinates,8 disabled. Fix maxage120 seconds and accuracy<=100m; outside if nearest>2000m. Stable ties within uncertainty retain favourite/input order. No coordinates persisted or logged.
+LOCATION DATA carries verified poles from selected dataset as packed (id:u16,lat_e7:i32,lon_e7:i32) records. Phone must use these rather than old bundle coordinates. NEARBY DATA packed (id:u16,distance_metres:u32) records. status0 good,1 low accuracy,2 stale,3 denied,4 timeout,5 unavailable,6 outside area,7 no coordinates,8 disabled. Fix maxage120 seconds and accuracy<=100m; outside if nearest>2000m. Stable ties within uncertainty retain favourite/input order. Current phone fixes remain transient and are not logged or sent to the watch.
 
-Settings bytes little-endian (fixed80 bytes): schema u8=1; flags u8 (auto1,location2,nearbyStartup4,highContrast8,reducedMotion16); default_id u16; buffer u8 (0..30); count u8 (0..12); reserved2 bytes; 12 favourite u16 ids at8; 12 scoped walk records (id:u16,minutes:u8 0..120, reserved:u8) at32. Zero id means unused, walk absent means unset. Full message validates atomically, duplicates/unknown ids reject, preserve previous. Saved-origin context selected explicitly watch-side; temporary Nearby selection never changes default/favourites.
+Settings bytes little-endian (fixed80 bytes): schema u8=2; flags u8 (auto1,location2,nearbyStartup4,highContrast8,reducedMotion16); default_id u16; buffer u8 (0..30); count u8 (0..12); text size u8 at6 (0 Standard,1 Large,2 Extra Large); theme u8 at7 (0 Neon Dark,1 Neon Light,2 High Contrast Dark,3 High Contrast Light); 12 favourite u16 ids at8; 12 scoped walk records (id:u16,minutes:u8 0..120, reserved:u8) at32. HighContrast mirrors themes2/3. Schema1 with zero reserved bytes migrates to Large and its equivalent dark theme. Zero id means unused, walk absent means unset. Full message validates atomically, duplicates/unknown ids reject, preserve previous. Saved-origin context selected explicitly watch-side; temporary Nearby selection never changes default/favourites. Startup bit4 requires location bit2; Clay clears startup when location is turned off.
+
+## Version 2 reference-location extension
+
+Existing key numbers, timetable format, update phases and Nearby9/10 remain
+unchanged. TYPE14 REFERENCE_LOCATION carries REQUEST, VERSION, FLAGS0 current
+phone or1 saved home, and the same verified-pole DATA as LOCATION9. TYPE15
+REFERENCE_RESULT echoes REQUEST/VERSION/FLAGS; STATUS0–8 has the same meaning
+as Nearby, with9 meaning home not set. A successful result contains only
+6-byte point/distance rows, STAMP and ACCURACY. No reference coordinate appears
+in an AppMessage. Non-success states carry no ranked distances.
+
+TYPE16 HOME_CHANGED contains only STATUS0 saved or9 cleared. It invalidates
+cached home distances and never requests another location automatically.
+The phone stores a pending notification atomically with a changed home record.
+Delivery uses three bounded attempts and resumes on reconnect/STATE or worker
+restart. A Clear immediately replaces the coordinates with a private metadata
+tombstone; successful delivery removes the tombstone. Delayed callbacks cannot
+erase a newer Save/Clear. No coordinates or per-pole distances enter diagnostics.
+Current reference data ages out after 120 seconds. Saved home is a fixed
+reference: the phone computes its distances using the saved accuracy and a
+fresh calculation timestamp, so it does not age out as a mobile fix would.
+Both references require the main location preference. Android permission
+remains separate; granting the app preference cannot grant OS permission.
+
+An explicit Save current phone location as home action adds REQUEST to
+SETTINGS11. The watch returns ACK8 with FLAGS11, the same REQUEST and STATUS0
+only after durable settings storage (nonzero on failure), followed by STATE.
+The phone starts that one-shot fix only after both the correlated successful
+ACK and exactly matching valid STATE. Ordinary settings open/save and saved
+home queries do not acquire a fix. Clear is an independent explicit action
+that also works with location disabled.
+
+The private home record is phone-localStorage only. It is never copied into
+Clay URLs/meta/settings values, logs, watch persistence, timetable feeds or
+published artifacts. All-departures selection uses separate 80-byte KBA1 banks
+at keys 12/13: generation, schema/reference/count, up to 32 boarding IDs and CRC.
+No distances or coordinates are persisted in those banks.
 
 TYPE13 CATALOG watch->phone: VERSION selected dataset, SEQ contiguous starting at0, STATUS1 on final frame. DATA is repeated `{id:u16,label_bytes:u8,label:UTF8}` records; frames contain complete records. Sequence0 starts a new catalogue. The phone applies only a complete catalogue matching STATE.VERSION. Labels identify stop, operator and boarding direction. Missing saved preference IDs appear as unavailable in Clay until explicitly removed. Watch replies STATE after accepting a SETTINGS envelope; the phone retains its previous confirmed preferences until that reply.
 

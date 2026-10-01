@@ -6,12 +6,15 @@ the actual current time on exit. Screenshots are actual 200x228 watch renders. R
 installed pebble-tool Python for emu_update_bridge.py; no physical claims.
 """
 import argparse
+from collections import deque
 import copy
 import datetime as dt
+import hashlib
 import json
 import os
 from pathlib import Path
 import queue
+import re
 import subprocess
 import threading
 import time
@@ -21,23 +24,49 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class Emulator:
-    def __init__(self):
+    def __init__(self, screenshot_prefix=None, expected_pbw=None, sdk_version=None, deadline=None, fixture_relay=False):
         python = os.environ.get("KASUGABUS_PEBBLE_PYTHON", str(Path.home() / ".local/share/uv/tools/pebble-tool/bin/python"))
+        if screenshot_prefix is not None and not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,79}", screenshot_prefix):
+            raise ValueError("Screenshot prefix must be a short filename component")
+        self.screenshot_prefix = screenshot_prefix
+        if fixture_relay and expected_pbw is None:
+            raise ValueError("Native fixture mode requires an exact expected PBW")
+        self.fixture_relay = fixture_relay
+        self.deadline = deadline
+        self.observed = deque(maxlen=2048)
+        self.location_requests = 0
+        self.ui_resyncs = 0
         self.events = queue.Queue()
-        self.proc = subprocess.Popen([python, "tools/emu_update_bridge.py"], cwd=ROOT, stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
+        command = [python, "tools/emu_update_bridge.py"]
+        if sdk_version:
+            command.extend(["--sdk-version", sdk_version])
+        if expected_pbw:
+            command.extend(["--fixture-relay" if fixture_relay else "--observe-production", "--expected-pbw", str(Path(expected_pbw).resolve())])
+        self.proc = subprocess.Popen(command, cwd=ROOT, stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
         def read():
             for line in self.proc.stdout:
                 try:
                     self.events.put(json.loads(line))
                 except ValueError:
                     pass
+            self.events.put({"event": "error", "message": "Emulator bridge stdout closed"})
         threading.Thread(target=read, daemon=True).start()
-        self.wait(lambda e: e.get("event") == "ready")
+        try:
+            self.ready = self.wait(lambda e: e.get("event") == "ready",30 if fixture_relay else 15)
+        except BaseException:
+            self.close()
+            raise
 
     def wait(self, predicate, seconds=15):
         end = time.monotonic() + seconds
+        if self.deadline is not None:
+            end = min(end, self.deadline)
         while time.monotonic() < end:
-            event = self.events.get(timeout=max(.01, end-time.monotonic()))
+            try:
+                event = self.events.get(timeout=max(.01, end-time.monotonic()))
+            except queue.Empty:
+                break
+            self.remember(event)
             if event.get("event") == "error":
                 raise RuntimeError(event["message"])
             if predicate(event):
@@ -46,9 +75,19 @@ class Emulator:
 
     def drain(self):
         while not self.events.empty():
-            self.events.get_nowait()
+            event = self.events.get_nowait()
+            self.remember(event)
+            if event.get("event") == "error":
+                raise RuntimeError(event["message"])
+
+    def remember(self, event):
+        self.observed.append(dict(event, observedAt=time.monotonic()))
+        if event.get("event") == "appmessage" and event.get("message", {}).get("0") == 9:
+            self.location_requests = getattr(self, "location_requests", 0) + 1
 
     def command(self, op, **kw):
+        if self.deadline is not None and time.monotonic() >= self.deadline:
+            raise TimeoutError("Emulator harness exceeded its overall deadline")
         self.proc.stdin.write(json.dumps(dict(op=op, **kw)) + "\n")
         self.proc.stdin.flush()
 
@@ -57,19 +96,27 @@ class Emulator:
         self.command("send", message={"TYPE": 1})
         return self.wait(lambda e: e.get("event") == "appmessage" and e["message"].get("0") == 2)["message"]
 
-    def settings(self, data):
+    def settings(self, data, expected=None):
         self.drain()
         self.command("send", message={"TYPE": 11, "DATA": data})
         result = self.wait(lambda e: e.get("event") == "appmessage" and e["message"].get("0") == 2)["message"]
-        assert result["6"] == data, "Native preferences were not accepted atomically"
+        assert result["6"] == (data if expected is None else expected), "Native preferences were not accepted atomically"
+        return result
 
     def restart(self, get_state=True):
         self.drain()
         self.command("stop")
         self.wait(lambda e: e.get("kind") == "AppRunStateStop")
+        started = time.monotonic()
         self.command("start")
         self.wait(lambda e: e.get("kind") == "AppRunStateStart")
-        time.sleep(.4)
+        if self.ready.get("observer") in ("installed-pypkjs-worker", "native-fixture-relay"):
+            # Observe the first native paint instead of clicking during init.
+            painted = lambda e: e.get("event") == "watchlog" and re.search(r"\bUI screen\d+ heap\d+", e.get("message", ""))
+            if not any(painted(e) and e.get("observedAt", 0) >= started for e in self.observed):
+                self.wait(painted)
+        else:
+            time.sleep(.4)
         return self.state() if get_state else None
 
     def action(self, op, **kw):
@@ -86,7 +133,12 @@ class Emulator:
         time.sleep(.15)
 
     def screenshot(self, name):
-        target = ROOT / "artifacts/screenshots" / (name + ".png")
+        if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,99}", name):
+            raise ValueError("Screenshot name must be a short filename component")
+        prefix = (self.screenshot_prefix + "_") if self.screenshot_prefix else ""
+        target = ROOT / "artifacts/screenshots" / (prefix + name + ".png")
+        if target.exists():
+            raise FileExistsError("Never overwrite native screenshot evidence: " + str(target))
         target.parent.mkdir(parents=True, exist_ok=True)
         # Screenshot reads the framebuffer while the app may still be drawing.
         # Let the latest requested render complete rather than capture a tear.
@@ -94,22 +146,54 @@ class Emulator:
         result = self.action("screenshot", path=str(target))
         assert result["width"] == 200 and result["height"] == 228
         print("Captured", target.relative_to(ROOT), flush=True)
+        return dict(result, sha256=hashlib.sha256(target.read_bytes()).hexdigest())
 
     def menu(self, index):
+        if self.ready.get("observer") in ("installed-pypkjs-worker", "native-fixture-relay"):
+            from verify_accessibility import open_menu
+            return open_menu(self, index, [4, 9, 11, 10][index])
         self.click("select", long=True)
         if index:
             self.click("down", index)
         self.click("select")
 
+    def row(self, screen, index):
+        if self.ready.get("observer") in ("installed-pypkjs-worker", "native-fixture-relay"):
+            from verify_accessibility import choose_row
+            return choose_row(self, screen, index)
+        # Retain the original non-observer harness interface; use --pbw for
+        # the 2.0 UI's native index proof, including oversized row scrolling.
+        if index:
+            self.click("down", index)
+
     def close(self):
-        self.command("close")
-        self.proc.stdin.close()
-        self.proc.wait(timeout=5)
+        # Cleanup has its own bounded budget even after the work deadline.
+        deadline=self.deadline;self.deadline=None
+        failure=None
+        try:
+            try:self.command("close")
+            except (BrokenPipeError,ValueError):pass
+            finally:
+                if not self.proc.stdin.closed:self.proc.stdin.close()
+            if self.fixture_relay and not any(e.get("event")=="fixtureRestored" and e.get("normalSdkRelayRestored") is True for e in self.observed):
+                try:self.wait(lambda e:e.get("event")=="fixtureRestored" and e.get("normalSdkRelayRestored") is True,55)
+                except BaseException as error:failure=error
+            try:self.proc.wait(timeout=55 if self.fixture_relay else 5)
+            except subprocess.TimeoutExpired:
+                # SIGTERM is trapped by the bridge to run relay restoration.
+                # Never SIGKILL a fixture bridge before its finally handler.
+                self.proc.terminate()
+                if self.fixture_relay:
+                    try:self.wait(lambda e:e.get("event")=="fixtureRestored" and e.get("normalSdkRelayRestored") is True,55);failure=None
+                    except BaseException as error:failure=error
+                self.proc.wait(timeout=55 if self.fixture_relay else 5)
+            if failure:raise failure
+        finally:self.deadline=deadline
 
 
 def preferences(point=1, contrast=False):
     data = [0] * 80
-    data[:6] = [1, 8 if contrast else 0, point, 0, 2, 4]
+    data[:8] = [2, 8 if contrast else 0, point, 0, 2, 4, 1, 2 if contrast else 0]
     for i, value in enumerate([1, 102, 6, 105]):
         data[8+2*i] = value
     data[32:36] = [1, 0, 5, 0]  # Controlled five-minute fixture, never an inferred walk.
@@ -134,13 +218,13 @@ def navigation(emu):
     emu.click("select")
     emu.screenshot("emery_06_favourites")
     emu.click("back")
-    emu.click("down", 2)
+    emu.row(4, 2)
     emu.click("select")
     emu.screenshot("emery_07_all_stops")
-    emu.click("down", 4)
+    emu.row(6, 4)
     emu.click("select")
     emu.screenshot("emery_08_directions")
-    emu.click("down", 3)
+    emu.row(7, 3)
     emu.screenshot("emery_09_direction_long")
     emu.settings(preferences(102))
     emu.restart()
@@ -153,14 +237,14 @@ def navigation(emu):
     emu.settings(preferences())
     emu.restart()
     emu.menu(0)
-    emu.click("down")
+    emu.row(4, 1)
     emu.click("select")
     time.sleep(1)
     emu.screenshot("emery_13_nearby_disabled")
     emu.click("back")
     emu.click("back")
     emu.menu(1)
-    emu.click("down")
+    emu.row(9, 1)
     emu.click("select")
     emu.click("select")
     emu.click("select")
@@ -208,6 +292,7 @@ def rollover(emu, current, future):
     emu.restart(False)
     emu.screenshot("emery_22_calendar_unconfirmed")
     emu.menu(3)
+    emu.row(10, 2)
     emu.click("select")
     emu.click("down")
     emu.click("select")
@@ -270,7 +355,7 @@ def restore_during_begin(emu, version):
     before = emu.restart()
     assert before["3"] > 1 and before["12"] > 1
     emu.menu(3)
-    emu.click("down", 6)
+    emu.row(10, 7)
     emu.click("select")
     emu.click("down")
     doc = json.loads((ROOT / "data/timetable.json").read_text())
@@ -336,8 +421,11 @@ def main():
     parser.add_argument("phase", choices=["navigation", "rollover", "focus-removal", "restore-during-begin"])
     parser.add_argument("--current", type=int, default=6)
     parser.add_argument("--future", type=int, default=7)
+    parser.add_argument("--screenshot-prefix", help="Use a separate capture namespace, e.g. emery_2_0_0")
+    parser.add_argument("--pbw", type=Path, help="Bind the cached installed PBW and use native screen/selection proof (required for reliable 2.0 list navigation)")
+    parser.add_argument("--sdk-version")
     args = parser.parse_args()
-    emu = Emulator()
+    emu = Emulator(screenshot_prefix=args.screenshot_prefix, expected_pbw=args.pbw, sdk_version=args.sdk_version)
     original = emu.state()["6"]
     try:
         if args.phase == "navigation":
@@ -352,7 +440,8 @@ def main():
         emu.action("bluetooth", connected=True)
         emu.action("timeFormat", is24Hour=True)
         emu.date(dt.datetime.now(dt.timezone.utc).isoformat())
-        emu.settings(original)
+        from verify_accessibility import normalized
+        emu.settings(original, expected=normalized(original))
         emu.restart()
         emu.close()
 

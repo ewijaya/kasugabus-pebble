@@ -4,14 +4,16 @@ function integer(n, min, max) {
 }
 function u16(bytes, offset) { return bytes[offset] + bytes[offset + 1] * 256; }
 function put16(bytes, offset, n) { bytes[offset] = n & 255; bytes[offset + 1] = n >>> 8; }
+function appearanceFlags(s) { return (s.flags & ~8) | (s.theme >= 2 ? 8 : 0); }
 function validate(s, catalog) {
   var known = {}, used = {}, i, walks = s.walks || {};
   catalog.forEach(function(p) { known[p.id] = true; });
   if (!integer(s.flags, 0, 31) || !integer(s.buffer, 0, 30) ||
+      !integer(s.textSize, 0, 2) || !integer(s.theme, 0, 3) ||
       !integer(s.defaultId, 0, 65535) || !Array.isArray(s.favourites) || s.favourites.length > 12) {
     throw new Error('Invalid preferences');
   }
-  if ((s.flags & 4) && !(s.flags & 2)) throw new Error('Startup Nearby requires startup location permission');
+  if ((s.flags & 4) && !(s.flags & 2)) throw new Error('Startup Nearby requires phone location');
   if (s.defaultId && !known[s.defaultId]) throw new Error('Unknown default boarding point');
   for (i = 0; i < s.favourites.length; i += 1) {
     var id = s.favourites[i];
@@ -32,8 +34,9 @@ function encode(s, catalog) {
   validate(s, catalog);
   var bytes = [], i;
   for (i = 0; i < 80; i += 1) bytes[i] = 0;
-  bytes[0] = 1; bytes[1] = s.flags; put16(bytes, 2, s.defaultId);
+  bytes[0] = 2; bytes[1] = appearanceFlags(s); put16(bytes, 2, s.defaultId);
   bytes[4] = s.buffer; bytes[5] = s.favourites.length;
+  bytes[6] = s.textSize; bytes[7] = s.theme;
   s.favourites.forEach(function(id, n) { put16(bytes, 8 + n * 2, id); });
   Object.keys(s.walks || {}).sort(function(a, b) { return Number(a) - Number(b); }).forEach(function(id, n) {
     put16(bytes, 32 + n * 4, Number(id)); bytes[34 + n * 4] = s.walks[id];
@@ -41,11 +44,19 @@ function encode(s, catalog) {
   return bytes;
 }
 function decode(bytes, catalog) {
-  if (!Array.isArray(bytes) || bytes.length !== 80 || bytes[0] !== 1 || bytes[6] || bytes[7]) {
+  if (!Array.isArray(bytes) || bytes.length !== 80 || (bytes[0] !== 1 && bytes[0] !== 2) ||
+      (bytes[0] === 1 && (bytes[6] || bytes[7]))) {
     throw new Error('Invalid preference envelope');
   }
-  bytes.forEach(function(b) { if(!integer(b,0,255))throw new Error('Invalid preference byte'); });
-  var s = { flags: bytes[1], defaultId: u16(bytes, 2), buffer: bytes[4], favourites: [], walks: {} }, i;
+  for (var n = 0; n < 80; n += 1) {
+    if (!integer(bytes[n], 0, 255)) throw new Error('Invalid preference byte');
+  }
+  var s = { flags: bytes[1], defaultId: u16(bytes, 2), buffer: bytes[4],
+    textSize: bytes[0] === 1 ? 1 : bytes[6],
+    theme: bytes[0] === 1 ? (bytes[1] & 8 ? 2 : 0) : bytes[7], favourites: [], walks: {} }, i;
+  // Theme is authoritative; keep the legacy contrast flag as its mirror.
+  if (!integer(s.flags, 0, 31)) throw new Error('Invalid preferences');
+  s.flags = appearanceFlags(s);
   if (bytes[5] > 12) throw new Error('Too many favourites');
   for (i = 0; i < 12; i += 1) {
     var id = u16(bytes, 8 + i * 2);
@@ -61,14 +72,23 @@ function decode(bytes, catalog) {
   return validate(s, catalog);
 }
 function unwrap(v) { return v && typeof v === 'object' ? v.value : v; }
+function selectValue(value, max) {
+  var v = unwrap(value);
+  if (!(typeof v === 'number' || (typeof v === 'string' && /^[0-9]+$/.test(v))) ||
+      !integer(Number(v), 0, max)) throw new Error('Invalid appearance choice');
+  return Number(v);
+}
 function fromClay(values, catalog) {
   var s = { flags: 0, defaultId: Number(unwrap(values.DefaultId)), buffer: Number(unwrap(values.Buffer)),
-    favourites: [], walks: {} };
-  ['AutoChecks', 'LocationEnabled', 'NearbyStartup', 'HighContrast', 'ReducedMotion'].forEach(function(key, i) {
+    textSize: selectValue(values.TextSize, 2), theme: selectValue(values.Theme, 3), favourites: [], walks: {} };
+  ['AutoChecks', 'LocationEnabled', 'NearbyStartup', 'ReducedMotion'].forEach(function(key, i) {
     var v = unwrap(values[key]);
-    if (v === true || v === 1 || v === '1') s.flags |= 1 << i;
+    if (v === true || v === 1 || v === '1') s.flags |= 1 << (i === 3 ? 4 : i);
     else if (!(v === false || v === 0 || v === '0')) throw new Error('Invalid switch');
   });
+  // Turning off Nearby location also turns off its startup shortcut.
+  if (!(s.flags & 2)) s.flags &= ~4;
+  s.flags = appearanceFlags(s);
   for (var i = 0; i < 12; i += 1) {
     var v = Number(unwrap(values['Favourite' + i]));
     if (!integer(v, 0, 65535)) throw new Error('Invalid favourite');
@@ -82,10 +102,11 @@ function fromClay(values, catalog) {
   return validate(s, catalog);
 }
 function toClay(s, catalog) {
-  var v = { DefaultId: s.defaultId, Buffer: s.buffer };
-  ['AutoChecks', 'LocationEnabled', 'NearbyStartup', 'HighContrast', 'ReducedMotion'].forEach(function(key, i) {
-    v[key] = !!(s.flags & (1 << i));
+  var v = { DefaultId: s.defaultId, Buffer: s.buffer, TextSize: s.textSize, Theme: s.theme };
+  ['AutoChecks', 'LocationEnabled', 'NearbyStartup', 'ReducedMotion'].forEach(function(key, i) {
+    v[key] = !!(s.flags & (1 << (i === 3 ? 4 : i)));
   });
+  v.NearbyStartup = v.LocationEnabled && v.NearbyStartup;
   for (var i = 0; i < 12; i += 1) v['Favourite' + i] = s.favourites[i] || 0;
   catalog.forEach(function(p) { v['Walk' + p.id] = typeof s.walks[p.id] === 'undefined' ? '' : String(s.walks[p.id]); });
   Object.keys(s.walks).forEach(function(id) { v['Walk'+id]=String(s.walks[id]); });

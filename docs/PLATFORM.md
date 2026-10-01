@@ -26,6 +26,24 @@ The [real SDK XHR/native HTTPS proof](../artifacts/releases/1.0.0/production-fee
 Emery-filtered catalogs, and the canonical public store page/changelog. The
 phone's My Apps cache was not observed; the Emery catalog is a proxy for it.
 
+## Version 2 implementation changes awaiting final-candidate measurements
+
+The bundled timetable and downloaded snapshots now share the existing 32 KiB
+RAM cache through a resource-reader callback. The reader validates the bundle
+on initialization and its complete CRC on reload; a resident baseline does
+not reread. This removes the separate 24,203-byte baseline allocation. Short,
+failed or altered resource reads invalidate the cache and preserve explicit
+recovery behavior. Existing storage tests plus seven new resource suites
+cover current/future alternation, interrupted/torn updates, corruption fallback,
+read counts and 15-point merged queries. Actual runtime headroom is measured
+separately on the final PBW.
+
+Version 2 also loads the 16/24/28 px Japanese subset only while its screen is
+open. All-departures selections use two additional 80-byte records at keys 12/13
+and two startup reads, with no startup write. Its coordinates are never stored
+on the watch: only selected IDs/reference persist, and approximate distances
+remain in RAM. Explicitly saved home coordinates stay in private phone storage.
+
 ## Earlier development build evidence
 
 The preceding development [PBW](../artifacts/KasugaBus-1.0.0-emery.pbw) is **817,565 bytes**, SHA-256 `2bddb0b092d51c7cdab6944c56a11bb377f4a97932643ee37541450bfc8bdb09`, version **1.0.0**. [Final workflow build acceptance](../artifacts/final-workflow-build.log) records 113 Python tests, including 31 release, 32 registration and two cleanup tests, plus 25 phone scenarios, five settings scenarios, five HTTP scenarios, strict C checks and a clean build/static audit. Sizes remain 30,178 resource bytes, 39,170 static RAM bytes, 31,428 native binary bytes and 91,902 linker-free bytes before runtime allocations. The [sealed emulator receipt](../artifacts/runtime-workflow-acceptance.log.install.json), [monotonic profile](../artifacts/native-profile-workflow-acceptance.json) and [final workflow audit](../artifacts/final-workflow-build-audit.json) bind to this exact PBW; minimum observed free heap is 32,400 bytes.

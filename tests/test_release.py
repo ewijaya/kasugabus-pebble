@@ -6,6 +6,7 @@ import importlib
 import json
 from pathlib import Path
 import shutil
+import subprocess
 import sys
 import tempfile
 import types
@@ -310,6 +311,158 @@ class ReleaseTests(unittest.TestCase):
         self.assertEqual(state["approval"]["sha256"], self.artifact["sha256"])
         self.assertEqual([call.args for call in run.call_args_list], [("git", "rev-parse", "HEAD")])
 
+    @staticmethod
+    def sdk_double(upload):
+        class Publisher:
+            @classmethod
+            def _post_with_wait_bar(cls, url, headers, data, files, timeout, label):
+                raise AssertionError("This SDK double does not send HTTP")
+            @classmethod
+            def _upload_release(cls, api_base, app_id, firebase_id_token, pbw_path, version, release_notes, is_published, gif_paths, screenshot_paths, replace_screenshots=False):
+                return upload(api_base, app_id, firebase_id_token, pbw_path, version, release_notes, is_published, gif_paths, screenshot_paths, replace_screenshots)
+        return Publisher
+
+    def store_app_with_history(self):
+        app = self.app()
+        app["description"] = self.state["description"]
+        app["assets"][0]["description"] = self.state["description"]
+        prior = {"id": "prior-release", "version": "0.9.0", "pbw_url": "/prior.pbw", "is_published": True, "release_notes": "Prior reviewed notes"}
+        app["releases"] = [prior]
+        candidate = {"id": "new-release", "version": self.state["version"], "pbw_url": "/candidate.pbw", "is_published": True, "release_notes": self.state["notes"]}
+        return app, candidate
+
+    def test_deleted_prior_release_cannot_be_rebaselined_on_retry(self):
+        before, candidate = self.store_app_with_history()
+        changed = copy.deepcopy(before)
+        changed["releases"] = [candidate]
+        upload = Mock()
+        module = types.SimpleNamespace(PublishCommand=self.sdk_double(upload))
+        with patch.dict(sys.modules, {"pebble_tool.commands.publish": module}), patch.object(release, "dashboard_session", return_value=(Mock(), "fixture-token")), patch.object(release, "dashboard_app", side_effect=[before, changed]):
+            with self.assertRaisesRegex(RuntimeError, "previous release"):
+                release.upload_store(self.folder, self.state)
+        saved = json.loads((self.folder / "manifest.json").read_text())
+        original_baseline = copy.deepcopy(saved["store_preservation"])
+        self.assertEqual(set(original_baseline["history"]), {"prior-release"})
+        with patch.dict(sys.modules, {"pebble_tool.commands.publish": module}), patch.object(release, "dashboard_session", return_value=(Mock(), "fixture-token")), patch.object(release, "dashboard_app", return_value=changed), patch.object(release, "get_public") as public:
+            with self.assertRaisesRegex(RuntimeError, "previous release"):
+                release.upload_store(self.folder, saved)
+        public.assert_not_called()
+        upload.assert_called_once()
+        self.assertEqual(json.loads((self.folder / "manifest.json").read_text())["store_preservation"], original_baseline)
+
+    def test_changed_artwork_cannot_be_rebaselined_and_restoration_allows_retry(self):
+        before, candidate = self.store_app_with_history()
+        changed = copy.deepcopy(before)
+        changed["releases"].append(candidate)
+        changed["assets"][0]["screenshots"] = []
+        session, upload = Mock(), Mock()
+        module = types.SimpleNamespace(PublishCommand=self.sdk_double(upload))
+        with patch.dict(sys.modules, {"pebble_tool.commands.publish": module}), patch.object(release, "dashboard_session", return_value=(session, "fixture-token")), patch.object(release, "dashboard_app", side_effect=[before, changed]):
+            with self.assertRaisesRegex(RuntimeError, "unrelated"):
+                release.upload_store(self.folder, self.state)
+        saved = json.loads((self.folder / "manifest.json").read_text())
+        with patch.dict(sys.modules, {"pebble_tool.commands.publish": module}), patch.object(release, "dashboard_session", return_value=(session, "fixture-token")), patch.object(release, "dashboard_app", return_value=changed):
+            with self.assertRaisesRegex(RuntimeError, "unrelated"):
+                release.upload_store(self.folder, saved)
+        restored = copy.deepcopy(before)
+        restored["releases"].append(candidate)
+        with patch.dict(sys.modules, {"pebble_tool.commands.publish": module}), patch.object(release, "dashboard_session", return_value=(session, "fixture-token")), patch.object(release, "dashboard_app", return_value=restored), patch.object(release, "get_public", return_value=Response(content=(self.folder / common.ARTIFACT).read_bytes())):
+            release.upload_store(self.folder, saved)
+        upload.assert_called_once()  # Matching candidate is reused after restoration.
+        session.patch.assert_not_called()
+        self.assertEqual(saved["store_preservation"]["metadata"], release.preserved_fields(before))
+
+    def test_original_baseline_is_durable_before_upload_and_description_patch(self):
+        before, candidate = self.store_app_with_history()
+        before["description"] = "Old description"
+        after_upload = copy.deepcopy(before)
+        after_upload["releases"].append(candidate)
+        after = copy.deepcopy(after_upload)
+        after["description"] = self.state["description"]
+        after["assets"][0]["description"] = self.state["description"]
+        observed = []
+        def assert_saved(*args, **kwargs):
+            saved = json.loads((self.folder / "manifest.json").read_text())
+            baseline = saved["store_preservation"]
+            self.assertEqual(baseline["metadata"], release.preserved_fields(before))
+            self.assertEqual(baseline["history"], release.prior_release_history(before))
+            self.assertEqual(baseline["artifact_sha256"], self.artifact["sha256"])
+            observed.append(baseline)
+            return Response()
+        session = Mock()
+        session.patch.side_effect = assert_saved
+        module = types.SimpleNamespace(PublishCommand=self.sdk_double(assert_saved))
+        with patch.dict(sys.modules, {"pebble_tool.commands.publish": module}), patch.object(release, "dashboard_session", return_value=(session, "fixture-token")), patch.object(release, "dashboard_app", side_effect=[before, after_upload, after]):
+            release.upload_store(self.folder, self.state)
+        self.assertEqual(len(observed), 2)
+        self.assertEqual(observed[0], observed[1])
+
+    def test_baseline_save_failure_prevents_mutation_and_keeps_ram_uncommitted(self):
+        before, _ = self.store_app_with_history()
+        session, upload = Mock(), Mock()
+        module = types.SimpleNamespace(PublishCommand=self.sdk_double(upload))
+        with patch.dict(sys.modules, {"pebble_tool.commands.publish": module}), patch.object(release, "dashboard_session", return_value=(session, "fixture-token")), patch.object(release, "dashboard_app", return_value=before), patch.object(release, "save", side_effect=OSError("Fixture journal unavailable")):
+            with self.assertRaisesRegex(OSError, "journal unavailable"):
+                release.upload_store(self.folder, self.state)
+        self.assertNotIn("store_preservation", self.state)
+        upload.assert_not_called()
+        session.patch.assert_not_called()
+
+    def test_missing_or_wrong_candidate_baseline_never_resets_after_an_attempt(self):
+        before, _ = self.store_app_with_history()
+        self.state["status"]["appstore"] = {"state": "upload stopped; inspect remote before retry"}
+        with self.assertRaisesRegex(RuntimeError, "Missing pre-mutation"):
+            release.store_preservation(self.folder, self.state, before, self.config)
+        self.state["status"] = {}
+        baseline = release.store_preservation(self.folder, self.state, before, self.config)
+        for changed in (None, dict(baseline, app_id="b"*24), dict(baseline, artifact_sha256="f"*64), dict(baseline, version="1.0.1"), dict(baseline, history=[])):
+            with self.subTest(baseline=changed):
+                self.state["store_preservation"] = changed
+                with self.assertRaisesRegex(RuntimeError, "baseline"):
+                    release.store_preservation(self.folder, self.state, before, self.config)
+
+    @unittest.skipUnless((Path.home() / ".local/share/uv/tools/pebble-tool/bin/python").is_file(), "Installed SDK Python unavailable")
+    def test_actual_sdk_upload_adapter_rejects_redirects_and_preserves_exact_pbw(self):
+        script = r'''
+import sys
+from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import Mock,patch
+sys.path.insert(0,sys.argv[1]);sys.path.insert(1,sys.argv[2])
+import release
+from pebble_tool.commands.publish import PublishCommand
+import requests
+config={"appstore_api":"https://appstore-api.repebble.com","store_app_id":"a"*24}
+publisher=release.guarded_store_publisher(PublishCommand,config)
+fixture=Path(sys.argv[3]);expected=fixture.read_bytes()
+url=config["appstore_api"]+"/api/dashboard/apps/"+config["store_app_id"]+"/releases"
+for code in (301,302,303,307,308,200):
+    response=SimpleNamespace(status_code=code,json=lambda:{"fixture":"uploaded"},text="fixture",close=Mock())
+    def post(actual_url,**kwargs):
+        assert actual_url==url and kwargs["allow_redirects"] is False
+        assert kwargs["headers"]=={"Authorization":"Bearer fixture-token"}
+        assert kwargs["timeout"]==300
+        assert kwargs["data"]["replaceScreenshots"]=="false"
+        assert len(kwargs["files"])==1 and kwargs["files"][0][0]=="pbwFile"
+        assert kwargs["files"][0][1][1].read()==expected
+        return response
+    mocked=Mock(side_effect=post)
+    with patch.object(requests,"post",mocked):
+        try:
+            result=publisher._upload_release(api_base=config["appstore_api"],app_id=config["store_app_id"],firebase_id_token="fixture-token",pbw_path=str(fixture),version="1.0.1",release_notes="Fixture notes",is_published=True,gif_paths=[],screenshot_paths=[],replace_screenshots=False)
+        except RuntimeError as error:
+            assert code!=200 and "redirect rejected" in str(error)
+            response.close.assert_called_once()
+        else:
+            assert code==200 and result=={"fixture":"uploaded"}
+        mocked.assert_called_once()  # No redirected second destination/token.
+assert fixture.read_bytes()==expected
+print("PASS actual installed SDK adapter: all redirects refused, token sent only once to fixed host, exact PBW unchanged")
+'''
+        sdk_python = Path.home() / ".local/share/uv/tools/pebble-tool/bin/python"
+        result = subprocess.run([str(sdk_python), "-B", "-c", script, str(Path(release.__file__).resolve().parent), str(ROOT / "scripts"), str(self.folder / common.ARTIFACT)], text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=20)
+        self.assertEqual(result.returncode, 0, result.stdout)
+
     def test_store_request_preserves_android_ios_unknown_fields_and_artwork(self):
         before = self.app()
         after_upload = copy.deepcopy(before)
@@ -320,6 +473,9 @@ class ReleaseTests(unittest.TestCase):
         session.patch.return_value = Response()
         upload_calls = []
         class Publisher:
+            @classmethod
+            def _post_with_wait_bar(cls, url, headers, data, files, timeout, label):
+                raise AssertionError("This request-preservation double never sends HTTP")
             @classmethod
             def _upload_release(cls, api_base, app_id, firebase_id_token, pbw_path, version, release_notes, is_published, gif_paths, screenshot_paths, replace_screenshots=False):
                 upload_calls.append({"path": pbw_path, "screenshots": screenshot_paths, "gifs": gif_paths, "replace": replace_screenshots})

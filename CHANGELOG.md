@@ -1,5 +1,29 @@
 # Changelog
 
+## 2.0.0 — in preparation
+
+- Standard, Large and Extra Large text choices in watch and phone settings;
+  Large is the default for new installations and upgrades.
+- Neon Dark, Neon Light, High Contrast Dark and High Contrast Light themes.
+- Layouts adapt to larger text, with fewer visible rows and scrollable details.
+- Preserve existing favourites, walking allowances and update settings when
+  migrating version 1 preferences.
+- Store banner explicitly identifies Minami-kasugaoka, Ibaraki, Osaka, Japan.
+- Offline bus-number browser: operator/number → boarding point/direction →
+  filtered departures and full details, using the number when boarding.
+- All departures merges selected boarding points by time, then approximate
+  distance. Current phone, saved home and manual/favourite references preserve
+  explicit availability states and Distance unknown for unverified coordinates.
+  Home coordinates stay on the phone and can be cleared in phone settings.
+- Clearer Nearby location/startup controls and readable disabled-state guidance;
+  turning location off also turns off startup Nearby, without changing the
+  saved preference layout or location protocol.
+
+The app update is being validated. Version 1.0.0 remains the published release
+until the exact 2.0.0 candidate receives physical approval. Timetable contents
+and coverage are unchanged; physical and seven-day checks remain separately
+recorded in the verification report.
+
 ## 1.0.0 — initial release
 
 - Interactive Neon Transit clock-and-departure home for Pebble Time 2 / Emery.

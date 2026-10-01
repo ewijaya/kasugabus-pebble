@@ -30,10 +30,10 @@ def main():
     run("node", "tests/test_phone_settings_ui.js")
     run(sys.executable, "tools/test_feed.py")
     with tempfile.TemporaryDirectory(prefix="kasugabus-host-") as folder:
-        for name, sources in (("preferences", ["src/c/preferences.c"]), ("policies", ["src/c/policies.c"]), ("storage", ["src/c/storage.c", "src/c/engine.c"])):
+        for name, sources in (("preferences", ["src/c/preferences.c"]), ("all_preferences", ["src/c/all_preferences.c"]), ("policies", ["src/c/policies.c"]), ("storage", ["src/c/storage.c", "src/c/engine.c"]), ("storage_resource", ["src/c/storage.c", "src/c/engine.c"])):
             target = str(Path(folder) / name)
             run("cc", "-std=c99", "-Wall", "-Wextra", "-Werror", *sources, "tests/test_" + name + ".c", "-o", target)
-            run(target, *([str(ROOT / "resources/timetable.bin")] if name == "storage" else []))
+            run(target, *([str(ROOT / "resources/timetable.bin")] if name.startswith("storage") else []))
     print("All local KasugaBus test suites passed")
 
 
