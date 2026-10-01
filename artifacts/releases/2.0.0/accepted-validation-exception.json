@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "version": "2.0.0",
+  "artifactSha256": "fb578a00327aa1a3469ebcb6eede5b7738ffb9d19c7ec3d3e4bbaa9e2548fb8b",
+  "sourceCommit": "5a6d3fb9dc856591a2833f7ab13578a4c1a6b852",
+  "recordedAt": "2026-10-01T11:39:40.287220+00:00",
+  "ownerInstruction": "I approve... just publish and release it. I wanna go home.",
+  "priorOwnerInstruction": "i wanna go home can we wrap it up.... skip unnecessary test.",
+  "assistantDisclosure": "Publishing the exact 2.0.0 build just installed on your watch, with unfinished validation explicitly documented; no rebuild.",
+  "scope": "The owner approved publication of the installed 2.0.0 candidate after requesting an immediate wrap-up. The clean build and automated suites passed; 249 appearance/route captures and the core All departures cases passed. A final All departures run completed Standard/Large before an SDK emulator firmware flash/logging stall; its four Extra Large combinations were not completed. The final PBW current/future transfer, recovery and full-retention responsiveness reruns remain outstanding. These checks are deferred, not reported as passing. Broader physical GPS/settings/recovery, outdoor readability, battery and seven-day use also remain outstanding.",
+  "standardRuntimeAuditComplete": false,
+  "physicalInstallationConfirmed": true,
+  "physicalApprovalGiven": true,
+  "physicalFunctionalResults": "Not inferred from installation or approval",
+  "destinations": [
+    "github",
+    "appstore"
+  ],
+  "standardWorkflowModified": false
+}

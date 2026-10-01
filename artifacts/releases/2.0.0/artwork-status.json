@@ -1,0 +1,16 @@
+{
+  "state": "verified",
+  "artifactSha256": "fb578a00327aa1a3469ebcb6eede5b7738ffb9d19c7ec3d3e4bbaa9e2548fb8b",
+  "manifestSha256": "605028818cd04b96a7dde973ed2111262a7575ee4847fe16393fee44e7d491d2",
+  "beforeSha256": "00c579395bb913584468833279a634f31955d32e3c6a49eef11fb5ac982ba96b",
+  "startedAt": "2026-10-01T11:41:38.047723+00:00",
+  "submittedAt": "2026-10-01T11:44:08.649163+00:00",
+  "responseStatus": 200,
+  "unrelatedMetadataPreserved": true,
+  "priorReleasesPreserved": true,
+  "visualReview": "Downloaded banner and public page visually verified; native screenshot source review recorded",
+  "catalogGeneral": "new banner and five screenshots verified",
+  "catalogEmery": "new banner and five screenshots verified",
+  "publicPage": "new banner and all five screenshot URLs observed after bounded propagation checks",
+  "verifiedAt": "2026-10-01T11:50:11.719973+00:00"
+}

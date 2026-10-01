@@ -1,0 +1,80 @@
+{
+  "schema": 1,
+  "version": "2.0.0",
+  "commit": "5a6d3fb9dc856591a2833f7ab13578a4c1a6b852",
+  "config": {
+    "schema": 1,
+    "github_repo": "ewijaya/kasugabus-pebble",
+    "branch": "main",
+    "store_app_id": "f63e6ed24301414a95909564",
+    "uuid": "d7ba77b0-d528-4cc8-b35c-7052798152c9",
+    "display_name": "KasugaBus",
+    "platforms": [
+      "emery"
+    ],
+    "artifact_name": "kasugabus-pebble.pbw",
+    "appstore_api": "https://appstore-api.repebble.com",
+    "dashboard": "https://developer.repebble.com",
+    "public_store": "https://apps.repebble.com",
+    "public_catalog_path": "/api/v1/apps/uuid/{uuid}",
+    "timetable_feed_url": "https://ewijaya.github.io/kasugabus-pebble/timetables/manifest.json",
+    "listing_patch_contract": "dashboard-form-2026-10-01",
+    "store_listing_url": "https://apps.repebble.com/f63e6ed24301414a95909564",
+    "initial_listing": "docs/releases/listing.json",
+    "registration_method": "dashboard-new"
+  },
+  "artifact": {
+    "sha256": "fb578a00327aa1a3469ebcb6eede5b7738ffb9d19c7ec3d3e4bbaa9e2548fb8b",
+    "bytes": 871207
+  },
+  "metrics": {
+    "resources": 35240,
+    "static_ram": 55834,
+    "linker_free_ram": 75238,
+    "native_binary": 48784,
+    "pbw": 871207,
+    "timetable": 24203
+  },
+  "notes": "# KasugaBus 2.0.0 \u2014 larger text and more ways to browse\n\n- Choose Standard, Large or Extra Large text on the watch or in phone settings.\n  Large is the new default, including when upgrading from version 1.\n- Choose Neon Dark, Neon Light, High Contrast Dark or High Contrast Light.\n  Larger text wraps and scrolls, with fewer rows shown when necessary.\n- Existing favourites, boarding-point choices, walking allowances and update\n  history are retained when the preferences migrate to the new format.\n- The store banner and description now make the coverage explicit:\n  Minami-kasugaoka in Ibaraki, Osaka, Japan.\n- Browse **Stops \u2192 Bus numbers**, choose an operator/number, then a boarding\n  point and direction to see departures for that bus. The filter uses the\n  number shown when boarding, even when a route changes number farther on.\n- **Stops \u2192 All departures** merges the boarding points you select into one\n  chronological board, with approximate distance breaking equal-time ties.\n  Choose Current phone location, Saved home location or manual selection.\n  Every entry identifies its operator, number, boarding stop and direction.\n  Points without verified coordinates show **Distance unknown** and remain\n  available manually or through favourites.\n- Save or clear a home reference in phone settings. Home coordinates stay\n  private on the phone; only distances and availability states reach the watch.\n  These are straight-line distances, with no inferred walking time.\n- Clearer Nearby settings separate \"Use phone location for Nearby\" from\n  \"Open Nearby on startup\". Turning location off also turns startup Nearby off;\n  the watch explains how to enable it. Location is requested only when needed,\n  with permission, availability, timeout and accuracy states kept distinct.\n- Strengthened release retry checks preserve the original listing and release\n  history; authenticated PBW uploads refuse HTTP redirects.\n\nOpen KasugaBus, hold Select, choose Settings, then Text size or Colour theme.\nThe phone's KasugaBus settings offer the same choices.\n\nKasugaBus covers six local stop groups; it is not an Osaka-wide journey\nplanner. Timetable content is unchanged by this app update. The bundled\nservice-date coverage remains 1 October\u201327 December 2026, with source review\ndue 1 November. The live timetable feed is dataset v2, which is separate from\napp version 2.0.0. All departures are scheduled, not live arrival predictions.\n\nBroader physical GPS/permission and connection-loss/update-recovery checks,\noutdoor readability, battery observations and the seven-day use review remain\noutstanding. Emulator and automated results do not establish those outcomes.\nCandidate-specific installation, readability/settings checks and publication\napproval are recorded separately in the verification report.\n\nRelease validation scope\n\nThe owner approved publication of the installed 2.0.0 candidate after requesting an immediate wrap-up. The clean build and automated suites passed; 249 appearance/route captures and the core All departures cases passed. A final All departures run completed Standard/Large before an SDK emulator firmware flash/logging stall; its four Extra Large combinations were not completed. The final PBW current/future transfer, recovery and full-retention responsiveness reruns remain outstanding. These checks are deferred, not reported as passing. Broader physical GPS/settings/recovery, outdoor readability, battery and seven-day use also remain outstanding.",
+  "description": "Local buses for Minami-kasugaoka, Ibaraki, Osaka, Japan.\n\nKasugaBus is a neighbourhood bus timetable app for Pebble Time 2, covering six stop groups around Minami-kasugaoka in Ibaraki, Osaka. Coverage is local, not all of Osaka or Japan. Its home combines a clock with your next scheduled departure. Open the board and full details to check the boarding point, operator, route, direction and destination.\n\nChoose Standard, Large or Extra Large text, with Large as the default. Four themes offer vibrant Neon Dark and Neon Light, plus monochrome High Contrast Dark and High Contrast Light. Change these on the watch under Settings or through the phone's app settings. Larger text wraps and scrolls, showing fewer rows when needed.\n\nBrowse the bundled Kintetsu and Hankyu timetables offline, select a boarding point and keep your usual favourites. Phone settings let you arrange favourites, choose display preferences and save your own walking allowances. Leave-by times use those allowances only in the explicitly selected Saved origin context.\n\nKnow your bus number? Open Stops, then Bus numbers. Choose the operator and number, select your boarding point and direction, and see departures for that bus. Only routes within the six covered stop groups are listed; the filter uses the number when boarding, not a number the bus changes to later.\n\nAll departures lets you select several boarding points and see their scheduled departures together, ordered by time with approximate distance breaking ties. Choose Current phone location, Saved home location or manual selection; favourites provide a quick fallback. Every entry identifies its operator, bus number, boarding stop and direction. Points without verified coordinates say Distance unknown and remain selectable.\n\nSave the current phone location as a home reference, or clear it, through an explicit phone settings action. Home coordinates stay private on the phone; only approximate distances and availability states reach the watch. Opening or saving ordinary settings does not request location. Distances are straight-line estimates and never walking times.\n\nBus times and service dates use Japan time; the large clock follows your watch's local time. Calendar-aware lookup distinguishes weekday, Saturday and Sunday/public-holiday services and shows unconfirmed dates. These are scheduled departures, not live arrivals, bus locations or delay predictions.\n\nOptional Nearby requests one phone location fix and ranks six verified Hankyu boarding poles by approximate straight-line distance. Enable \"Use phone location for Nearby\" for manual lookups; \"Open Nearby on startup\" is a separate choice. There is no continuous tracking, and phone location permission is separate from the app setting. Kintetsu boarding points remain available through manual selection. Nearby does not estimate walking time or give roadside guidance.\n\nThe initial bundled timetable covers 1 October\u201327 December 2026. Source review is due 1 November; later service dates remain unconfirmed. Reviewed timetable revisions download through your connected phone without reinstalling the app. Automatic checks run daily when the app opens; Data status also offers a manual check. The bundled timetable remains usable offline. A successful feed check does not certify operator source freshness.\n\nBroader physical GPS/permission and connection-loss/update-recovery checks, outdoor readability, battery observations and seven days of use remain outstanding. Candidate-specific physical observations and automated/emulator results are documented in the source repository.\n\nVersion 2.0.0 was published at the owner\u2019s request with some final emulator update/recovery and All departures layout checks deferred. The source verification report records the completed checks and remaining limitations.",
+  "destinations": [
+    "github",
+    "appstore"
+  ],
+  "status": {
+    "github": {
+      "state": "verified",
+      "details": {
+        "release_url": "https://github.com/ewijaya/kasugabus-pebble/releases/tag/v2.0.0",
+        "asset_url": "https://github.com/ewijaya/kasugabus-pebble/releases/download/v2.0.0/kasugabus-pebble.pbw"
+      }
+    },
+    "appstore": {
+      "state": "verified",
+      "details": {
+        "dashboard": "verified",
+        "catalog_general": "verified",
+        "catalog_emery": "verified",
+        "public_store_url": "https://apps.repebble.com/f63e6ed24301414a95909564",
+        "mobile_cache": "not observed; Emery catalog is a proxy"
+      }
+    }
+  },
+  "approval": {
+    "version": "2.0.0",
+    "sha256": "fb578a00327aa1a3469ebcb6eede5b7738ffb9d19c7ec3d3e4bbaa9e2548fb8b",
+    "physical": true,
+    "destinations": [
+      "github",
+      "appstore"
+    ],
+    "recorded_at": "2026-10-01T11:39:40.617534+00:00"
+  },
+  "validation": {
+    "standardRuntimeAuditComplete": false,
+    "ownerAcceptedLimitations": true,
+    "exception": "accepted-validation-exception.json"
+  },
+  "artwork": "artwork-manifest.json",
+  "artworkStatus": "artwork-status.json"
+}

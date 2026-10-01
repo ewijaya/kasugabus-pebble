@@ -31,5 +31,10 @@
         "mobile_cache": "not observed; Emery catalog is a proxy"
       }
     }
+  },
+  "validation": {
+    "standardRuntimeAuditComplete": false,
+    "ownerAcceptedLimitations": true,
+    "report": "docs/releases/2.0.0-verification.md"
   }
 }

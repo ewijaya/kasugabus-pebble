@@ -1,0 +1,81 @@
+{
+  "version": "2.0.0",
+  "artifactSha256": "fb578a00327aa1a3469ebcb6eede5b7738ffb9d19c7ec3d3e4bbaa9e2548fb8b",
+  "sourceCommit": "5a6d3fb9dc856591a2833f7ab13578a4c1a6b852",
+  "preserve": "Existing icons, unrelated metadata, companion fields and previous releases",
+  "status": "approved replacement assets; not uploaded",
+  "assets": [
+    {
+      "role": "banner",
+      "platform": "emery",
+      "source": "docs/releases/assets/emery-banner-local.png",
+      "path": "artwork/0-emery-banner-local.png",
+      "dimensions": [
+        720,
+        320
+      ],
+      "bytes": 139208,
+      "sha256": "e8549b978ca76d41854d7572c1a2817040e57d4bd3caa9a609791665affec4ef"
+    },
+    {
+      "role": "screenshot",
+      "platform": "emery",
+      "source": "artifacts/screenshots/verify-v2-appearance_size1_theme0_home.png",
+      "path": "artwork/1-verify-v2-appearance_size1_theme0_home.png",
+      "dimensions": [
+        200,
+        228
+      ],
+      "bytes": 2202,
+      "sha256": "487be0e8a1ba8691772844f2d15d65cb4293ef1271f6930c2e21b94809c31736"
+    },
+    {
+      "role": "screenshot",
+      "platform": "emery",
+      "source": "artifacts/screenshots/verify-v2-all-final_manual_offline.png",
+      "path": "artwork/2-verify-v2-all-final_manual_offline.png",
+      "dimensions": [
+        200,
+        228
+      ],
+      "bytes": 2221,
+      "sha256": "1189afe585c7e0c0a3ae5c2e82f0b8f0a302a9216414177173aaefe2a3678836"
+    },
+    {
+      "role": "screenshot",
+      "platform": "emery",
+      "source": "artifacts/screenshots/verify-v2-appearance_route_2_72_list.png",
+      "path": "artwork/3-verify-v2-appearance_route_2_72_list.png",
+      "dimensions": [
+        200,
+        228
+      ],
+      "bytes": 2191,
+      "sha256": "88cd5d5852ba367e613b30e680b60877cda2408cdc6d4ed960ce9352f5aa1a4b"
+    },
+    {
+      "role": "screenshot",
+      "platform": "emery",
+      "source": "artifacts/screenshots/verify-v2-appearance_size2_theme1_nearby_location_off.png",
+      "path": "artwork/4-verify-v2-appearance_size2_theme1_nearby_location_off.png",
+      "dimensions": [
+        200,
+        228
+      ],
+      "bytes": 2553,
+      "sha256": "514be4faf2c3681bbf705c84022771afaecae40a0d71c0a58d778767a99e446a"
+    },
+    {
+      "role": "screenshot",
+      "platform": "emery",
+      "source": "artifacts/screenshots/verify-v2-appearance_size0_theme3_theme_picker.png",
+      "path": "artwork/5-verify-v2-appearance_size0_theme3_theme_picker.png",
+      "dimensions": [
+        200,
+        228
+      ],
+      "bytes": 2255,
+      "sha256": "84d9ea75d5d92fe36a47a1346c1a21410174af87906426f0cbda4cf14f9a06d7"
+    }
+  ]
+}

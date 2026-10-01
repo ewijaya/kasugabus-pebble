@@ -1,5 +1,17 @@
 # KasugaBus release workflow
 
+> **2.0.0 status (1 October 2026):** published to the existing GitHub and RePebble
+> destinations with explicit owner approval of the installed PBW and named
+> incomplete-validation exceptions. See [the 2.0.0 report](releases/2.0.0-verification.md).
+> The standard runtime gate remains unchanged for future candidates; do not
+> treat this exception as a passed full audit or permission to skip future checks.
+> Read-only verification of this exceptional historical release is available through
+> `artifacts/releases/2.0.0/verify_published.py` using the installed Pebble Tool
+> Python. The ordinary `release.py verify 2.0.0` deliberately retains its
+> complete-runtime-audit requirement; use the version-specific read-only helper
+> for 2.0.0, and the standard workflow for future fully audited candidates.
+
+
 KasugaBus **1.0.0** was published and verified on 1 October 2026 after the
 owner explicitly approved the final installed PBW and listing. GitHub's latest
 release and downloaded PBW, the authenticated Dashboard, general and

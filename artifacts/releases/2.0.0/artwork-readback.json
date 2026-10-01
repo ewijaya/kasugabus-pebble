@@ -1,0 +1,80 @@
+[
+  {
+    "role": "banner",
+    "sourceSha256": "e8549b978ca76d41854d7572c1a2817040e57d4bd3caa9a609791665affec4ef",
+    "downloadSha256": "db3e4a143e16cee8e889ddba489995d0a66842737e2d52ba413aac33265b28f0",
+    "url": "/api/assets/banners/f63e6ed24301414a95909564/emery/67709054-e44e-4b12-b5be-428275232772.png",
+    "dimensions": [
+      720,
+      320
+    ],
+    "unequalPixels": 72755,
+    "totalPixels": 230400,
+    "download": "artwork-readback/0.png"
+  },
+  {
+    "role": "screenshot",
+    "sourceSha256": "487be0e8a1ba8691772844f2d15d65cb4293ef1271f6930c2e21b94809c31736",
+    "downloadSha256": "48fc6bdbf63108134af071671c511fb5826ef9c0cb9cbe666593b711310fcc4b",
+    "url": "/api/assets/screenshots/f63e6ed24301414a95909564/emery/6e0b6440-c5b8-405b-b6eb-fd499dbacef3.png",
+    "dimensions": [
+      200,
+      228
+    ],
+    "unequalPixels": 8,
+    "totalPixels": 45600,
+    "download": "artwork-readback/1.png"
+  },
+  {
+    "role": "screenshot",
+    "sourceSha256": "1189afe585c7e0c0a3ae5c2e82f0b8f0a302a9216414177173aaefe2a3678836",
+    "downloadSha256": "15e6c8989700a974e1d4ccc3a80d071912b52d095042d44a4a96720e7302b15f",
+    "url": "/api/assets/screenshots/f63e6ed24301414a95909564/emery/4afebd2b-31dd-4a2b-ba2e-2896a47f5fe2.png",
+    "dimensions": [
+      200,
+      228
+    ],
+    "unequalPixels": 0,
+    "totalPixels": 45600,
+    "download": "artwork-readback/2.png"
+  },
+  {
+    "role": "screenshot",
+    "sourceSha256": "88cd5d5852ba367e613b30e680b60877cda2408cdc6d4ed960ce9352f5aa1a4b",
+    "downloadSha256": "1dfb3417ead9723075683d8a8c8881f26f38b409032fd57b1403f37bd52c0121",
+    "url": "/api/assets/screenshots/f63e6ed24301414a95909564/emery/2f35d33c-1dad-452f-a25e-18f4b7f110d6.png",
+    "dimensions": [
+      200,
+      228
+    ],
+    "unequalPixels": 8,
+    "totalPixels": 45600,
+    "download": "artwork-readback/3.png"
+  },
+  {
+    "role": "screenshot",
+    "sourceSha256": "514be4faf2c3681bbf705c84022771afaecae40a0d71c0a58d778767a99e446a",
+    "downloadSha256": "585143859f35432b07e1a17442603e2e84ae76196bbd0c2552ac2cee50eb5394",
+    "url": "/api/assets/screenshots/f63e6ed24301414a95909564/emery/de9bac21-f611-41be-bcc2-cd70a28873e1.png",
+    "dimensions": [
+      200,
+      228
+    ],
+    "unequalPixels": 0,
+    "totalPixels": 45600,
+    "download": "artwork-readback/4.png"
+  },
+  {
+    "role": "screenshot",
+    "sourceSha256": "84d9ea75d5d92fe36a47a1346c1a21410174af87906426f0cbda4cf14f9a06d7",
+    "downloadSha256": "368d07acb86a44b59182815c485edf94985d31d8287947b86dd617240f951afd",
+    "url": "/api/assets/screenshots/f63e6ed24301414a95909564/emery/897aa367-6347-4936-b162-072c5ed4f4f0.png",
+    "dimensions": [
+      200,
+      228
+    ],
+    "unequalPixels": 8,
+    "totalPixels": 45600,
+    "download": "artwork-readback/5.png"
+  }
+]
