@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "uuid": "d7ba77b0-d528-4cc8-b35c-7052798152c9",
+  "metadata": {
+    "title": "KasugaBus",
+    "type": "watchapp",
+    "description": "Your next scheduled bus, on your wrist.\n\nKasugaBus is an interactive bus timetable app for Pebble Time 2, covering six stop groups around Minami-kasugaoka in Ibaraki, Osaka. Its Neon Transit home combines a large clock with your next scheduled departure. Open the board and full details to check the boarding point, operator, route, direction and destination.\n\nBrowse the bundled Kintetsu and Hankyu timetables offline, select a boarding point and keep your usual favourites. Phone settings let you arrange favourites, choose display preferences and save your own walking allowances. Leave-by times use those allowances only in the explicitly selected Saved origin context.\n\nBus times and service dates use Japan time; the large clock follows your watch's local time. Calendar-aware lookup distinguishes weekday, Saturday and Sunday/public-holiday services and shows unconfirmed dates. These are scheduled departures, not live arrivals, bus locations or delay predictions.\n\nOptional Nearby requests one phone location fix and ranks six verified Hankyu boarding poles by approximate straight-line distance. Kintetsu boarding points remain available through manual selection. Nearby does not estimate walking time or give roadside guidance.\n\nThe initial bundled timetable covers 1 October\u201327 December 2026. Source review is due 1 November; later service dates remain unconfirmed. Reviewed timetable revisions download through your connected phone without reinstalling the app. Automatic checks run daily when the app opens; Data status also offers a manual check. The bundled timetable remains usable offline. A successful feed check does not certify operator source freshness.\n\nInitial release: broader physical GPS/settings/update-recovery checks, outdoor readability, battery observations and seven days of use remain outstanding. Basic Time 2 navigation and the bus icon have been observed; emulator and automated results are documented in the source repository.",
+    "source": "https://github.com/ewijaya/kasugabus-pebble",
+    "website": null,
+    "category": "daily",
+    "visibility": "listed",
+    "companion_android": null,
+    "companion_ios": null
+  },
+  "assets": [
+    {
+      "role": "iconSmall",
+      "path": "listing-assets/00-iconSmall.png",
+      "sha256": "5327a4efffcba39b5d640571561e69064e2d99916e72231937d28814a19a9f0c",
+      "bytes": 2154,
+      "width": 80,
+      "height": 80,
+      "original_path": "docs/releases/assets/icon-small.png"
+    },
+    {
+      "role": "iconLarge",
+      "path": "listing-assets/01-iconLarge.png",
+      "sha256": "9c9f0084e0508b11bb1eb527d528cdf2113bdb53793a8b9f9282eb18f6302f41",
+      "bytes": 4714,
+      "width": 144,
+      "height": 144,
+      "original_path": "docs/releases/assets/icon-large.png"
+    },
+    {
+      "role": "banner",
+      "path": "listing-assets/02-banner.png",
+      "platform": "emery",
+      "sha256": "825b9bf3fac940abae7799024fe02b0c75b8bdb77882317a37987952889ad2cb",
+      "bytes": 125520,
+      "width": 720,
+      "height": 320,
+      "original_path": "docs/releases/assets/emery-banner.png"
+    },
+    {
+      "role": "screenshot",
+      "path": "listing-assets/03-screenshot.png",
+      "platform": "emery",
+      "sha256": "022eba87558cc8715c24258efd44b770ec321292ee406f480140b73923fe2ca7",
+      "bytes": 2223,
+      "width": 200,
+      "height": 228,
+      "original_path": ".release/preparation/emery_01_home.png"
+    },
+    {
+      "role": "screenshot",
+      "path": "listing-assets/04-screenshot.png",
+      "platform": "emery",
+      "sha256": "47dea5a1454c3e749140584b7e85350d51970cdeffe483e20fd781866a5cf741",
+      "bytes": 2242,
+      "width": 200,
+      "height": 228,
+      "original_path": ".release/preparation/emery_02_board.png"
+    },
+    {
+      "role": "screenshot",
+      "path": "listing-assets/05-screenshot.png",
+      "platform": "emery",
+      "sha256": "0825bf87f4a62e97b787865f393de7842c00eeb1ebc89c0ae0842fd804cc6f0c",
+      "bytes": 2517,
+      "width": 200,
+      "height": 228,
+      "original_path": ".release/preparation/emery_03_details.png"
+    }
+  ]
+}

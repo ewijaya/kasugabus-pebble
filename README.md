@@ -3,11 +3,13 @@
 <!-- kasugabus-release-status -->
 KasugaBus **v1.0.0** for Emery is available from [GitHub Releases](https://github.com/ewijaya/kasugabus-pebble/releases/tag/v1.0.0) and [Pebble App Store](https://apps.repebble.com/f63e6ed24301414a95909564).
 
+This initial release retains the stated physical and seven-day validation limitations.
+
 A large clock and one scheduled departure form the Neon Transit home screen. The departure board, full details, favourites, all-stop picker, Nearby, trip context and data status work through the watch buttons. Timetables run offline; phone location, Clay settings and timetable downloads add optional connected functions.
 
-![KasugaBus on the physical Time 2](artifacts/screenshots/physical_01_current.png)
+![KasugaBus 1.0.0 — native Emery emulator capture](artifacts/screenshots/release-1.0.0-home.png)
 
-[GitHub releases](https://github.com/ewijaya/kasugabus-pebble/releases) · [Verification and exact digest](docs/VERIFICATION.md) · [Native screenshots](artifacts/screenshots/README.md) · [Ten launcher-icon concepts](artifacts/icon-options/index.html)
+[GitHub release](https://github.com/ewijaya/kasugabus-pebble/releases/tag/v1.0.0) · [RePebble App Store](https://apps.repebble.com/f63e6ed24301414a95909564) · [Release verification and exact digest](docs/releases/1.0.0-verification.md) · [Native screenshots](artifacts/screenshots/README.md) · [Ten launcher-icon concepts](artifacts/icon-options/index.html)
 
 The validated baseline contains **1,411 departures at 15 boarding points across six stop groups**: Kasugaoka Koen, Toge, Midorigaoka, Handai Higashiguchi, Handai Igakubu Byoin-mae and Handai Igakubu-mae. Kintetsu and Hankyu operators, boarded route numbers, directions and calendars remain separate. Service coverage is **1 October–27 December 2026**. Later dates are unconfirmed pending year-end source review. Source verification is dated 1 October; the next full review is due 1 November.
 
@@ -40,11 +42,13 @@ pebble install --emulator emery build/kasugabus-pebble.pbw
 
 The SDK lives under `~/Library/Application Support/Pebble SDK/SDKs/4.33.1/`. Its `pebble` wrapper selects the bundled compiler; a separate `arm-none-eabi-gcc` on PATH is unnecessary. The SDK's known RWX linker warning is not a build failure.
 
-The owner's Poco F4 developer connection successfully installed the exact PBW with:
+Download the [published PBW](https://github.com/ewijaya/kasugabus-pebble/releases/download/v1.0.0/kasugabus-pebble.pbw) to install it through the companion's developer connection:
 
 ```sh
-pebble install --cloudpebble artifacts/KasugaBus-1.0.0-emery.pbw
+pebble install --cloudpebble kasugabus-pebble.pbw
 ```
+
+The release is **817,922 bytes**, SHA-256 `233627ffc63e0964bff272c3a56bac11e6f7634992b06cb45143524e2bc5330a`, built from source `3110dee`.
 
 Enable **Dev Connection** in the companion first. Other setups can use the installed CLI's `--phone PHONE_IP` option; inspect `pebble install --help` for the available transports. The app UUID is `d7ba77b0-d528-4cc8-b35c-7052798152c9`; it is an app, not a watchface.
 
@@ -59,10 +63,19 @@ Source extraction additionally uses the pinned packages in `data/requirements-ex
 
 The production timetable feed is live on **GitHub Pages**: `https://ewijaya.github.io/kasugabus-pebble/timetables/manifest.json`. HTTPS, exact payload hashes, content types and cross-origin headers were verified on 1 October 2026. Pages uses a ten-minute cache, so a newly published revision may take that long to appear. Timetable-only releases use this fixed endpoint without reinstalling the PBW. [Hosting evidence and procedure](hosting/README.md) distinguish host checks from actual phone behavior.
 
-The source repository is [ewijaya/kasugabus-pebble](https://github.com/ewijaya/kasugabus-pebble). The owner authorized initial publication on 1 October 2026 with the remaining physical and seven-day checks stated as limitations. KasugaBus is **not registered** in the RePebble App Store. The workflow now prepares a complete [initial listing](docs/releases/listing-preview.html), discovers any existing UUID/repository match, and journals first registration through Dashboard New after exact-PBW approval. Its assigned store App ID is separate from the package UUID; both ID and public URL remain unset until verified registration.
+The source repository is [ewijaya/kasugabus-pebble](https://github.com/ewijaya/kasugabus-pebble). On 1 October 2026 the owner approved the installed 1.0.0 candidate and [listing](docs/releases/listing-preview.html), then authorized publication to both destinations. The store assigned App ID `f63e6ed24301414a95909564`, separate from package UUID `d7ba77b0-d528-4cc8-b35c-7052798152c9`. Both published PBW downloads match the release digest. [Publication evidence](artifacts/releases/1.0.0/publication.json) records the result.
 
-## Release checks still required
+[Publication verification](artifacts/releases/1.0.0/publication.json) passed for GitHub
+(including the downloaded PBW and latest release), Dashboard, the general and
+Emery-filtered catalogs, and the canonical public store page/changelog. The
+phone's My Apps cache was not observed; the Emery catalog is a proxy for it.
 
-Physical installation and Home → board → details readability/Select navigation are confirmed on **Time 2 v4.38.4**, **Poco F4 / Android 14 (UKQ1.231207.002)** and **Pebble companion 1.14.0.1**. The owner also confirmed a timetable-only update to v2 with a successful feed-check time. Actual GPS/permission behavior, Clay settings/persistence, physical connection loss and updater recovery, sunlight/glance testing, battery impact and seven days of use including a weekend remain unperformed. The production feed is live; store publication and final exact-candidate approval are being prepared.
+## Published scope and remaining checks
 
-The owner selected **1 — Neon Express** from the ten preserved concepts. Its transparent 25 × 25 bus icon is integrated, audited and installed; the owner confirmed it on the preceding package. The preceding development PBW is 817,565 bytes, SHA-256 `2bddb0b092d51c7cdab6944c56a11bb377f4a97932643ee37541450bfc8bdb09`, and was also installed successfully. Its fresh audit includes 113 Python tests and native update/recovery checks. Application code, phone JavaScript and resources are identical to the owner-confirmed icon package. The verification report keeps physical observations bound to their original digests. Version 1.0.0 is retained for the initial release. Final publication uses one separately frozen and physically approved candidate.
+The owner accepted an initial release with broader physical GPS/permission behavior, Clay settings/persistence, connection loss and update recovery, outdoor/glance readability, battery impact and seven days of use including a weekend still outstanding. Those checks remain requirements for complete personal-use acceptance; publication does not mark them passed.
+
+Basic Home → board → details readability/Select navigation and icon visibility were observed on earlier packages using **Time 2 v4.38.4**, **Poco F4 / Android 14 (UKQ1.231207.002)** and **Pebble companion 1.14.0.1**. The owner's physical timetable-only v2 update with a successful feed-check time belongs to the preceding `2bddb0b0…` development PBW. Approval of the installed `233627ff…` release candidate and listing was a separate, explicit publication decision. [Verification](docs/VERIFICATION.md) retains those exact-artifact boundaries.
+
+The published candidate passed **122 Python tests**, the phone/Clay/controlled-feed suites and strict portable C checks. Its actual SDK pypkjs/XHR worker downloaded production v2 over HTTPS, received **127 native chunk acknowledgements**, and preserved the active dataset, success timestamp and preferences across restart without reinstalling the PBW. [Build/runtime/transfer evidence](docs/VERIFICATION.md) records **32,400 bytes** minimum observed free heap; emulator results remain separate from physical field tests.
+
+The selected **1 — Neon Express** transparent 25 × 25 launcher icon and all ten preserved concepts remain available. Historical `2bddb0b0…`, `4679b90e…` and `466df8dd…` packages and their observations are retained in the verification report. The final phone adapter includes the SDK binary-response correction; the historical unchanged-JavaScript comparisons do not describe the published package.

@@ -42,6 +42,92 @@ class Response:
         return None
 
 
+def catalog_platform_fixture(description="Fixture description"):
+    watches = ("aplite", "basalt", "chalk", "diorite", "emery", "flint", "gabbro")
+    compatibility = {name: {"supported": name == "emery"} for name in watches}
+    compatibility["emery"]["firmware"] = {"major": 3}
+    compatibility.update(android={"supported": True}, ios={"supported": True, "min_js_version": 1})
+    return {"hardware_platforms": [{"name": "emery", "sdk_version": "5.106", "pebble_process_info_flags": 328,
+        "description": description, "images": {"fixture": "image.png"}}], "compatibility": compatibility}
+
+
+class CatalogPlatformTests(unittest.TestCase):
+    def setUp(self):
+        self.public = catalog_platform_fixture()
+        self.config = {"platforms": ["emery"]}
+
+    def check(self):
+        release.require_catalog_platforms(self.public, self.config)
+
+    def test_observed_object_array_and_explicit_emery_support_pass(self):
+        self.check()
+
+    def test_hardware_missing_empty_or_legacy_string_shape_fails(self):
+        for value in (None, [], "emery", {}, ["emery"]):
+            with self.subTest(value=value), self.assertRaises(RuntimeError):
+                self.public["hardware_platforms"] = value
+                self.check()
+        self.public.pop("hardware_platforms")
+        with self.assertRaises(RuntimeError):
+            self.check()
+
+    def test_hardware_malformed_name_fails(self):
+        for value in (None, {}, {"name": None}, {"name": True}, {"name": ["emery"]}, {"name": "EMERY"}, {"name": "unknown"}, {"name": "android"}):
+            with self.subTest(value=value), self.assertRaises(RuntimeError):
+                self.public["hardware_platforms"] = [value]
+                self.check()
+
+    def test_wrong_extra_or_duplicate_hardware_fails(self):
+        for names in (("basalt",), ("emery", "basalt"), ("emery", "emery")):
+            with self.subTest(names=names), self.assertRaises(RuntimeError):
+                self.public["hardware_platforms"] = [{"name": name} for name in names]
+                self.check()
+
+    def test_missing_or_wrong_compatibility_container_fails(self):
+        for value in (None, [], True, "emery", {}):
+            with self.subTest(value=value), self.assertRaises(RuntimeError):
+                self.public["compatibility"] = value
+                self.check()
+        self.public.pop("compatibility")
+        with self.assertRaises(RuntimeError):
+            self.check()
+
+    def test_every_watch_target_requires_explicit_boolean_support(self):
+        for name in catalog_platform_fixture()["compatibility"]:
+            for value in (None, {}, {"supported": None}, {"supported": 0}, {"supported": 1}, {"supported": "true"}, {"supported": []}):
+                with self.subTest(name=name, value=value), self.assertRaises(RuntimeError):
+                    self.public = catalog_platform_fixture()
+                    self.public["compatibility"][name] = value
+                    self.check()
+        for name in ("aplite", "basalt", "chalk", "diorite", "emery", "flint", "gabbro"):
+            with self.subTest(missing=name), self.assertRaises(RuntimeError):
+                self.public = catalog_platform_fixture()
+                del self.public["compatibility"][name]
+                self.check()
+
+    def test_emery_unsupported_or_another_supported_watch_fails(self):
+        self.public["compatibility"]["emery"]["supported"] = False
+        with self.assertRaises(RuntimeError):
+            self.check()
+        for name in ("aplite", "basalt", "chalk", "diorite", "flint", "gabbro"):
+            with self.subTest(name=name), self.assertRaises(RuntimeError):
+                self.public = catalog_platform_fixture()
+                self.public["compatibility"][name]["supported"] = True
+                self.check()
+
+    def test_unknown_compatibility_target_fails_even_if_unsupported(self):
+        for value in (True, False):
+            with self.subTest(supported=value), self.assertRaises(RuntimeError):
+                self.public = catalog_platform_fixture()
+                self.public["compatibility"]["unknown"] = {"supported": value}
+                self.check()
+
+    def test_phone_support_does_not_count_as_a_watch_target(self):
+        self.public["compatibility"]["android"]["supported"] = False
+        self.public["compatibility"]["ios"]["supported"] = False
+        self.check()
+
+
 class ReleaseTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(prefix="kasugabus-release-fixtures-")
@@ -297,7 +383,7 @@ class ReleaseTests(unittest.TestCase):
         app["description"] = self.state["description"]
         app["assets"][0]["description"] = self.state["description"]
         app["latest_release"] = {"version": "1.0.0", "is_published": True, "release_notes": self.state["notes"], "pbw_url": "/fixture.pbw"}
-        catalog = {"data": [{"id": self.config["store_app_id"], "uuid": common.UUID, "visible": True, "description": self.state["description"], "hardware_platforms": ["emery"], "latest_release": {"version": "1.0.0", "release_notes": self.state["notes"], "pbw_file": "/fixture.pbw"}}]}
+        catalog = {"data": [{"id": self.config["store_app_id"], "uuid": common.UUID, "visible": True, "description": self.state["description"], **catalog_platform_fixture(self.state["description"]), "latest_release": {"version": "1.0.0", "release_notes": self.state["notes"], "pbw_file": "/fixture.pbw"}}]}
         urls = []
         def get(url, max_bytes=2097152):
             urls.append(url)

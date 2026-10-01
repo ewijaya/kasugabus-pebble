@@ -12,8 +12,9 @@ bound to measured runtime logs. Publication never rebuilds it.
 Check configured project identity, version/lockfile consistency, clean committed
 Git source/branch/origin, ignored build/candidate paths, prior tags/releases and
 reviewed README/CHANGELOG/notes/listing description. Do not initialize Git,
-create repositories or commit unrelated work to satisfy a guard. Version 1.0.0
-has not been bumped or published by workflow creation.
+create repositories or commit unrelated work to satisfy a guard. Version 1.0.0 was published on 1 October 2026 after exact-candidate approval.
+Use the saved existing listing and choose any later version from the actual
+diff; maintaining the workflow does not authorize another release.
 
 Before freezing a first complete release, review `docs/VERIFICATION.md` and PRD
 sections 15/16. Require current dataset/operator/calendar and source-review

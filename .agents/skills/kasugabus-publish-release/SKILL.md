@@ -1,6 +1,6 @@
 ---
 name: kasugabus-publish-release
-description: Prepare and publish one tested KasugaBus release to GitHub and RePebble, including resumable first-time Dashboard registration when explicitly requested. Maintaining this workflow does not authorize publication.
+description: Prepare and publish a tested KasugaBus release to its existing GitHub and RePebble destinations, preserving saved listing identity and resumable first-registration recovery when needed. Maintaining this workflow does not authorize publication.
 ---
 
 # Publish KasugaBus
@@ -12,17 +12,20 @@ Read the project-specific [release skill](../kasugabus-release/SKILL.md),
 
 Use package `kasugabus`, display `KasugaBus`, UUID
 `d7ba77b0-d528-4cc8-b35c-7052798152c9`, Emery only, interactive app. Configuration
-is `docs/release-config.json`. The approved future GitHub destination is
+is `docs/release-config.json`. The GitHub destination is
 `ewijaya/kasugabus-pebble`. Read current configuration first; do not assume
 registration status from this skill. The UUID in package.json identifies the
-PBW; the store assigns a separate App ID. The current setup has no saved ID.
+PBW; the store assigns a separate App ID. Read the saved ID and registration
+journals instead of hardcoding a registration assumption here. KasugaBus's
+1.0.0 first publication is complete and verified. Ordinary future releases
+use the saved **existing** listing; do not submit Dashboard New again.
 
-The user's future instruction **“publish this new app everywhere”** authorizes
-first registration, the initial listing and app publication, subject to
-explicit physical approval of the exact tested PBW and proposed listing.
-Creating or validating this workflow authorizes none of those actions. Treat
-repository/source pushes and Pages deployment as separately stated preparation
-scope when they are needed before the production-feed release checks.
+A future release request authorizes only its stated destinations and scope.
+Choose the next suitable version from the actual diff; do not repeat the
+initial-release version or New flow. Exact-artifact approval is required for
+new installed PBW bytes. Creating or validating this workflow authorizes no
+external changes. Treat source pushes and Pages deployment as separately
+stated preparation scope when needed for production-feed release checks.
 
 If no store ID is saved, inspect the authenticated Dashboard collection and
 UUID lookup for a matching listing. Verify UUID, source repository and release
@@ -50,9 +53,11 @@ hosting with a deployed timetable-only update; record actual phone OS,
 companion version, watch firmware and physical acceptance, plus the seven-day
 use review. Missing/failed/unobserved evidence remains a release blocker even
 when the build audit passes. Follow the detailed preflight in `docs/releasing.md`.
-Only a later explicit scoped-release decision can permit a named incremental
-build with omissions; it must not be described as the completed first release.
-Creating or validating this workflow does not establish release readiness.
+An explicit scoped-release decision may permit a named incremental build with
+omissions; it must not be described as the completed first personal-release
+milestone. The owner approved 1.0.0 with named physical/seven-day limitations,
+which remain recorded. Creating or validating this workflow does not establish
+release readiness.
 
 Run the consolidated checks and clean build, seal actual runtime evidence for
 that exact PBW, then freeze/install one physical candidate using `release.py
@@ -60,12 +65,21 @@ prepare`. Report source commit, PBW bytes/SHA-256, static metrics, measured
 minimum heap and unresolved acceptance checks. Stop for explicit physical
 approval of that exact digest and its destinations. Installation alone is not
 approval. This pause comes from the release skill's exact-artifact requirement;
-when asking, name and link that requirement.
+when asking, name and link that requirement. If the session already contains
+approval for this exact frozen digest and destinations, continue without
+asking again; an older version's approval does not approve different bytes.
 
 After approval, publish only the frozen PBW with `--approve-publish`,
 `--approve-sha256`, each `--approve-destination` and `--approve-physical`.
 Never rebuild during publication.
-Preserve unrelated listing metadata, companions and artwork. Verify GitHub,
+Preserve unrelated listing metadata, companions, artwork and previous releases.
+Frozen notes/description are canonical LF strings without a trailing
+presentation newline. RePebble may optimize uploaded PNGs: keep frozen source
+hashes and separately record downloaded dimensions/order, differences and
+visual comparison. Do not demand byte-identical downloaded artwork or weaken
+exact PBW hash equality. For manual text normalization, use only the reviewed
+official contract documented in `docs/releasing.md`; do not invent a command.
+Verify GitHub,
 Dashboard/Emery assets, general and Emery public catalog, and canonical public
 listing/changelog with bounded read-only retries. Advertise only destinations
 that verify, and distinguish observed phone My Apps from the catalog proxy.

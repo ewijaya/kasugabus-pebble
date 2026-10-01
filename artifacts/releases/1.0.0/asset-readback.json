@@ -1,0 +1,342 @@
+{
+  "app_id": "f63e6ed24301414a95909564",
+  "assets": [
+    {
+      "role": "iconSmall",
+      "platform": null,
+      "url": "https://appstore-api.repebble.com/api/assets/icons/f63e6ed24301414a95909564/small/7b76be82-06e2-44e3-a7f8-0731acac4c53.png",
+      "bytes": 732,
+      "sha256": "6f4328d5bee5457f64570de40241e6389b22c3a045342ee670f02bd932fbe17f",
+      "source_sha256": "5327a4efffcba39b5d640571561e69064e2d99916e72231937d28814a19a9f0c",
+      "bytes_match": false,
+      "pixels_match": false,
+      "dimensions": [
+        80,
+        80
+      ],
+      "path": "downloaded-listing-assets/0-iconSmall.png",
+      "rgba_delta_extrema": [
+        [
+          0,
+          11
+        ],
+        [
+          0,
+          11
+        ],
+        [
+          0,
+          11
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "visible_delta_extrema": [
+        [
+          0,
+          11
+        ],
+        [
+          0,
+          11
+        ],
+        [
+          0,
+          11
+        ]
+      ],
+      "visible_mean_absolute_delta": [
+        0.21921875,
+        0.24359375,
+        0.2140625
+      ],
+      "visible_changed_pixels": 1066,
+      "stored_png_mode": "P",
+      "frozen_png_mode": "P",
+      "visual_review": "Lead visually inspected this downloaded image: approved content, geometry and order retained; encoding/color differences recorded above"
+    },
+    {
+      "role": "iconLarge",
+      "platform": null,
+      "url": "https://appstore-api.repebble.com/api/assets/icons/f63e6ed24301414a95909564/large/81fa5a98-7b86-4bcc-a1ce-554ea5d2e872.png",
+      "bytes": 1173,
+      "sha256": "f07405795e63938c45e6f534b80e928ce1e5708069695d5de05b0a94ac1359a4",
+      "source_sha256": "9c9f0084e0508b11bb1eb527d528cdf2113bdb53793a8b9f9282eb18f6302f41",
+      "bytes_match": false,
+      "pixels_match": false,
+      "dimensions": [
+        144,
+        144
+      ],
+      "path": "downloaded-listing-assets/1-iconLarge.png",
+      "rgba_delta_extrema": [
+        [
+          0,
+          11
+        ],
+        [
+          0,
+          11
+        ],
+        [
+          0,
+          12
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "visible_delta_extrema": [
+        [
+          0,
+          11
+        ],
+        [
+          0,
+          11
+        ],
+        [
+          0,
+          12
+        ]
+      ],
+      "visible_mean_absolute_delta": [
+        0.20457175925925927,
+        0.2101658950617284,
+        0.20413773148148148
+      ],
+      "visible_changed_pixels": 2427,
+      "stored_png_mode": "P",
+      "frozen_png_mode": "RGB",
+      "visual_review": "Lead visually inspected this downloaded image: approved content, geometry and order retained; encoding/color differences recorded above"
+    },
+    {
+      "role": "banner",
+      "platform": "emery",
+      "url": "https://appstore-api.repebble.com/api/assets/banners/f63e6ed24301414a95909564/emery/ee1bc968-76e7-48f7-a236-a8401c7899a9.png",
+      "bytes": 20098,
+      "sha256": "2c133630866e2b4ec54e33199703b5bb6205bc64b7e542faf80104a670e14861",
+      "source_sha256": "825b9bf3fac940abae7799024fe02b0c75b8bdb77882317a37987952889ad2cb",
+      "bytes_match": false,
+      "pixels_match": false,
+      "dimensions": [
+        720,
+        320
+      ],
+      "path": "downloaded-listing-assets/2-banner.png",
+      "rgba_delta_extrema": [
+        [
+          0,
+          39
+        ],
+        [
+          0,
+          26
+        ],
+        [
+          0,
+          35
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "visible_delta_extrema": [
+        [
+          0,
+          39
+        ],
+        [
+          0,
+          26
+        ],
+        [
+          0,
+          35
+        ]
+      ],
+      "visible_mean_absolute_delta": [
+        0.4579730902777778,
+        0.2907421875,
+        0.2744314236111111
+      ],
+      "visible_changed_pixels": 97389,
+      "stored_png_mode": "P",
+      "frozen_png_mode": "RGB",
+      "visual_review": "Lead visually inspected this downloaded image: approved content, geometry and order retained; encoding/color differences recorded above"
+    },
+    {
+      "role": "screenshot",
+      "platform": "emery",
+      "url": "https://appstore-api.repebble.com/api/assets/screenshots/f63e6ed24301414a95909564/emery/da64e3db-6363-495d-939a-5e9ef11ed41f.png",
+      "bytes": 1612,
+      "sha256": "3e0487e0f99411a39a91bb92318be6afc45af112452ca763b8f5b8a6a9e20635",
+      "source_sha256": "022eba87558cc8715c24258efd44b770ec321292ee406f480140b73923fe2ca7",
+      "bytes_match": false,
+      "pixels_match": false,
+      "dimensions": [
+        200,
+        228
+      ],
+      "path": "downloaded-listing-assets/3-screenshot.png",
+      "rgba_delta_extrema": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          44
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "visible_delta_extrema": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          44
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "visible_mean_absolute_delta": [
+        0.0,
+        0.007456140350877193,
+        0.0
+      ],
+      "visible_changed_pixels": 8,
+      "stored_png_mode": "P",
+      "frozen_png_mode": "RGB",
+      "visual_review": "Lead visually inspected this downloaded image: approved content, geometry and order retained; encoding/color differences recorded above"
+    },
+    {
+      "role": "screenshot",
+      "platform": "emery",
+      "url": "https://appstore-api.repebble.com/api/assets/screenshots/f63e6ed24301414a95909564/emery/0ee4fad5-2e1c-4b1a-9109-749ff81534a7.png",
+      "bytes": 1598,
+      "sha256": "f7147102ff1a5da696b6d687378b598e3d69bfd40fec5f96df11a8a8fcbbb984",
+      "source_sha256": "47dea5a1454c3e749140584b7e85350d51970cdeffe483e20fd781866a5cf741",
+      "bytes_match": false,
+      "pixels_match": false,
+      "dimensions": [
+        200,
+        228
+      ],
+      "path": "downloaded-listing-assets/4-screenshot.png",
+      "rgba_delta_extrema": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          85
+        ],
+        [
+          0,
+          85
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "visible_delta_extrema": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          85
+        ],
+        [
+          0,
+          85
+        ]
+      ],
+      "visible_mean_absolute_delta": [
+        0.0,
+        0.007456140350877193,
+        0.007456140350877193
+      ],
+      "visible_changed_pixels": 4,
+      "stored_png_mode": "P",
+      "frozen_png_mode": "RGB",
+      "visual_review": "Lead visually inspected this downloaded image: approved content, geometry and order retained; encoding/color differences recorded above"
+    },
+    {
+      "role": "screenshot",
+      "platform": "emery",
+      "url": "https://appstore-api.repebble.com/api/assets/screenshots/f63e6ed24301414a95909564/emery/4a583c51-3287-48fb-ad06-0ce3ab4eba92.png",
+      "bytes": 1724,
+      "sha256": "5cd047d7020d6c016e41090af944297e289af1eba08343c77d164698cb677626",
+      "source_sha256": "0825bf87f4a62e97b787865f393de7842c00eeb1ebc89c0ae0842fd804cc6f0c",
+      "bytes_match": false,
+      "pixels_match": true,
+      "dimensions": [
+        200,
+        228
+      ],
+      "path": "downloaded-listing-assets/5-screenshot.png",
+      "rgba_delta_extrema": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "visible_delta_extrema": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "visible_mean_absolute_delta": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "visible_changed_pixels": 0,
+      "stored_png_mode": "P",
+      "frozen_png_mode": "RGB",
+      "visual_review": "Lead visually inspected this downloaded image: approved content, geometry and order retained; encoding/color differences recorded above"
+    }
+  ],
+  "interpretation": "Source hashes bind the uploaded frozen artwork. RePebble returns optimized PNG representations, not byte-identical artwork files; stored hashes and pixel deltas are recorded, not relabelled as source matches."
+}

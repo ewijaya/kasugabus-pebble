@@ -1,19 +1,35 @@
 # Native screenshots
 
-The final PBW is SHA-256
-`2bddb0b092d51c7cdab6944c56a11bb377f4a97932643ee37541450bfc8bdb09`.
-Its fresh native **200 × 228** captures were visually reviewed:
+The published **1.0.0** PBW is SHA-256
+`233627ffc63e0964bff272c3a56bac11e6f7634992b06cb45143524e2bc5330a`.
+Its native **200 × 228** Emery emulator captures were visually reviewed and
+uploaded as the approved store screenshot set:
 
 | Image | Observation |
 | --- | --- |
-| [Final Home](emery_workflow_home.png) | Actual 15:18 clock, selected direction and scheduled departure |
-| [Final board](emery_workflow_board.png) | Three departures and Stops & tools access |
-| [Final details](emery_workflow_details.png) | Full boarded route, operator, destination, date and context |
+| [Published Home](release-1.0.0-home.png) | Time and Bus hierarchy, operator and scheduled departure |
+| [Published board](release-1.0.0-board.png) | Scheduled departures and Stops & tools access |
+| [Published details](release-1.0.0-details.png) | Route, operator, destination and trip context |
 
-[Capture receipt](workflow-capture.json) binds these to the exact installed PBW
-and records unchanged preferences. Copies of these three files form the current
-store screenshot set. The following captures belong to the preceding Neon
-Express package `4679b90e…`, whose application code and resources are unchanged:
+The [frozen listing](../releases/1.0.0/listing.json) records the approved source
+hashes; [read-back evidence](../releases/1.0.0/asset-readback.json) records the
+store's optimized PNG representations and visual comparison. The released PBW
+was not rebuilt during publication. See the [release report](../../docs/releases/1.0.0-verification.md).
+
+Earlier development captures below belong to PBW `2bddb0b0…`, not the released digest:
+
+| Image | Observation |
+| --- | --- |
+| [Development Home](emery_workflow_home.png) | Actual 15:18 clock, selected direction and scheduled departure |
+| [Development board](emery_workflow_board.png) | Three departures and Stops & tools access |
+| [Development details](emery_workflow_details.png) | Full boarded route, operator, destination, date and context |
+
+Their [capture receipt](workflow-capture.json) records that exact installed PBW
+and unchanged preferences. They formed an earlier store draft, now superseded.
+
+The following captures belong to the earlier Neon Express package `4679b90e…`.
+Its icon resources remain unchanged; its phone JavaScript predates the published
+XHR correction:
 
 | Image | Observation |
 | --- | --- |

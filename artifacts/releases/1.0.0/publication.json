@@ -1,0 +1,197 @@
+{
+  "version": "1.0.0",
+  "commit": "3110deecde6d154a52b1d7971e6e3c5c1bd1a54d",
+  "artifact": {
+    "sha256": "233627ffc63e0964bff272c3a56bac11e6f7634992b06cb45143524e2bc5330a",
+    "bytes": 817922
+  },
+  "metrics": {
+    "resources": 30178,
+    "static_ram": 39170,
+    "linker_free_ram": 91902,
+    "native_binary": 31428,
+    "pbw": 817922,
+    "timetable": 24203,
+    "measured_free_heap": 32400
+  },
+  "approval": {
+    "version": "1.0.0",
+    "sha256": "233627ffc63e0964bff272c3a56bac11e6f7634992b06cb45143524e2bc5330a",
+    "physical": true,
+    "destinations": [
+      "github",
+      "appstore"
+    ],
+    "recorded_at": "2026-10-01T08:09:33.860186+00:00"
+  },
+  "status": {
+    "github": {
+      "state": "verified",
+      "details": {
+        "release_url": "https://github.com/ewijaya/kasugabus-pebble/releases/tag/v1.0.0",
+        "asset_url": "https://github.com/ewijaya/kasugabus-pebble/releases/download/v1.0.0/kasugabus-pebble.pbw"
+      }
+    },
+    "appstore": {
+      "state": "verified",
+      "details": {
+        "dashboard": "verified",
+        "catalog_general": "verified",
+        "catalog_emery": "verified",
+        "public_store_url": "https://apps.repebble.com/f63e6ed24301414a95909564",
+        "mobile_cache": "not observed; Emery catalog is a proxy"
+      }
+    }
+  },
+  "schema": 1,
+  "recorded_at": "2026-10-01T08:12:06.497219+00:00",
+  "store_app_id": "f63e6ed24301414a95909564",
+  "store_listing_url": "https://apps.repebble.com/f63e6ed24301414a95909564",
+  "tag": "v1.0.0",
+  "publication_documentation_commit": "73a3ad23d06cbaa80000924c467f40cb21b82620",
+  "publication_scope": "Initial release with owner-approved physical/seven-day limitations",
+  "physical_approval_statement": "I approve the installed KasugaBus 1.0.0 candidate and listing. Publish it everywhere",
+  "candidate_build_checks": {
+    "python_tests": 122,
+    "phone_scenarios": 25,
+    "clay_settings_checks": 5,
+    "real_http_checks": 5,
+    "strict_c_suites": "passed",
+    "platform": "emery",
+    "runtime_environment": "emulator",
+    "min_free_heap": 32400
+  },
+  "production_update": {
+    "environment": "Emery emulator, actual cached PBW pypkjs/XHR",
+    "dataset": 2,
+    "native_acknowledged_chunks": 127,
+    "persisted_after_restart": true,
+    "preferences_unchanged": true,
+    "pbw_reinstalled_during_transfer": false
+  },
+  "physical_update": {
+    "source_pbw_sha256": "2bddb0b092d51c7cdab6944c56a11bb377f4a97932643ee37541450bfc8bdb09",
+    "evidence": "Owner confirmed active dataset v2 and successful feed-check time on preceding development PBW; not relabelled as final-candidate transfer evidence"
+  },
+  "release_tool_correction": {
+    "reason": "Observed catalog hardware_platforms uses objects; old verifier assumed strings",
+    "corrected_release_unit_tests": 40,
+    "new_platform_cases": 9,
+    "pbw_rebuilt": false,
+    "artifact_changed": false
+  },
+  "remaining_checks": [
+    "Broader physical GPS/permission behavior",
+    "Clay preference persistence on the actual phone/watch",
+    "Physical connection-loss, future activation and interrupted-update recovery",
+    "Outdoor/glance readability and battery observations",
+    "Seven-day actual-use review",
+    "Phone My Apps cache refresh not directly observed; public Emery catalog verified"
+  ],
+  "evidence_files": {
+    "production-feed.json": {
+      "bytes": 2025,
+      "sha256": "3e6308ba9d815122b9fb5d88acff92db9c64559e7427f82eafb4fd6449c3255a"
+    },
+    "production-feed.log": {
+      "bytes": 756,
+      "sha256": "9c45942f6f32fd076ce0985385db68a97a684569fd678a830d13647a3d033538"
+    },
+    "build-audit.json": {
+      "bytes": 11129,
+      "sha256": "cdd3affbe4b54ccc1be719436ed626766b8d77b0560b7ac73f2ffdd4181ac865"
+    },
+    "build.log": {
+      "bytes": 16570,
+      "sha256": "3f6aabd2fd42227cfc28619e66c66055629b61b83f0c780b82636ccfdae260e6"
+    },
+    "runtime.log": {
+      "bytes": 7488,
+      "sha256": "bf3c28923ed8a0f10764654449b8db2efa458200a1ef56ae18bcb16ca6acdf38"
+    },
+    "runtime-install.json": {
+      "bytes": 530,
+      "sha256": "ee22bc80d54fcdf78ca33b61e2deb48a0814a873bfb794bbcf4df41e1fdf882c"
+    },
+    "asset-readback.json": {
+      "bytes": 8407,
+      "sha256": "f64fb540e3321c00196af0ad369c719e2f9f0bbd53e034f4c0032f2e2ef2f51a"
+    },
+    "text-readback.json": {
+      "bytes": 664,
+      "sha256": "17ad09514a18f0be2d0cc676f17375877b266ae848b639537045fe8772b3d1ce"
+    },
+    "public-page-readback.json": {
+      "bytes": 327,
+      "sha256": "f72aa6d95545d74e50a887074e5ff03b5bd61622adf850fe2b26a54710ddc3d7"
+    },
+    "listing.json": {
+      "bytes": 4252,
+      "sha256": "86ba907237f5f74f90048f9e77bd3201bcc21602706a9128af389a64e97c4bd4"
+    },
+    "listing-confirmation.json": {
+      "bytes": 3686,
+      "sha256": "bb03ce119eff5ae2696e41441f1ef4eec5a1b39c51089b77984da5d14015a9f4"
+    },
+    "catalog-verifier-maintenance.patch": {
+      "bytes": 8808,
+      "sha256": "2cdcc05653f1a63e3403d10697c3877bccf4f0e9d5aa593f5294a5225a1a86ff"
+    },
+    "public-store.jpg": {
+      "bytes": 213205,
+      "sha256": "3ff6628a09c21037ef29656b13b96ac018e3918fe173503450f3c7d364576783"
+    },
+    "downloaded-listing-assets/0-iconSmall.png": {
+      "bytes": 732,
+      "sha256": "6f4328d5bee5457f64570de40241e6389b22c3a045342ee670f02bd932fbe17f"
+    },
+    "downloaded-listing-assets/1-iconLarge.png": {
+      "bytes": 1173,
+      "sha256": "f07405795e63938c45e6f534b80e928ce1e5708069695d5de05b0a94ac1359a4"
+    },
+    "downloaded-listing-assets/2-banner.png": {
+      "bytes": 20098,
+      "sha256": "2c133630866e2b4ec54e33199703b5bb6205bc64b7e542faf80104a670e14861"
+    },
+    "downloaded-listing-assets/3-screenshot.png": {
+      "bytes": 1612,
+      "sha256": "3e0487e0f99411a39a91bb92318be6afc45af112452ca763b8f5b8a6a9e20635"
+    },
+    "downloaded-listing-assets/4-screenshot.png": {
+      "bytes": 1598,
+      "sha256": "f7147102ff1a5da696b6d687378b598e3d69bfd40fec5f96df11a8a8fcbbb984"
+    },
+    "downloaded-listing-assets/5-screenshot.png": {
+      "bytes": 1724,
+      "sha256": "5cd047d7020d6c016e41090af944297e289af1eba08343c77d164698cb677626"
+    },
+    "listing-assets/00-iconSmall.png": {
+      "bytes": 2154,
+      "sha256": "5327a4efffcba39b5d640571561e69064e2d99916e72231937d28814a19a9f0c"
+    },
+    "listing-assets/01-iconLarge.png": {
+      "bytes": 4714,
+      "sha256": "9c9f0084e0508b11bb1eb527d528cdf2113bdb53793a8b9f9282eb18f6302f41"
+    },
+    "listing-assets/02-banner.png": {
+      "bytes": 125520,
+      "sha256": "825b9bf3fac940abae7799024fe02b0c75b8bdb77882317a37987952889ad2cb"
+    },
+    "listing-assets/03-screenshot.png": {
+      "bytes": 2223,
+      "sha256": "022eba87558cc8715c24258efd44b770ec321292ee406f480140b73923fe2ca7"
+    },
+    "listing-assets/04-screenshot.png": {
+      "bytes": 2242,
+      "sha256": "47dea5a1454c3e749140584b7e85350d51970cdeffe483e20fd781866a5cf741"
+    },
+    "listing-assets/05-screenshot.png": {
+      "bytes": 2517,
+      "sha256": "0825bf87f4a62e97b787865f393de7842c00eeb1ebc89c0ae0842fd804cc6f0c"
+    },
+    "release-workflow-tests.log": {
+      "bytes": 2858,
+      "sha256": "706247a185e1382a26a97ff6ea678ba4233f24d18ae60f03c9e97571168a9bac"
+    }
+  }
+}

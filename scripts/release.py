@@ -546,6 +546,32 @@ def upload_store(folder, state):
     require(after.get("description") == state["description"], "Dashboard description has not synchronized")
 
 
+def require_catalog_platforms(public, config):
+    """Validate the observed object catalog and explicit watch compatibility."""
+    watches = {"aplite", "basalt", "chalk", "diorite", "emery", "flint", "gabbro"}
+    expected = config.get("platforms")
+    require(isinstance(expected, list) and expected and
+        all(isinstance(name, str) and name in watches for name in expected) and
+        len(set(expected)) == len(expected), "Invalid configured watch platforms")
+    hardware = public.get("hardware_platforms")
+    require(isinstance(hardware, list) and hardware, "Public catalog hardware platforms must be a nonempty object array")
+    names = []
+    for platform in hardware:
+        require(isinstance(platform, dict) and isinstance(platform.get("name"), str) and
+            platform["name"] in watches, "Malformed or unknown public catalog hardware platform")
+        names.append(platform["name"])
+    require(len(set(names)) == len(names), "Duplicate public catalog hardware platform")
+    require(set(names) == set(expected), "Public catalog hardware platforms differ from configured watch targets")
+    compatibility = public.get("compatibility")
+    require(isinstance(compatibility, dict) and watches <= compatibility.keys() and
+        compatibility.keys() <= watches | {"android", "ios"}, "Missing or unknown public catalog compatibility targets")
+    for name, declaration in compatibility.items():
+        require(isinstance(declaration, dict) and type(declaration.get("supported")) is bool,
+            "Malformed public catalog compatibility declaration: " + name)
+    supported = {name for name in watches if compatibility[name]["supported"] is True}
+    require(supported == set(expected), "Public catalog supported watch targets differ from configured watch targets")
+
+
 def verify_store(state):
     if state.get("store_mode") == "create-or-resume":
         require(state["registration"].get("identity_verified") and state["registration"].get("listing_confirmed"), "First listing metadata/assets still need verified read-back confirmation")
@@ -567,7 +593,7 @@ def verify_store(state):
         public = matches[0]
         latest = public.get("latest_release") or {}
         require(public.get("visible") is True and public.get("description") == state["description"] and latest.get("version") == state["version"] and latest.get("release_notes") == state["notes"], "Public catalog version/description is pending: " + url)
-        require("emery" in public.get("hardware_platforms", []), "Public catalog lacks Emery compatibility")
+        require_catalog_platforms(public, config)
         require(digest(get_public(asset_url(latest.get("pbw_file"), config), state["artifact"]["bytes"]).content) == state["artifact"]["sha256"], "Public catalog PBW digest mismatch")
     store = config["public_store"] + "/" + config["store_app_id"]
     for url, expected in ((store, [state["description"], release["pbw_url"]]), (store + "/changelog", [state["version"], state["notes"]])):

@@ -9,8 +9,10 @@ Read `docs/release-config.json` before deciding whether a listing exists.
 `uuid` is the package/PBW UUID, `d7ba77b0-d528-4cc8-b35c-7052798152c9`;
 `store_app_id` is a separate server-assigned listing identifier.
 `store_listing_url` records its canonical public URL after identity verification;
-public-page reachability is verified separately. No ID was assigned
-during workflow setup. Never invent one or reuse Orationes's identity.
+public-page reachability is verified separately. First publication is complete;
+read the saved verified ID and update that existing listing. Missing local
+configuration requires discovery, never automatic new registration. Never invent
+an ID or reuse another project's identity.
 
 If no ID is saved, inspect the authenticated Developer Dashboard and official
 developer UUID lookup. Match UUID, source repository and release metadata,
@@ -39,9 +41,10 @@ and top-level `pebble publish` rebuilds and may normalize the PBW. Neither is an
 unpublished registration shortcut. Use Dashboard New only after exact-PBW and
 listing approval, uploading the frozen file without rebuilding.
 
-The user's future **“publish this new app everywhere”** instruction authorizes
-registration, the initial listing and publication subject to that exact tested
-PBW approval. This setup task does not authorize registration or publication.
+An explicit **“publish this new app everywhere”** instruction can authorize
+first registration, listing and publication subject to exact tested PBW approval.
+KasugaBus has already completed that flow; future updates use its saved ID.
+Maintaining this skill does not authorize another registration or publication.
 Before Submit, write the durable creation-intent journal. Immediately after
 the creation response or Dashboard App Information supplies an ID, save it
 through the registration-record command before any other publication step.
@@ -70,7 +73,8 @@ source, visibility and Android companion values with the requested description,
 without replacing assets or category. It rejects iOS/unknown companion shapes
 because the observed form does not submit those fields. Reinspect the current
 official form if the contract changes; do not ask the user to design API
-bindings or weaken the guard. No live PATCH was tested during setup. Use the
+bindings or weaken the guard. The authorized 1.0.0 publication verified this PATCH contract with preservation
+and exact text read-back; setup-only evidence predates that write. Use the
 authorized Dashboard UI if unsupported metadata prevents a safe scripted edit,
 checking all preserved fields before and after.
 

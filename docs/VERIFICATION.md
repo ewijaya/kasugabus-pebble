@@ -1,21 +1,74 @@
 # KasugaBus verification — 1 October 2026
 
-The six-stop application, selected **Neon Express** launcher icon, timetable
-publishing tools and app-release workflow are implemented. The development PBW below
-passed fresh automated and native emulator checks and was installed on the
-owner's Time 2. The owner confirmed the identical bus icon on the preceding
-Neon Express package; that observation retains its original digest.
-Basic physical Home → board → details checks were performed on the earlier
-pre-icon build. This is an unpublished development build; the PRD's broader
-physical and seven-day release checks remain open.
+KasugaBus **1.0.0** is published as an initial release with explicitly accepted
+physical and seven-day validation limitations. The owner approved the installed
+candidate and proposed listing before publication to GitHub and RePebble.
+GitHub source and the production timetable feed are live. The broader PRD
+personal-use acceptance checks remain open; publication does not mark them passed.
 
 All ten [icon concepts](../artifacts/icon-options/index.html), generation prompts
-and final 25 × 25 asset are retained. The final source audit includes first-time
-registration/recovery, existing-listing adoption and the SDK clean-output fix.
-Those development checks preceded source publication. The owner later authorized
-an initial release with named limitations; see the publication section below.
-GitHub source and the timetable feed are now live. Store registration and
-exact release-candidate approval are separate steps.
+and final Neon Express 25 × 25 asset are retained. Current release evidence and
+earlier development/physical observations are identified separately below.
+
+## Published artifact and exact approval
+
+| Item | Release result |
+| --- | --- |
+| App | KasugaBus 1.0.0, interactive app, Emery only |
+| Source / tag | `3110deecde6d154a52b1d7971e6e3c5c1bd1a54d`, `v1.0.0` |
+| PBW | [Published PBW](https://github.com/ewijaya/kasugabus-pebble/releases/download/v1.0.0/kasugabus-pebble.pbw), **817,922 bytes** |
+| SHA-256 | `233627ffc63e0964bff272c3a56bac11e6f7634992b06cb45143524e2bc5330a` |
+| GitHub | [KasugaBus v1.0.0](https://github.com/ewijaya/kasugabus-pebble/releases/tag/v1.0.0) |
+| RePebble | [KasugaBus](https://apps.repebble.com/f63e6ed24301414a95909564), App ID `f63e6ed24301414a95909564` |
+| Package UUID | `d7ba77b0-d528-4cc8-b35c-7052798152c9`; distinct from the App ID |
+| Native binary / static RAM / resources | 31,428 / 39,170 / 30,178 bytes |
+| Linker free RAM | 91,902 bytes; not a runtime heap measurement |
+| Minimum measured free heap | **32,400 bytes**, emulator launch/navigation/update-transfer |
+| Timetable | 24,203-byte bundled baseline v1; production feed current v2 |
+
+The owner's exact approval was: **“I approve the installed KasugaBus 1.0.0
+candidate and listing. Publish it everywhere.”** The release receipt binds that
+approval to this version, digest and both destinations. Both published PBW
+downloads were hash-verified; the Dashboard and canonical public page are visible.
+
+[Publication verification](../artifacts/releases/1.0.0/publication.json) passed for GitHub
+(including the downloaded PBW and latest release), Dashboard, the general and
+Emery-filtered catalogs, and the canonical public store page/changelog. The
+phone's My Apps cache was not observed; the Emery catalog is a proxy for it.
+
+[Build audit](../artifacts/releases/1.0.0/build-audit.json),
+[clean build/test log](../artifacts/releases/1.0.0/build.log),
+[runtime log](../artifacts/releases/1.0.0/runtime.log) and
+[exact-artifact emulator installation receipt](../artifacts/releases/1.0.0/runtime-install.json)
+bind the release checks to this PBW. The clean run passed **122 Python tests**,
+**25 phone scenarios**, **5 Clay/settings integration checks**, **5 controlled
+HTTP-feed scenarios** and strict portable C checks. Automated cases remain
+isolated fixtures; the actual publication has separate
+[publication](../artifacts/releases/1.0.0/publication.json),
+[asset read-back](../artifacts/releases/1.0.0/asset-readback.json) and
+[text read-back](../artifacts/releases/1.0.0/text-readback.json) evidence.
+
+The public API represented hardware platforms as objects, so the read-only
+publication verifier was corrected to recognize the observed shape. Corrected
+verification passed on its first attempt, with **40 release unit tests**
+(31 existing and nine new) passing. This later tooling check did not rebuild or
+replace the approved PBW; its frozen clean-build result remains 122 Python tests.
+
+The actual SDK pypkjs/XHR worker fetched the deployed HTTPS manifest and v2
+payload. It transferred all **24,203 bytes in 127 chunks**, received **127 native
+chunk acknowledgements**, and retained active v2 and the successful feed-check
+timestamp across restart. Preferences were unchanged and the PBW was not
+reinstalled for the update. This is emulator evidence, with no upcoming
+production release in this focused check; it does not establish physical future
+activation or interruption recovery. See the
+[production-feed proof](../artifacts/releases/1.0.0/production-feed.json) and
+[trace](../artifacts/releases/1.0.0/production-feed.log).
+
+Release-artifact [Home](../artifacts/screenshots/release-1.0.0-home.png),
+[board](../artifacts/screenshots/release-1.0.0-board.png) and
+[details](../artifacts/screenshots/release-1.0.0-details.png) captures preserve the
+actual native 200 × 228 framebuffer. Historical launcher, development and
+physical observations below remain bound to their original packages.
 
 ## Development acceptance artifact (before release freeze)
 
@@ -43,9 +96,9 @@ runtime allocation measurement. The known SDK linker RWX warning is nonfatal.
 No SDK/compiler was replaced. This historical audit predates the later
 authorized source/feed publication and final release-candidate freeze.
 
-## Automated coverage
+## Historical automated coverage (development PBW `2bddb0b0…`)
 
-The final clean-build run passed **113 Python tests**, **25 phone scenarios**, **5
+The preceding development clean-build run passed **113 Python tests**, **25 phone scenarios**, **5
 Clay/settings integration checks**, **5 real loopback HTTP-feed scenarios**,
 and strict portable C preference/control, policy and storage suites. The C
 engine runs through the Python codec fixtures. Python cases include 21 hosting,
@@ -74,9 +127,9 @@ Run the maintained suite with `python3 scripts/test.py`. Fixtures which invent
 times, versions or dates are isolated test inputs, never published timetable
 data.
 
-## Native Emery flows and visual inspection
+## Historical native Emery flows and visual inspection
 
-The final [controlled update run](../artifacts/native-update-workflow-acceptance.log) delivered
+The development PBW `2bddb0b0…` [controlled update run](../artifacts/native-update-workflow-acceptance.log) delivered
 complete current **v28** and future **v29** copies of the reviewed data in
 **254 chunks**, through the production phone updater/sender and real C
 AppMessage receiver. The same installed UUID was stopped and started without
@@ -92,7 +145,7 @@ or **632.55–637.32 ms including the start command**. Twelve ordinary buttons
 rendered in **10.77–83.76 ms**. All samples met the PRD's 1-second / 200-ms
 targets. They are emulator observations, not physical-watch timing claims.
 
-Final-artifact [Home](../artifacts/screenshots/emery_workflow_home.png),
+Development-artifact [Home](../artifacts/screenshots/emery_workflow_home.png),
 [board](../artifacts/screenshots/emery_workflow_board.png), and
 [details](../artifacts/screenshots/emery_workflow_details.png) were captured and
 visually inspected at native resolution. The preceding icon package's
@@ -105,10 +158,12 @@ initial white candidate failed the unselected-row check and was replaced.
 The owner-confirmed [Neon Express package](../artifacts/KasugaBus-1.0.0-emery-neon-installed.pbw),
 SHA-256 `4679b90e11353358a85c629ceeb926cfd564556666158899d1d633bdd329f6d6`,
 retains its [audit](../artifacts/final-neon-build-audit.json) and current24/future25
-runtime evidence. The [new build comparison](../artifacts/workflow-build-comparison.json)
+runtime evidence. The [development build comparison](../artifacts/workflow-build-comparison.json)
 finds changes only in native metadata bytes 124/125, its manifest checksum and
 ZIP timestamps. Native application code, phone JavaScript and resources are
-identical. Physical QA is still reported under the package actually observed.
+identical between those preceding development packages. This comparison does
+not include the published candidate's later XHR correction. Physical QA stays
+reported under the package actually observed.
 
 The first renewal attempt found that SDK `pebble clean` left old build output
 when its environment-bearing Waf lock was absent; missing fresh build metrics
@@ -122,8 +177,8 @@ The earlier full acceptance artifact is preserved as
 Its [binary comparison](../artifacts/neon-build-comparison.json) shows identical
 native bytes from offset 168 onward and identical phone JavaScript; the native
 differences are app metadata for the launcher resource. The following broad
-scenario evidence belongs to that earlier artifact, not a second run on the
-final PBW.
+scenario evidence belongs to that earlier artifact, not a repeat on the
+published PBW.
 
 The earlier [navigation run](../artifacts/native-navigation-acceptance.log) verified
 restart persistence and captured home, board, full/Japanese details,
@@ -149,8 +204,10 @@ glyphs and actionable status fit. Captures preserve the emulator's actual
 backlight dimming; they are not recoloured or resized. Test dates/walking
 allowances are labelled fixtures. The earlier cleanup restored the actual time
 and original preferences and explicitly restored reviewed bundled v1. The
-final update harness restored original preferences and retained its complete
-test versions v28/v29 in the emulator; production and bundled data remain v1.
+development update harness restored original preferences and retained its
+complete test versions v28/v29 in the emulator. Production and bundled data
+were v1 at that stage; production has since advanced to v2, while the bundled
+baseline remains v1.
 
 The first rollover attempt stalled in SDK emulator firmware logging. The
 [read-only diagnosis](../artifacts/emulator-rollover-stall-diagnosis.md) found
@@ -161,7 +218,7 @@ retained, not relabelled as successful runs. A later icon-check diagnostic
 also encountered the SDK logging stall while a separate platform probe was
 active; [diagnosis](../artifacts/emulator-neon-stall-diagnosis.md) and failed
 `native-update-neon-final*.log` attempts are retained. After emulator reset,
-the fresh final-artifact run above passed and its runtime receipt was sealed.
+the fresh development-artifact run above passed and its runtime receipt was sealed.
 
 ## Data and physical observations
 
@@ -189,30 +246,27 @@ binds successful installation and a subsequent SDK stop/start to preceding PBW
 Both attempted remote icon captures returned the Quartz watchface, so they
 remain diagnostic files and are not presented as physical launcher evidence.
 That physical log missed the first READY marker and is installation evidence
-only. The newest `2bddb0b0…` PBW also [installed successfully](../artifacts/physical-workflow-installation.json)
-through Dev Connection. This latest install did not repeat user navigation,
-icon or broader physical QA; the complete final runtime audit is from the emulator.
+only. The preceding `2bddb0b0…` development PBW also [installed successfully](../artifacts/physical-workflow-installation.json)
+through Dev Connection. That development install did not repeat user navigation,
+icon or broader physical QA; that development runtime audit is from the emulator.
+The owner later approved the separately installed published candidate and listing;
+that approval does not relabel these earlier physical observations.
 
-## Remaining release checks
+## Remaining full personal-use acceptance checks
 
-- Set up the agreed `ewijaya/kasugabus-pebble` repository and deploy/verify its
-  dedicated GitHub Pages timetable feed after authorization. There is no local
-  Git repository; the intended remote is not accessible to current GitHub
-  authentication. Local configuration is not a live feed.
-- KasugaBus remains unregistered. Authenticated UUID/repository discovery
-  found no matching listing; `store_app_id` and `store_listing_url` remain
-  null. The official New/Edit form contracts were inspected read-only, and
-  the complete [local listing](releases/listing-preview.html) is prepared.
-  Registration publishes the initial release and awaits exact-candidate
-  approval under [releasing.md](releasing.md).
-- Test actual GPS permissions/accuracy/latency and failures, Clay settings and
-  persistence, connection loss, production HTTPS timetable-only updates and
-  physical interruption/recovery on the recorded phone/watch combination.
-- Record sunlight readability, the three-second glance task, battery behaviour
-  and seven days of actual use including a weekend.
-- Obtain explicit physical approval of the exact frozen final PBW SHA-256 and
-  named publication destinations. The owner's navigation/icon confirmation is not
-  release-publication approval.
+The owner explicitly accepted these limitations for the initial publication.
+They remain unperformed requirements for the PRD's complete personal-use
+milestone, rather than claims established by publication:
+
+- Actual GPS permission/accuracy/latency/failure behavior, Clay settings and
+  persistence, physical connection loss, future activation and interrupted
+  update/recovery checks on the recorded phone/watch combination.
+- Sunlight readability, the three-second glance task, battery behavior and
+  seven days of actual use including a weekend.
+
+Repository setup, live hosting, first registration and exact-candidate
+publication approval are complete. The limited physical v2 update is recorded
+separately below and does not complete the broader recovery checks.
 
 ## Initial publication scope — 1 October 2026
 
@@ -220,8 +274,11 @@ The owner explicitly chose “Publish an initial release with the limitations
 stated.” This permits the initial 1.0.0 release while broader physical
 GPS/settings/update recovery, outdoor/glance readability, battery and seven-day
 use remain outstanding. It does not mark those PRD acceptance checks passed.
-Source publication and production timetable hosting are complete. The final
-candidate is being prepared from committed source. Exact physical approval remains a separate gate.
+Source publication and production timetable hosting are complete. The installed
+1.0.0 candidate and listing received explicit physical/publication approval, and
+the exact `233627ff…` PBW is available from both release destinations.
+The source tag remains on `3110dee`; subsequent publication documentation does
+not change the tagged release artifact.
 
 ### Live source and timetable publication
 
@@ -258,7 +315,9 @@ BEGIN. Two independent actual-SDK probes traced this to repeated reads of the
 XHR response getter. The corrected adapter caches the binary response once;
 the actual installed XHR regression now preserves all 24,320 arbitrary fixture
 bytes and retains the size guard, without using the unsafe text fallback. All
-nine production-observer/SDK regression tests pass. The final candidate will be
-clean-built from this correction and must repeat the live native transfer.
+nine production-observer/SDK regression tests pass. The published candidate was
+clean-built with the correction and repeated the actual SDK HTTPS/native v2
+transfer described in the published-artifact section. The earlier failed attempts
+remain historical evidence.
 The earlier global emulator firmware stall is documented separately in
 [the diagnosis](../artifacts/production-feed-emulator-stall.md).

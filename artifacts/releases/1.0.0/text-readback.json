@@ -1,0 +1,17 @@
+{
+  "app_id": "f63e6ed24301414a95909564",
+  "normalization": "CRLF browser-form line endings and final presentation newline to approved frozen text; wording unchanged",
+  "description_exact": true,
+  "release_notes_exact": true,
+  "metadata_and_assets_preserved": true,
+  "release_identifiers_and_artifact_preserved": true,
+  "release_note_contract": {
+    "method": "PATCH",
+    "path": "/api/dashboard/apps/{appId}/releases",
+    "json_fields": [
+      "releaseId",
+      "releaseNotes"
+    ],
+    "inspected_official_source": "https://developer.repebble.com/_next/static/chunks/app/dashboard/page-f19516b8a163b03f.js?dpl=dpl_A7sdvQuJbqvryha9wFETBg4A9zWT"
+  }
+}

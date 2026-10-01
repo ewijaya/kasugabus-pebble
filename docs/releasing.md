@@ -1,28 +1,41 @@
 # KasugaBus release workflow
 
-The owner authorized initial publication on 1 October 2026, retaining version
-**1.0.0**, with the outstanding physical and seven-day checks explicitly stated.
-The source repository is `ewijaya/kasugabus-pebble`; `main` is configured locally
-and on GitHub. Source pushes and the selected dedicated GitHub Pages feed are
-release preparation. App registration, release tags and PBW uploads follow
-approval of the exact frozen candidate. The verified store ID is recorded in
-`release-config.json` immediately after registration; do not infer it from this
-procedure or the package UUID.
+KasugaBus **1.0.0** was published and verified on 1 October 2026 after the
+owner explicitly approved the final installed PBW and listing. GitHub's latest
+release and downloaded PBW, the authenticated Dashboard, general and
+Emery-filtered public catalogs, and the public store page/changelog all passed
+verification. The phone's My Apps cache was not directly observed; the Emery
+catalog is a proxy for that surface.
 
-The package/PBW UUID and store App ID are different identities. Package UUID
-`d7ba77b0-d528-4cc8-b35c-7052798152c9` is known now; RePebble assigns its own App
-ID when a listing is created. `store_app_id` and `store_listing_url` remain
-null until a matching existing record is adopted or first registration returns
-an ID and identity is verified. Never derive an App ID from the UUID, guess
-one, or reuse the reference app's ID.
+| Published identity | Verified value |
+| --- | --- |
+| GitHub release | [v1.0.0](https://github.com/ewijaya/kasugabus-pebble/releases/tag/v1.0.0) |
+| RePebble listing | [KasugaBus](https://apps.repebble.com/f63e6ed24301414a95909564) |
+| Store App ID | `f63e6ed24301414a95909564` |
+| Source commit | `3110deecde6d154a52b1d7971e6e3c5c1bd1a54d` |
+| PBW | 817,922 bytes; SHA-256 `233627ffc63e0964bff272c3a56bac11e6f7634992b06cb45143524e2bc5330a` |
+| Publication documentation commit | `73a3ad23d06cbaa80000924c467f40cb21b82620` |
 
-The user's later **“publish this new app everywhere”** instruction authorizes
-registration, the initial listing and publication, subject to physical
-approval of the exact tested PBW and review of the initial listing/assets.
-Workflow setup authorizes none of these external changes. Repository/source
-pushes and timetable hosting can be authorized as preparation independently
-of the final app-release tag and uploads; the complete future prompt below
-makes that sequence explicit.
+[Publication evidence](../artifacts/releases/1.0.0/publication.json) records the
+exact-artifact approval, verification results and remaining acceptance work.
+This is an explicitly scoped initial release: broader physical GPS, settings,
+connection-loss/recovery, outdoor readability, battery observations and the
+seven-day use review remain outstanding. It is not the completed first
+personal-release milestone. The production Pages timetable is v2; the app's
+bundled baseline remains v1.
+
+Read [release-config.json](release-config.json) for the maintained repository,
+branch and verified store identity. Future releases use the **existing**
+KasugaBus listing. Do not submit Dashboard New again. Package UUID
+`d7ba77b0-d528-4cc8-b35c-7052798152c9` and the store App ID are different
+identities; never derive one from the other or reuse another project's ID.
+A missing local configuration still requires remote discovery and journal
+recovery rather than assuming that no listing exists.
+
+The owner's initial publication instruction authorized registration and both
+release destinations; exact PBW/listing approval was then obtained. The
+registration instructions below preserve that first-time recovery procedure.
+Maintaining this workflow alone does not authorize a future release.
 
 First registration is a public release action. The official Dashboard New
 flow at `/dashboard/submit` uploads the PBW and sends `isPublished=true` with
@@ -37,9 +50,11 @@ Dashboard form or create a developer account.
 [account discovery](../artifacts/store-discovery-2026-10-01.json) contain no
 credentials. Browser automation was unavailable during setup, so the New
 requirements were inspected from authenticated official frontend source and
-API responses, not a completed browser walkthrough. No PBW or listing asset
-was uploaded. If sign-in is required later, let the owner complete it without
-requesting passwords or tokens.
+API responses, not a completed browser walkthrough at that stage. This is
+historical setup evidence. During the subsequently approved release, Dashboard
+New was completed once, its assigned ID was saved, and the exact approved PBW
+and listing were verified. If sign-in is required later, let the owner complete
+it without requesting passwords or tokens.
 
 The maintained configuration is [release-config.json](release-config.json).
 Project identity is package `kasugabus`, display `KasugaBus`, UUID
@@ -75,9 +90,10 @@ The helper proposes context; it never changes a version automatically.
 
 Review and commit the intended package version, both lockfile version fields,
 README, CHANGELOG, `docs/releases/VERSION.md` and the proposed store description
-before freezing. Derive notes from the actual diff. The draft initial notes
-record incomplete phone/device checks and undeployed hosting; remove those
-limitations only after the corresponding work is done. README publication
+before freezing. Derive notes from the actual diff. The published initial
+notes record the live feed and the explicitly accepted physical/seven-day
+limitations. Remove a limitation only after its corresponding work is done;
+do not rewrite the frozen 1.0.0 text while preparing another version. README publication
 status uses one `<!-- kasugabus-release-status -->` marker followed by a single
 status line. Preparation requires a clean committed source on the configured
 branch and matching origin, with `build/`, `node_modules/` and `.release/`
@@ -198,22 +214,29 @@ installed Pebble Tool interpreter, not an unrelated system Python:
 KASUGABUS_RELEASE_PYTHON="$HOME/.local/share/uv/tools/pebble-tool/bin/python"
 ```
 
-For this unregistered app, prepare the complete initial listing and artwork
-from [listing.json](releases/listing.json) and its [preview](releases/listing-preview.html).
-Use the explicit first-publication mode:
+For the next release, choose the suitable version after reviewing the actual
+diff, then set `KASUGABUS_RELEASE_VERSION` to that reviewed version. Read the
+saved store ID and use ordinary existing-listing preparation, without
+`--listing` or `create-or-resume`:
 
 ```sh
-"$KASUGABUS_RELEASE_PYTHON" scripts/release.py prepare 1.0.0 \
-  --store-mode create-or-resume --listing docs/releases/listing.json \
-  --audit build/release-audit.json --notes docs/releases/1.0.0.md \
+"$KASUGABUS_RELEASE_PYTHON" scripts/release.py prepare "$KASUGABUS_RELEASE_VERSION" \
+  --audit build/release-audit.json \
+  --notes "docs/releases/$KASUGABUS_RELEASE_VERSION.md" \
   --description docs/releases/store-description.txt \
   --destination github --destination appstore --physical
 ```
 
+The [frozen published listing](../artifacts/releases/1.0.0/listing.json) and
+[published-listing preview](releases/listing-preview.html) retain 1.0.0 evidence.
+The original [draft specification](releases/listing.json) predates the fresh
+release-native screenshots substituted at freeze. None of these files is an
+instruction to replace an existing listing's artwork.
+
 Preparation validates existing destination releases, source/lockfile/doc
 versions and the measured audit, installs the same artifact on the physical
 watch, and freezes it with notes, description, runtime log and audit under
-`.release/1.0.0/`. First-publication mode also freezes the full listing and
+`.release/VERSION/`. First-publication mode also freezes the full listing and
 every icon/banner/screenshot with byte size and SHA-256. Existing registered
 releases use the default `existing` mode and preserve their current artwork.
 No public mutation occurs. An existing candidate is never
@@ -225,7 +248,22 @@ operator/direction labels, offline operation and settings/update recovery.
 An installation success is not this approval. Review the frozen listing and
 artwork alongside the PBW before initial publication.
 
-## Register once and resume safely
+## First-registration history and recovery
+
+KasugaBus's first registration is complete. The following procedure documents
+the guarded 1.0.0 New flow and recovery from an uncertain first submission; it
+is not the next-release path. Always retain its journals and verified ID.
+For first-registration recovery, the retained preparation example is below.
+The actual 1.0.0 freeze used a preparation copy with fresh release-native
+screenshots; the published manifest above records those exact sources.
+
+```sh
+"$KASUGABUS_RELEASE_PYTHON" scripts/release.py prepare 1.0.0 \
+  --store-mode create-or-resume --listing docs/releases/listing.json \
+  --audit build/release-audit.json --notes docs/releases/1.0.0.md \
+  --description docs/releases/store-description.txt \
+  --destination github --destination appstore --physical
+```
 
 Inspect saved configuration before opening New. Use authenticated read-only
 UUID lookup and the Dashboard collection to find existing listings, including
@@ -313,7 +351,13 @@ The confirmation JSON has exactly these fields: `schema: 1`, `confirmed: true`,
 the assigned `app_id`, package `uuid`, frozen `listing_sha256`, exact
 `artifact_sha256`, `metadata`, `assets`, and `dashboard_readback`. `metadata`
 must equal every value in the frozen listing. `assets` preserves its order,
-with each asset's `role`, full `sha256` and `platform` when present.
+with each asset's `role`, full `sha256` and `platform` when present. Those
+asset hashes identify the frozen **uploaded source files**. RePebble optimizes
+PNGs: the downloaded artwork need not have identical bytes or every identical
+pixel. Compare the downloaded dimensions, roles/order and appearance with the
+approved sources and retain hashes, pixel differences and visual review in
+[asset read-back](../artifacts/releases/1.0.0/asset-readback.json). Downloaded
+PBWs must still match the approved SHA-256 exactly.
 `dashboard_readback` contains the observed `app_id`, `uuid`, `source`,
 `type: "watchapp"` and `platforms: ["emery"]`. Record this small attestation
 only after comparing the actual Dashboard and downloaded release; do not
@@ -345,8 +389,8 @@ candidate and recorded destinations, run with the installed Pebble Python
 environment (the interpreter in `pebble`'s shebang):
 
 ```sh
-"$KASUGABUS_RELEASE_PYTHON" scripts/release.py publish 1.0.0 \
-  --approve-publish 1.0.0 --approve-sha256 THE_REPORTED_SHA256 \
+"$KASUGABUS_RELEASE_PYTHON" scripts/release.py publish "$KASUGABUS_RELEASE_VERSION" \
+  --approve-publish "$KASUGABUS_RELEASE_VERSION" --approve-sha256 THE_REPORTED_SHA256 \
   --approve-destination github --approve-destination appstore \
   --approve-physical
 ```
@@ -401,7 +445,22 @@ releases. If the contract is unavailable, use a separately reviewed official
 Dashboard edit flow for the exact description and read-back preservation check;
 do not weaken the script guard or borrow another app's listing ID. Offline
 mocks verify our request/preservation behavior. No live PATCH was made during
-setup; the later authorized write still requires read-back comparison.
+setup. During the authorized 1.0.0 publication, a reviewed description PATCH
+preserved existing listing fields and corrected presentation line endings;
+[exact text read-back](../artifacts/releases/1.0.0/text-readback.json) verifies
+that wording, metadata/assets and release identity were preserved.
+
+The Dashboard New browser form submitted CRLF and the notes file's final
+presentation newline. Canonical frozen `manifest.notes` and
+`manifest.description` use LF with no trailing presentation newline. Compare
+against those canonical strings, not raw Markdown-file bytes. The observed
+[official Dashboard frontend](https://developer.repebble.com/_next/static/chunks/app/dashboard/page-f19516b8a163b03f.js?dpl=dpl_A7sdvQuJbqvryha9wFETBg4A9zWT)
+uses `PATCH /api/dashboard/apps/{appId}/releases` with JSON
+`{releaseId, releaseNotes}` for release-note edits. The approved 1.0.0 correction
+used that contract and the fields-preserving description PATCH solely to
+normalize line endings and remove the presentation newline. This is a recorded
+reviewed technique, not an invented helper command or permission for future
+wording changes. Reinspect the official contract before another manual edit.
 
 ## Verify and recover
 
@@ -411,12 +470,14 @@ and Emery asset description, public catalog general and `?hardware=emery`,
 and canonical public listing/changelog. The verified public response is
 `GET https://appstore-api.repebble.com/api/v1/apps/uuid/UUID`, with a `data`
 array containing matching ID/UUID, description, hardware platforms and a
-`latest_release` with `version`, `release_notes` and `pbw_file`. The Emery
+`latest_release` with `version`, `release_notes` and `pbw_file`. Observed
+`hardware_platforms` contains objects, not strings; the verifier must normalize
+that actual shape before matching Emery. The Emery
 catalog is a My Apps proxy; phone cache state requires observation on the
 actual phone. A successful API response cannot prove that phone display is fresh.
 
 ```sh
-python3 scripts/release.py verify 1.0.0 --attempts 3
+"$KASUGABUS_RELEASE_PYTHON" scripts/release.py verify "$KASUGABUS_RELEASE_VERSION" --attempts 3
 ```
 
 Each attempt prints per-destination status; retries are bounded to 1..5 attempts
@@ -436,35 +497,30 @@ pushes the same saved commit even when no new documentation diff remains.
 
 ## Future invocation
 
-For the current uninitialized repository, undeployed feed and unregistered
-listing, use this exact request later:
+For the registered app and live timetable feed, use a request such as:
 
-> Publish this new app everywhere using $kasugabus-publish-release for
-> ewijaya/kasugabus-pebble and RePebble. Retain 1.0.0. I authorize repository
-> initialization/creation, reviewed source/documentation commits and source
-> pushes, and dedicated GitHub Pages setup/deployment for the reviewed
-> timetable feed. Verify live hosting and the timetable-only update, and
-> review PRD acceptance evidence; keep missing physical/seven-day checks as
-> blockers. Inspect my authenticated Dashboard for an existing listing by
-> UUID, repository and release metadata. If none exists, prepare Dashboard
-> New with KasugaBus's complete listing and artwork. Build, audit and freeze
-> one candidate, install those exact bytes on my watch, and report its full
-> SHA-256 and listing preview. Wait for my physical approval of that candidate
-> before submitting New, creating/pushing a release tag, or publishing a
-> GitHub Release. Then publish the same frozen PBW, immediately record and
-> verify the assigned App ID/public URL, resume safely after failures, and
-> verify every Dashboard/public/catalog surface without rebuilding.
+> Publish the next KasugaBus release to GitHub and RePebble using
+> $kasugabus-publish-release. Read the saved release configuration and verify
+> the existing listing; do not submit New. Review changes since v1.0.0 and
+> choose the next suitable version from that diff. I authorize the reviewed
+> version/documentation changes, source commit/push, release tag and both
+> publications. Preserve existing listing identity, artwork, companion fields
+> and previous releases. Recheck timetable source/calendar validity and the
+> live production feed. Review physical and seven-day evidence, and name any
+> remaining limitations. Build and audit one candidate, freeze and install
+> those exact bytes on my watch, then report its SHA-256 and notes. Wait for my
+> approval of that installed candidate before publishing its exact frozen PBW.
+> Resume safely after failures and verify GitHub, Dashboard, both catalogs and
+> the public listing/changelog without rebuilding.
 
-The phrase “publish this new app everywhere” authorizes first registration,
-initial listing and publication subject to approval of the exact tested PBW;
-it must not trigger a second redundant registration-permission request. The
-expanded prompt also states the repository/source-push and Pages preparation
-scope needed to verify hosting before freezing. First-publication submission
-and app-release tags/uploads remain behind the exact-candidate approval.
-Loading this skill or maintaining its files does not authorize any of them.
+Tailor the release scope to the actual changes and owner instruction. A future
+explicit approval must cover its own installed PBW digest and destinations;
+the 1.0.0 approval does not approve different bytes. Once that exact approval
+exists, continue without asking redundantly. Loading the skill or maintaining
+its files alone does not authorize publication.
 
-After registration, the workflow reads the saved verified App ID and uses the
-existing-listing mode. Re-discover and verify identity if configuration is
-missing; never treat a missing local ID as proof that no remote listing exists.
-Do not overwrite the initial published version or recreate a listing merely
-because an earlier command failed.
+Read the saved verified App ID for existing-listing mode. If configuration is
+missing, rediscover identity and inspect registration journals before acting;
+a missing local ID is not evidence that no remote listing exists. Do not
+overwrite an already published version or recreate a listing after a failed
+command. Feed data versions advance independently of the app's semver.

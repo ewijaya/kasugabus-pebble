@@ -2,7 +2,8 @@
 
 The owner selected GitHub Pages at
 `https://ewijaya.github.io/kasugabus-pebble/timetables/` and authorized deployment
-on 1 October 2026. The reviewed feed is live. The pinned phone URL is unchanged;
+on 1 October 2026. The reviewed production feed is live at data **v2**; the
+published app's bundled baseline remains **v1**. The pinned phone URL is unchanged;
 timetable-only revisions require no PBW reinstall. Exact HTTPS payload checks,
 MIME types and wildcard CORS passed; Pages caches responses for up to ten minutes.
 See [hosting evidence](../hosting/README.md). Keep actual companion/watch transfer
@@ -25,9 +26,11 @@ Never use a host that redirects payloads to arbitrary origins.
    every changed departure/calendar/direction against the actual source, and
    document unclear or excluded data. Pole coordinates require boarding-pole
    evidence. A successful compiler check alone is not reconciliation.
-3. Set a newer `release_version`, source verification/review dates, the
-   supported interval and separate `effective_from` date. Retain operator
-   schedules and originating service dates through staggered/overnight changes.
+3. Set a newer `release_version`. Change source verification/review dates,
+   supported interval or `effective_from` only when actual source review and
+   service evidence justify them. A version-only delivery reissue preserves
+   those dates and every departure. Retain operator schedules and originating
+   service dates through staggered/overnight changes.
 4. Create a review JSON report tied to the **exact input file bytes**. It has
    `releaseVersion`, `sourceSha256`, `departureCount`, `reconciled: true`,
    nonempty `reviewer` and ISO `reviewedAt`. Keep the detailed source report with
@@ -123,7 +126,7 @@ fix while startup lookup is off. No location is included in feed traffic.
 
 ## Recorded integration evidence
 
-The final rebuilt PBW, SHA-256
+The earlier development PBW, SHA-256
 `2bddb0b092d51c7cdab6944c56a11bb377f4a97932643ee37541450bfc8bdb09`,
 repeated the controlled update checks in
 [native-update-workflow-acceptance.log](../artifacts/native-update-workflow-acceptance.log).
@@ -131,8 +134,10 @@ Complete current v28/future v29 snapshots transferred in 254 chunks without a
 PBW reinstall. Restart preserved both; a replacement interrupted after two
 chunks and corrupt/incompatible/interrupted HTTP attempts preserved them and
 the successful-check timestamp. Its [sealed audit](../artifacts/final-workflow-build-audit.json)
-binds the fresh runtime to these exact bytes. All versions here are isolated
-test fixtures; the production and bundled dataset remains v1.
+binds that runtime to those exact bytes. Versions v28/v29 are isolated test
+fixtures, not production data releases. Production is now v2; bundled data
+remains v1. This is historical development evidence, not a transfer observation
+for the final published PBW.
 
 On 2026-10-01, the controlled Emery run in
 [`artifacts/native-update-acceptance.log`](../artifacts/native-update-acceptance.log)
@@ -164,10 +169,40 @@ tracking, screenshot fallback/cleanup, and reader termination reporting
 without connecting to a watch. The final phone suite has 25 unit scenarios,
 five settings integration checks and five real HTTP-feed scenarios.
 
-The controlled evidence does not establish physical-phone HTTPS/XHR, GPS
-behavior or seven-day acceptance. Live GitHub Pages headers and exact payloads
+The controlled evidence does not establish physical-phone GPS/settings,
+recovery or seven-day acceptance. Live GitHub Pages headers and exact payloads
 were subsequently verified; see [hosting evidence](../hosting/README.md).
 Actual companion and physical-device checks remain separately identified.
+
+## Published production data and actual delivery
+
+The genuine delivery-verification v2 reissue changes only the monotonic data
+`release_version`. Its 1,411 validated departures, operators/calendars,
+effective/validity dates, source verification and review due date match v1.
+See [DATA_RELEASE_2.md](DATA_RELEASE_2.md), archived
+[v1 source](../hosting/sources/1.json), [v2 source](../hosting/sources/2.json)
+and [exact-input review](../hosting/reviews/2-review.json). Timetable data
+versions are independent of app version 1.0.0. Service coverage remains
+1 October–27 December 2026, source verification 1 October and review due
+1 November; later dates remain unconfirmed. Version 2 is not an invented
+service revision or an extension of coverage/source freshness.
+
+For the published 1.0.0 PBW, SHA-256
+`233627ffc63e0964bff272c3a56bac11e6f7634992b06cb45143524e2bc5330a`,
+[production proof](../artifacts/releases/1.0.0/production-feed.json) and its
+[native log](../artifacts/releases/1.0.0/production-feed.log) record the actual
+cached PBW's shipped pypkjs HTTPS/XHR path. Dataset v2 completed in 127 native
+acknowledged chunks without reinstalling the PBW, survived restart and
+preserved preferences. This is exact-final-PBW **emulator** evidence.
+
+On the actual Time 2, the owner confirmed active data v2 and a successful feed
+check on the preceding development PBW `2bddb0b0…`; see
+[physical update record](../artifacts/physical-production-update-v2.json).
+The final PBW was subsequently physically installed and explicitly approved.
+Do not relabel the earlier physical delivery check as a final-PBW observation
+or as broader physical GPS/settings/recovery acceptance. The
+[publication receipt](../artifacts/releases/1.0.0/publication.json) separates
+these observations and remaining checks.
 
 ## Production feed verification
 

@@ -1,0 +1,18 @@
+[
+  {
+    "url": "https://apps.repebble.com/f63e6ed24301414a95909564",
+    "status": 200,
+    "expected_contents_present": [
+      true,
+      true
+    ]
+  },
+  {
+    "url": "https://apps.repebble.com/f63e6ed24301414a95909564/changelog",
+    "status": 200,
+    "expected_contents_present": [
+      true,
+      true
+    ]
+  }
+]

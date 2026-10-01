@@ -82,41 +82,56 @@ Official source directories:
 
 The integrated PDF is a reference, not a validated app dataset. Use the original source PDFs and current stop timetable records when extracting data.
 
-## Implementation status — 1 October 2026
+## Implementation and publication status — 1 October 2026
 
-The original plan above is preserved as the starting record. Current status:
+The original plan above is preserved as the starting record. The initial release
+is now published with the owner's explicit acceptance of the remaining physical
+and seven-day checks. Current evidence is in
+[the release report](docs/releases/1.0.0-verification.md) and
+[full verification history](docs/VERIFICATION.md).
 
-- The installed toolchain is verified and unchanged: Pebble Tool 5.0.40, SDK 4.33.1, ARM GCC 14.2.1, Python 3.13.5, Node 26.8.1, npm 11.19.0 and uv 0.12.9. Emulator persistence/AppMessage measurements remain separate from physical evidence; the installed physical app reports 1,048,576-byte persistence capacity.
-- Reviewed official sources produced the editable baseline: six stop groups, 15 boarding points and 1,411 departures, with route/operator/direction/calendar provenance. Six Hankyu pole coordinates are verified; nine Kintetsu coordinates are excluded. Source review is due 2026-11-01; covered service dates end 2026-12-27 pending verified year-end rules.
-- The offline JST engine, Time and Bus/watch screens, Clay settings, one-shot Nearby and timetable updater are implemented. Storage uses two 208-byte KBD2 directory banks at keys 90/91; control state uses two 108-byte KBW2 banks at keys 10/11. The durable request counter makes automatic/manual CHECK and Restore reject obsolete downloads across restart and clock changes. Ordinary startup metadata still uses four reads and no added launch write. Legacy KBW1/KBP1 compatibility, one-time migration and full payload validation remain in place. Host regression fixtures cover migration, read counts, torn writes, recovery and lazy validation.
-- GitHub Pages is selected and configured locally at `https://ewijaya.github.io/kasugabus-pebble/timetables/manifest.json`. A reviewed immutable feed and manual workflow are prepared locally. No feed deployment or live endpoint verification has occurred.
-- The user selected 1 — Neon Express. Its 25×25 transparent dark-bus PNG is integrated as MENU_ICON; all ten original concepts and the preview gallery are retained in `artifacts/icon-options/`. Actual Emery launcher captures show the bus in both unselected and selected cyan rows.
-- The final 1.0.0 PBW is 817,565 bytes, SHA-256 `2bddb0b092d51c7cdab6944c56a11bb377f4a97932643ee37541450bfc8bdb09`. `artifacts/final-workflow-build.log` records 113 Python tests, including 31 release, 32 registration and two cleanup tests, plus 25 phone scenarios, five settings scenarios, five HTTP scenarios, strict C checks and a clean build/static audit. Its sealed emulator receipt and `artifacts/final-workflow-build-audit.json` pass launch, navigation and update-transfer checks, with minimum free heap 32,400 bytes. The monotonic profile records initialization within 602.80 ms, start commands within 637.32 ms and twelve buttons within 83.76 ms. Fresh native updates installed current/future test revisions 28/29 in 254 chunks without a PBW reinstall, retained them across restart and a two-chunk interrupted replacement, and rejected corrupt/incompatible/interrupted-HTTP candidates without sending chunks. Fresh 200×228 Home, board and details screenshots were visually reviewed.
-- The pre-icon `466df8dd…` PBW retains its 29-scenario native suite, including offline future activation/restart, expiry/override, preferences and Restore rejecting obsolete request IDs across restart. The `4679b90e…` Neon package retains its own 24/25 update/profile evidence. These are historical exact-digest checks, not additional runs on the rebuilt package. `artifacts/workflow-build-comparison.json` verifies identical application code, phone JavaScript and resources relative to the installed Neon archive; only native metadata bytes 124/125, the manifest checksum and ZIP timestamps changed.
-- The final rebuilt PBW was successfully installed on the user's Pebble Time 2 firmware 4.38.4, recorded in `artifacts/physical-workflow-installation.json` and its log. No new owner navigation/icon QA or publication approval is claimed. The owner's visible/highlighted icon confirmation belongs to the preceding `4679b90e…` package, preserved as `artifacts/KasugaBus-1.0.0-emery-neon-installed.pbw` with `artifacts/physical-neon-installation.json`. Remote captures returned the Quartz watchface, so no physical launcher screenshot is claimed. The pre-icon PBW's `artifacts/physical-verification.json` records Poco F4 Android 14 build UKQ1.231207.002 / companion 1.14.0.1 and readable Home → board → details with correct Select navigation. Actual GPS, physical settings/recovery, connection loss, outdoor/glance readability, battery impact and seven-day use remain unverified.
-- The release workflow now implements durable first-registration intent/App ID, matching existing-listing adoption, resumable releases and clean-output recovery. The 31 release, 32 registration and two cleanup tests use isolated fixtures; no real KasugaBus registration or publication was performed.
-- The diagnosed historical installation stall was in App Fetch before KasugaBus started, not a KasugaBus crash. Current acceptance is documented separately from that older emulator diagnostic.
-- Pages/GitHub remain unpublished; the local project has no initialized Git repository, the intended remote cannot be viewed with current authentication, and authenticated `artifacts/store-discovery-final.json` still found no KasugaBus listing. No version bump, commit, registration or publication occurred.
+- Installed toolchain verified and retained: Pebble Tool 5.0.40, SDK 4.33.1,
+  bundled ARM GCC 14.2.1, Python 3.13.5, Node 26.8.1 and npm 11.19.0.
+- Six stop groups, 15 boarding points and 1,411 departures were reconciled with
+  official operator sources. Six Hankyu coordinates are verified; nine Kintetsu
+  points remain manual. Source review is due 2026-11-01; coverage ends
+  2026-12-27 pending verified year-end rules.
+- The offline JST engine, Time and Bus screens, favourites, Clay settings,
+  one-shot Nearby and validated current/future updater are implemented.
+  Native recovery experiments and automated tests cover interrupted transfers,
+  corrupt candidates, future activation and transactional storage; evidence
+  remains bound to each tested digest.
+- The selected Neon Express launcher icon is integrated. All ten concepts,
+  native screenshots, data/provenance and publishing tools are retained.
+- The source repository is public at `ewijaya/kasugabus-pebble`. The dedicated
+  GitHub Pages feed is deployed at
+  `https://ewijaya.github.io/kasugabus-pebble/timetables/manifest.json`.
+  Production v2 is a reviewed version-only reissue; departure/source dates are
+  unchanged, and immutable v1/v2 payloads remain available.
+- The published **1.0.0** PBW is **817,922 bytes**, SHA-256
+  `233627ffc63e0964bff272c3a56bac11e6f7634992b06cb45143524e2bc5330a`,
+  from source `3110deecde6d154a52b1d7971e6e3c5c1bd1a54d` / tag `v1.0.0`.
+  Its clean build passed 122 Python tests, 25 phone scenarios, five Clay checks,
+  five HTTP checks and strict C suites. Native runtime minimum free heap was
+  32,400 bytes. Native release screenshots preserve 200×228 pixels.
+- The exact release worker's real HTTPS transfer delivered v2 in 127
+  acknowledged chunks and retained active data/success time after restart,
+  with unchanged preferences and no PBW reinstall. This is emulator evidence.
+  The owner's physical v2 observation belongs to the earlier `2bddb0b0…` PBW.
+- The owner approved the installed final candidate and listing. Those frozen
+  bytes were published unchanged to
+  [GitHub](https://github.com/ewijaya/kasugabus-pebble/releases/tag/v1.0.0)
+  and [RePebble](https://apps.repebble.com/f63e6ed24301414a95909564).
+  Assigned App ID `f63e6ed24301414a95909564` is saved separately from the
+  package UUID. Dashboard, general/Emery catalogs, public listing/changelog
+  and both PBW downloads verified. The phone's My Apps cache was not observed.
+- Release tooling retains first-registration recovery and now uses the saved
+  listing for future releases. A catalog object-shape correction passed 40
+  release-workflow tests after publication; it did not rebuild the app.
 
-Current evidence and remaining checks are documented in `docs/PLATFORM.md`, `docs/MILESTONES.md`, `docs/DATA_RECONCILIATION.md`, `docs/PUBLISHING.md`, and the physical verification records. The rebuilt package has fresh local acceptance and successful physical installation; owner navigation/icon observations remain bound to earlier packages with unchanged application code. Remaining field checks and production deployment/publication are separate open steps.
-
-## Authorized initial release — 1 October 2026
-
-The owner subsequently requested “publish this new app everywhere” and accepted
-an initial release with named physical/seven-day limitations. The historical
-setup status above is superseded for source and hosting: `main` is committed
-and public at `ewijaya/kasugabus-pebble`; the dedicated GitHub Pages feed is
-live. V2 is a reviewed version-only reissue with unchanged departures, dates
-and source evidence, and retained v1 recovery bytes. Exact live HTTPS checks
-passed; the owner confirmed active v2 and a feed-success time after a manual
-check on the Poco F4 / Time 2 without app reinstallation.
-
-The actual SDK worker exposed a repeated-XHR-response getter compatibility
-issue that Node mocks did not catch. The adapter now retains one response
-object; actual installed-SDK regressions verify exact arbitrary binary bytes
-and preserved validation. The final 1.0.0 candidate is being clean-built from
-committed source. Its physical approval remains the final gate before creating
-the initial store listing and publishing the exact same PBW on both stores.
-No release tag, GitHub Release or RePebble listing has been created at this
-preparation stage. Broader physical GPS/settings/recovery, outdoor/battery and
-seven-day use remain explicitly outstanding.
+The owner's environment is Time 2 firmware 4.38.4, Poco F4 Android 14
+(UKQ1.231207.002), companion 1.14.0.1. Earlier navigation and icon confirmations
+remain tied to their original builds. Broader physical GPS/permission, settings
+persistence, connection-loss, future activation/update recovery, outdoor/glance
+readability, battery and seven-day use remain outstanding. The accepted initial
+publication does not mark the full personal-use milestone complete.
