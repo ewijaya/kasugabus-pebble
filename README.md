@@ -1,7 +1,7 @@
 # KasugaBus
 
 <!-- kasugabus-release-status -->
-KasugaBus **v1.0.0** is an interactive Pebble Time 2 (`emery`) app. The unpublished local build, including the selected Neon Express launcher icon, is installed on the owner's watch. Broader phone/watch release checks remain pending.
+KasugaBus **v1.0.0** for Emery is available from [GitHub Releases](https://github.com/ewijaya/kasugabus-pebble/releases/tag/v1.0.0) and [Pebble App Store](https://apps.repebble.com/f63e6ed24301414a95909564).
 
 A large clock and one scheduled departure form the Neon Transit home screen. The departure board, full details, favourites, all-stop picker, Nearby, trip context and data status work through the watch buttons. Timetables run offline; phone location, Clay settings and timetable downloads add optional connected functions.
 

@@ -1,0 +1,36 @@
+{
+  "version": "1.0.0",
+  "commit": "3110deecde6d154a52b1d7971e6e3c5c1bd1a54d",
+  "artifact": {
+    "sha256": "233627ffc63e0964bff272c3a56bac11e6f7634992b06cb45143524e2bc5330a",
+    "bytes": 817922
+  },
+  "metrics": {
+    "resources": 30178,
+    "static_ram": 39170,
+    "linker_free_ram": 91902,
+    "native_binary": 31428,
+    "pbw": 817922,
+    "timetable": 24203,
+    "measured_free_heap": 32400
+  },
+  "status": {
+    "github": {
+      "state": "verified",
+      "details": {
+        "release_url": "https://github.com/ewijaya/kasugabus-pebble/releases/tag/v1.0.0",
+        "asset_url": "https://github.com/ewijaya/kasugabus-pebble/releases/download/v1.0.0/kasugabus-pebble.pbw"
+      }
+    },
+    "appstore": {
+      "state": "verified",
+      "details": {
+        "dashboard": "verified",
+        "catalog_general": "verified",
+        "catalog_emery": "verified",
+        "public_store_url": "https://apps.repebble.com/f63e6ed24301414a95909564",
+        "mobile_cache": "not observed; Emery catalog is a proxy"
+      }
+    }
+  }
+}
