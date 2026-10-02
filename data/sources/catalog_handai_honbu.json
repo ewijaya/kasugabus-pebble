@@ -1,0 +1,20 @@
+[
+  {
+    "id": "kintetsu_stop_8_direction_2",
+    "path": "data/sources/kintetsu_stop_8_direction_2.pdf",
+    "url": "https://www.kintetsu-bus.co.jp/storage/uploads/pdf/2034_hankyuibaraki.pdf",
+    "sha256": "7ef9c2e9178a1290278080a4519c273c61c01e388acc0c97b20cb8dab8c10b62",
+    "bytes": 112730,
+    "retrieved_at": "2026-10-02",
+    "name_en": "Kintetsu current pole timetable: Handai Honbu-mae, direction 2"
+  },
+  {
+    "id": "osm_handai_honbu_pole",
+    "path": "data/sources/osm_handai_honbu_pole.json",
+    "url": "https://www.openstreetmap.org/node/2458236405",
+    "sha256": "a93ed9ad14d2ad89703d7fb5733ae3a9ae764cb778d9ed348087de362edcbaf5",
+    "bytes": 1272,
+    "retrieved_at": "2026-10-02",
+    "name_en": "OpenStreetMap community-mapped stop: Handai Honbu-mae"
+  }
+]

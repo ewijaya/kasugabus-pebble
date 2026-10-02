@@ -1,0 +1,35 @@
+{
+  "source": "OpenStreetMap",
+  "license": "ODbL 1.0 (© OpenStreetMap contributors)",
+  "retrieved_at": "2026-10-02",
+  "query": "highway=bus_stop nodes named 阪大本部前 near the Kintetsu official stop centre 34.819488944381014,135.5240765699003",
+  "official_stop_centre": {
+    "latitude": 34.819488944381014,
+    "longitude": 135.5240765699003,
+    "note": "Kintetsu Jorudan map centre; its pole list is empty"
+  },
+  "platforms": [
+    {
+      "node_id": 2458236405,
+      "version": 2,
+      "timestamp": "2014-01-14T14:19:15Z",
+      "latitude": 34.8195934,
+      "longitude": 135.524013,
+      "tags": {
+        "bus": "yes",
+        "highway": "bus_stop",
+        "name": "阪大本部前",
+        "public_transport": "stop_position"
+      }
+    }
+  ],
+  "direction_reasoning": [
+    {
+      "node_id": 2458236405,
+      "boarding": "JR Ibaraki / Hankyu Ibaraki-shi (the only Kintetsu boarding direction; buses turn here)",
+      "distance_to_official_centre_m": 13
+    }
+  ],
+  "owner_corroboration": "On 2 October 2026 the owner photographed the [22] JR茨木駅・阪急茨木市駅ゆき pole timetable at this stop (sheet code 2034-1).",
+  "status": "community_mapped_corroborated; a single OpenStreetMap stop position, not an operator pole record"
+}

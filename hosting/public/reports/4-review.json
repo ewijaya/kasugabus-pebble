@@ -1,0 +1,227 @@
+{
+  "releaseVersion": 4,
+  "sourceSha256": "60f9c24c7bd899a0b17c6783c6d18ded977c684ec76d8264dc9623988dcd9f02",
+  "departureCount": 1939,
+  "reconciled": true,
+  "reviewer": "Claude, owner-requested addition of \u962a\u5927\u672c\u90e8\u524d with the owner's on-site pole photograph; v3 and the 2026-10-01 baseline review unchanged",
+  "reviewedAt": "2026-10-02",
+  "counts": [
+    {
+      "boarding_point_id": 1,
+      "service_id": 1,
+      "count": 46
+    },
+    {
+      "boarding_point_id": 1,
+      "service_id": 2,
+      "count": 37
+    },
+    {
+      "boarding_point_id": 2,
+      "service_id": 1,
+      "count": 46
+    },
+    {
+      "boarding_point_id": 2,
+      "service_id": 2,
+      "count": 37
+    },
+    {
+      "boarding_point_id": 3,
+      "service_id": 1,
+      "count": 46
+    },
+    {
+      "boarding_point_id": 3,
+      "service_id": 2,
+      "count": 37
+    },
+    {
+      "boarding_point_id": 4,
+      "service_id": 3,
+      "count": 81
+    },
+    {
+      "boarding_point_id": 4,
+      "service_id": 4,
+      "count": 50
+    },
+    {
+      "boarding_point_id": 4,
+      "service_id": 5,
+      "count": 43
+    },
+    {
+      "boarding_point_id": 5,
+      "service_id": 3,
+      "count": 83
+    },
+    {
+      "boarding_point_id": 5,
+      "service_id": 4,
+      "count": 52
+    },
+    {
+      "boarding_point_id": 5,
+      "service_id": 5,
+      "count": 45
+    },
+    {
+      "boarding_point_id": 6,
+      "service_id": 3,
+      "count": 81
+    },
+    {
+      "boarding_point_id": 6,
+      "service_id": 4,
+      "count": 50
+    },
+    {
+      "boarding_point_id": 6,
+      "service_id": 5,
+      "count": 43
+    },
+    {
+      "boarding_point_id": 7,
+      "service_id": 3,
+      "count": 80
+    },
+    {
+      "boarding_point_id": 7,
+      "service_id": 4,
+      "count": 50
+    },
+    {
+      "boarding_point_id": 7,
+      "service_id": 5,
+      "count": 43
+    },
+    {
+      "boarding_point_id": 8,
+      "service_id": 3,
+      "count": 81
+    },
+    {
+      "boarding_point_id": 8,
+      "service_id": 4,
+      "count": 50
+    },
+    {
+      "boarding_point_id": 8,
+      "service_id": 5,
+      "count": 43
+    },
+    {
+      "boarding_point_id": 9,
+      "service_id": 3,
+      "count": 80
+    },
+    {
+      "boarding_point_id": 9,
+      "service_id": 4,
+      "count": 50
+    },
+    {
+      "boarding_point_id": 9,
+      "service_id": 5,
+      "count": 43
+    },
+    {
+      "boarding_point_id": 10,
+      "service_id": 3,
+      "count": 81
+    },
+    {
+      "boarding_point_id": 10,
+      "service_id": 4,
+      "count": 50
+    },
+    {
+      "boarding_point_id": 10,
+      "service_id": 5,
+      "count": 43
+    },
+    {
+      "boarding_point_id": 11,
+      "service_id": 3,
+      "count": 84
+    },
+    {
+      "boarding_point_id": 11,
+      "service_id": 4,
+      "count": 52
+    },
+    {
+      "boarding_point_id": 11,
+      "service_id": 5,
+      "count": 45
+    },
+    {
+      "boarding_point_id": 12,
+      "service_id": 3,
+      "count": 80
+    },
+    {
+      "boarding_point_id": 12,
+      "service_id": 4,
+      "count": 50
+    },
+    {
+      "boarding_point_id": 12,
+      "service_id": 5,
+      "count": 43
+    },
+    {
+      "boarding_point_id": 101,
+      "service_id": 6,
+      "count": 19
+    },
+    {
+      "boarding_point_id": 102,
+      "service_id": 6,
+      "count": 19
+    },
+    {
+      "boarding_point_id": 103,
+      "service_id": 6,
+      "count": 19
+    },
+    {
+      "boarding_point_id": 104,
+      "service_id": 6,
+      "count": 19
+    },
+    {
+      "boarding_point_id": 105,
+      "service_id": 6,
+      "count": 19
+    },
+    {
+      "boarding_point_id": 106,
+      "service_id": 6,
+      "count": 19
+    }
+  ],
+  "matrixCellCount": 1825,
+  "independentPoleDayCount": 1936,
+  "hankyuTripCount": 114,
+  "sourceCount": 86,
+  "verifiedCoordinateCount": 9,
+  "checks": [
+    "all source checksums",
+    "all extraction checksums",
+    "every numeric matrix cell",
+    "every independent pole minute and marker",
+    "every Hankyu trip and boarded route",
+    "full ordered patterns and loop transitions",
+    "all Hankyu downstream calls",
+    "actual pole IDs and coordinates",
+    "complete official holiday CSV coverage",
+    "operator and calendar coverage",
+    "no weekday fallback on Hankyu weekends",
+    "\u962a\u5927\u672c\u90e8\u524d: departure-row cells with a later stop reconciled against the official pole sheet and the owner's photo, including every \u7f8e mark; terminating arrivals excluded; OpenStreetMap stop position recorded as community_mapped_corroborated"
+  ],
+  "releasePurpose": "add_stop_handai_honbu_mae",
+  "baseReleaseVersion": 3,
+  "baseSourceSha256": "5d9abe08e46fa4d122c75eb465ad46cc4c0997b785b348e2663fa1814f8d2cd7"
+}

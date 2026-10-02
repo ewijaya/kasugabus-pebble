@@ -94,6 +94,8 @@ def clock_minute(text):
 # The bundled baseline is rebuilt without it; see docs/DATA_RELEASE_3.md.
 EXTENSION_GROUP = (7, "Nihon Teien-mae", "日本庭園前", "Japanese Garden")
 EXTENSION_VERIFIED = "2026-10-02"
+# v4 adds 阪大本部前 (Handai Honbu-mae): the Ibaraki-bound departures only.
+HONBU_GROUP = (8, "Handai Honbu-mae", "阪大本部前", "Handai Honbu")
 
 
 def call(name, group_by_ja=None, group_names=None):
@@ -170,16 +172,18 @@ def source_route_of(rows, column):
     return rows[0][column]
 
 
-def build(write=True, extended=False):
+def build(write=True, extended=False, honbu=False):
     """Baseline dataset, or with extended=True the feed-only v3 snapshot that
     adds 日本庭園前 from its own reviewed sources (data/sources/catalog_nihon_teien.json)."""
     catalog = json.loads((DATA / "sources" / "catalog.json").read_text())
     extension_ids = set()
     if extended:
         extension = json.loads((DATA / "sources" / "catalog_nihon_teien.json").read_text())
+        if honbu:
+            extension += json.loads((DATA / "sources" / "catalog_handai_honbu.json").read_text())
         extension_ids = {s["id"] for s in extension}
         catalog += extension
-    group_specs = GROUPS + ([EXTENSION_GROUP] if extended else [])
+    group_specs = GROUPS + ([EXTENSION_GROUP] if extended else []) + ([HONBU_GROUP] if honbu else [])
     group_by_ja = {ja: gid for gid, _, ja, _ in group_specs}
     for source in catalog:
         source.setdefault("name_en", source["id"].replace("_", " "))
@@ -217,10 +221,13 @@ def build(write=True, extended=False):
     ] + ([
         (10, 7, "University / Mihogaoka", "阪大病院方面", 7, 1),
         (11, 7, "Ibaraki", "ＪＲ茨木駅・阪急茨木市駅方面", 7, 2),
-    ] if extended else [])
+    ] if extended else []) + ([
+        (12, 8, "Ibaraki", "ＪＲ茨木駅・阪急茨木市駅方面", 8, 2),
+    ] if honbu else [])
     # Community-mapped platforms for 日本庭園前, corroborated by road direction
     # and the owner's on-site pole photo; never presented as operator data.
-    osm_platform = {10: 9229774657, 11: 9229774649}
+    osm_platform = {10: (9229774657, "osm_nihon_teien_poles"), 11: (9229774649, "osm_nihon_teien_poles"),
+                    12: (2458236405, "osm_handai_honbu_pole")}
     pole_lookup = {}
     for pid, gid, en, ja, stop, direction in point_specs:
         points.append({"id": pid, "stop_group_id": gid, "operator_id": 1,
@@ -230,12 +237,13 @@ def build(write=True, extended=False):
                        "evidence": [{"source_id": f"kintetsu_stop_{stop}_direction_{direction}", "page": 1}]})
         pole_lookup[pid] = pole_minutes(stop, direction)
         if pid in osm_platform:
-            osm = json.loads((DATA / "sources" / "osm_nihon_teien_poles.json").read_text())
-            node = next(n for n in osm["platforms"] if n["node_id"] == osm_platform[pid])
+            node_id, osm_source = osm_platform[pid]
+            osm = json.loads((DATA / "sources" / (osm_source + ".json")).read_text())
+            node = next(n for n in osm["platforms"] if n["node_id"] == node_id)
             points[-1].update({"coordinate": {"latitude": node["latitude"], "longitude": node["longitude"]},
                                "coordinate_status": "community_mapped_corroborated",
                                "coordinate_reason": "OpenStreetMap platform beside the one-way carriageway this direction uses; the operator publishes only a stop centre. Not an operator pole record.",
-                               "coordinate_evidence": {"source_id": "osm_nihon_teien_poles", "node_id": node["node_id"],
+                               "coordinate_evidence": {"source_id": osm_source, "node_id": node["node_id"],
                                                        "node_version": node["version"], "verified_at": EXTENSION_VERIFIED}})
 
     registry_path = DATA / "identity_registry.json"
@@ -260,7 +268,7 @@ def build(write=True, extended=False):
 
     matrix_rows = {0: [(1, 14), (2, 15), (3, 13)], 1: [(1, 14), (2, 15), (3, 13)]}
     for number in range(2, 5):
-        matrix_rows[number] = [(4, 17), (6, 19), (8, 20), (9, 23), (7, 24), (5, 26)] + ([(10, 14), (11, 27)] if extended else [])
+        matrix_rows[number] = [(4, 17), (6, 19), (8, 20), (9, 23), (7, 24), (5, 26)] + ([(10, 14), (11, 27)] if extended else []) + ([(12, 22)] if honbu else [])
     service_ids = {0: 1, 1: 2, 2: 3, 3: 4, 4: 5}
     for number in range(5):
         pages = json.loads((DATA / "extraction" / f"kintetsu_{number}_tables.json").read_text())
@@ -272,6 +280,24 @@ def build(write=True, extended=False):
                     minute = clock_minute(rows[row_index][column])
                     if minute is None:
                         assert rows[row_index][column] in [None, "", "↓"]
+                        continue
+                    if bp == 12:
+                        # 阪大本部前: row 23 (unnamed) is the departure line. A bus
+                        # with no later stop terminates here and is not boarded.
+                        names = [rows[r][0] for r in range(23, 39) if rows[r][0] and clock_minute(rows[r][column]) is not None]
+                        if not names:
+                            continue
+                        ev = pole_lookup[bp][(day_type, minute)]
+                        via = clock_minute(rows[25][column]) is not None
+                        assert (ev["mark"] == "美") == via and names[-1] == "阪急茨木市駅"
+                        pid = pattern(1, bp, "22", "阪急茨木市駅", names, (), "via Mihogaoka" if via else None)
+                        departures.append({"boarding_point_id": bp, "pattern_id": pid,
+                                           "service_id": service_ids[number], "minute": minute,
+                                           "evidence": {"source_id": f"kintetsu_{number}", "page": page["page"],
+                                                        "row": row_index + 1, "column": column,
+                                                        "source_route_label": rows[0][column],
+                                                        "printed_time": rows[row_index][column],
+                                                        "independent_pole": ev}})
                         continue
                     if bp == 10 and not any(clock_minute(rows[r][column]) is not None for r in range(15, 26)):
                         # Route 12 at 日本庭園前 only: the 7:20 bus starts here for
@@ -405,7 +431,7 @@ def build(write=True, extended=False):
     services = [{"id": i, "operator_id": op, "day_types": types, "valid_from": FROM, "valid_until": UNTIL}
                 for i, op, types in [(1, 1, [1]), (2, 1, [2, 3]), (3, 1, [1]),
                                      (4, 1, [2]), (5, 1, [3]), (6, 2, [1])]]
-    dataset = {"schema_version": 1, "release_version": 3 if extended else 1, "coverage_id": "minami-kasugaoka-v1",
+    dataset = {"schema_version": 1, "release_version": 4 if honbu else 3 if extended else 1, "coverage_id": "minami-kasugaoka-v1",
                "minimum_app_version": 1, "timezone": "Asia/Tokyo", "effective_from": FROM,
                "valid_from": FROM, "valid_until": UNTIL, "source_verified_at": VERIFIED,
                "review_due": REVIEW,
@@ -432,7 +458,7 @@ def build(write=True, extended=False):
                               "verified_coordinate_count": sum(p["coordinate"] is not None for p in points)}}
     if write:
         dump(registry_path, registry)
-        dump(DATA / ("timetable_v3.json" if extended else "timetable.json"), dataset)
+        dump(DATA / ("timetable_v4.json" if honbu else "timetable_v3.json" if extended else "timetable.json"), dataset)
     return dataset
 
 
@@ -441,8 +467,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--extract", action="store_true", help="refresh preserved PDF grids with pdfplumber")
     parser.add_argument("--nihon-teien", action="store_true", help="write the feed-only v3 snapshot with 日本庭園前 to data/timetable_v3.json")
+    parser.add_argument("--handai-honbu", action="store_true", help="write the feed-only v4 snapshot (v3 plus 阪大本部前) to data/timetable_v4.json")
     args = parser.parse_args()
     if args.extract:
         extract()
-    result = build(extended=args.nihon_teien)
+    result = build(extended=args.nihon_teien or args.handai_honbu, honbu=args.handai_honbu)
     print(json.dumps(result["validation"], indent=2))

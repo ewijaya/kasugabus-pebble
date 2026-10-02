@@ -20,6 +20,8 @@ def validate(path=None, extended=None):
     # The feed-only v3 snapshot adds 日本庭園前 (group 7, points 10/11) from
     # data/sources/catalog_nihon_teien.json; everything else is the baseline.
     extended = any(p["id"] in (10, 11) for p in data["boarding_points"]) if extended is None else extended
+    # v4 additionally has 阪大本部前 (group 8, point 12, Ibaraki-bound only).
+    honbu = any(p["id"] == 12 for p in data["boarding_points"])
     errors = []
 
     def check(condition, description):
@@ -43,12 +45,15 @@ def validate(path=None, extended=None):
     if extended:
         extension_review = json.loads((DATA / "review_evidence_nihon_teien.json").read_text())
         reviewed.update({s["id"]: s["sha256"] for s in extension_review["sources"]})
+    if honbu:
+        honbu_review = json.loads((DATA / "review_evidence_handai_honbu.json").read_text())
+        reviewed.update({s["id"]: s["sha256"] for s in honbu_review["sources"]})
     check(review["reviewed_at"] == data["source_verified_at"], "source verification date does not match review")
     check(reviewed == {s["id"]: s["sha256"] for s in sources.values()},
           "sources changed since explicit visual and structured review")
-    check(len(groups) == (7 if extended else 6), "stop group count changed")
+    check(len(groups) == (8 if honbu else 7 if extended else 6), "stop group count changed")
     check(set(operators) == {1, 2}, "operator identities changed")
-    check(len(points) == (17 if extended else 15), "boarding identity count changed")
+    check(len(points) == (18 if honbu else 17 if extended else 15), "boarding identity count changed")
     for source in sources.values():
         source_path = ROOT / source["path"]
         check(source_path.exists(), f"source missing: {source['id']}")
@@ -73,7 +78,7 @@ def validate(path=None, extended=None):
             ev = point["coordinate_evidence"]
             osm = json.loads((ROOT / sources[ev["source_id"]]["path"]).read_text())
             nodes = [n for n in osm["platforms"] if n["node_id"] == ev["node_id"]]
-            check(extended and point["id"] in (10, 11) and len(nodes) == 1, f"community coordinate outside its reviewed scope: {point['id']}")
+            check(extended and (point["id"] in (10, 11) or (honbu and point["id"] == 12)) and len(nodes) == 1, f"community coordinate outside its reviewed scope: {point['id']}")
             if nodes:
                 check(coordinate == {"latitude": nodes[0]["latitude"], "longitude": nodes[0]["longitude"]}, f"community coordinate altered: {point['id']}")
         elif coordinate:
@@ -96,6 +101,8 @@ def validate(path=None, extended=None):
         target_rows[i] = {17: 4, 19: 6, 20: 8, 23: 9, 24: 7, 26: 5}
         if extended:
             target_rows[i].update({14: 10, 27: 11})
+        if honbu:
+            target_rows[i][22] = 12
     expected = Counter()
     grids = {}
     for number, rows in target_rows.items():
@@ -103,11 +110,15 @@ def validate(path=None, extended=None):
         for page in pages:
             for row_index, bp in rows.items():
                 table = page["rows"]
-                check(table[row_index][0] == groups[points[bp]["stop_group_id"]]["name_ja"], "source stop row changed")
+                # 阪大本部前's departure line is the unnamed row after its arrival row.
+                name_row = row_index - 1 if bp == 12 else row_index
+                check(table[name_row][0] == groups[points[bp]["stop_group_id"]]["name_ja"], "source stop row changed")
                 for column in range(1, len(table[0])):
                     value = clock_minute(table[row_index][column])
                     if value is not None:
                         target = bp
+                        if bp == 12 and not any(clock_minute(table[r][column]) is not None for r in range(23, 39)):
+                            continue  # terminates at 阪大本部前; not a boarding departure
                         if bp == 10 and not any(clock_minute(table[r][column]) is not None for r in range(15, 26)):
                             # Route 12: starts here for Ibaraki (point 11) or terminates here.
                             check(table[0][column] == "12", "unexpected non-Handai cell on the Handai row")
@@ -144,7 +155,7 @@ def validate(path=None, extended=None):
             source_route = ev["source_route_label"]
             if bp in [1, 2, 3]:
                 route = "1" if expected_mark == "Ｊ" else "2"
-            elif bp in [5, 7, 9, 11]:
+            elif bp in [5, 7, 9, 11, 12]:
                 route = "12" if source_route == "12" else "22"
             elif expected_mark in ["★", "▲"]:
                 route = "25"
@@ -171,6 +182,8 @@ def validate(path=None, extended=None):
                6: (5, 1), 7: (5, 2), 8: (6, 1), 9: (6, 2)}
     if extended:
         mapping.update({10: (7, 1), 11: (7, 2)})
+    if honbu:
+        mapping[12] = (8, 2)
     independent_expected = Counter()
     for bp, (stop, direction) in mapping.items():
         for day_type, minute in pole_minutes(stop, direction):
@@ -207,12 +220,12 @@ def validate(path=None, extended=None):
     for operator in operators.values():
         check(operator["valid_from"] == data["valid_from"] and operator["valid_until"] == data["valid_until"], "operator validity silently extended")
     check(len(data["departures"]) == data["validation"]["departure_count"], "generated departure count mismatch")
-    check(len(data["departures"]) == (1766 if extended else 1411), "reviewed snapshot count changed")
-    check(len(patterns) == (37 if extended else 32), "reviewed pattern count changed")
+    check(len(data["departures"]) == (1939 if honbu else 1766 if extended else 1411), "reviewed snapshot count changed")
+    check(len(patterns) == (39 if honbu else 37 if extended else 32), "reviewed pattern count changed")
     # Reconstruct the full ordered patterns from their original matrix rows and
     # trip sections. This includes names, route transitions, loop revisits,
     # calendar/service associations and every evidence locator, not only counts.
-    reference = build(write=False, extended=extended)
+    reference = build(write=False, extended=extended, honbu=honbu)
     for field in ["schema_version", "release_version", "coverage_id", "minimum_app_version", "timezone", "effective_from", "valid_from", "valid_until", "source_verified_at", "review_due", "operators", "stop_groups", "boarding_points", "patterns", "services", "calendar", "departures", "sources", "validation"]:
         check(data[field] == reference[field], f"canonical {field} differs from complete source reconstruction")
     if errors:

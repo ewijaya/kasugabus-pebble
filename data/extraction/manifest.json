@@ -110,5 +110,12 @@
     "source_path": "data/sources/kintetsu_stop_7_direction_2.pdf",
     "source_sha256": "f7d8ca637e20df45861432d7a231310b5f18b6efb58e87846308617e700c3e8b",
     "extractor": "pdfplumber0.11.10 extract_tables default line strategy"
+  },
+  {
+    "path": "data/extraction/kintetsu_stop_8_direction_2_table.json",
+    "sha256": "3c58d0f22113d5db340a8de23336ed2c2f503d30c309907df3a4c4b24a3d4133",
+    "source_path": "data/sources/kintetsu_stop_8_direction_2.pdf",
+    "source_sha256": "7ef9c2e9178a1290278080a4519c273c61c01e388acc0c97b20cb8dab8c10b62",
+    "extractor": "pdfplumber0.11.10 extract_tables default line strategy"
   }
 ]

@@ -1,0 +1,21 @@
+{
+  "reviewed_at": "2026-10-02",
+  "reviewer": "Claude (owner-requested addition of 阪大本部前), with the owner's on-site pole photograph",
+  "scope": "Feed-only timetable v4: v3 plus 阪大本部前 (Handai Honbu-mae), Kintetsu Ibaraki-bound departures only.",
+  "sources": [
+    {
+      "id": "kintetsu_stop_8_direction_2",
+      "sha256": "7ef9c2e9178a1290278080a4519c273c61c01e388acc0c97b20cb8dab8c10b62"
+    },
+    {
+      "id": "osm_handai_honbu_pole",
+      "sha256": "a93ed9ad14d2ad89703d7fb5733ae3a9ae764cb778d9ed348087de362edcbaf5"
+    }
+  ],
+  "findings": [
+    "Official pole sheet 2034_hankyuibaraki ([22] to JR Ibaraki / Hankyu Ibaraki-shi, revised 2024-08-21) fetched 2026-10-02; no Handai-bound sheet exists (2034_handai returns 404) because buses turn here.",
+    "The line matrices print 阪大本部前 as an arrival row and an unnamed departure row. Departures are departure-row cells followed by a later stop; buses with no later stop terminate here and are excluded.",
+    "The owner's pole photograph (sheet 2034-1) matches the official sheet and the dataset minute for minute: weekday 80, Saturday 50, Sunday/holiday 43, including every 美 (via Ibaraki Mihogaoka) mark, which corresponds exactly to buses that next call at 茨木美穂ヶ丘.",
+    "Coordinate: the only OpenStreetMap node named 阪大本部前 (2458236405, a stop position) lies 13 m from Kintetsu's official stop centre; recorded as community_mapped_corroborated."
+  ]
+}
