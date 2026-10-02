@@ -1,9 +1,9 @@
 {
-  "version": "2.2.1",
-  "commit": "c38f0b59631ebcb6c912b028b345d4962f73da21",
+  "version": "2.2.2",
+  "commit": "1db38aa15bbf902f06ccf16ca29e6b67909d5629",
   "artifact": {
-    "sha256": "cfe7b01a22a774a130a5f792938429db5facf8f2b33ea0ff445fd2251aed92ce",
-    "bytes": 943538
+    "sha256": "8ac9e210df3d5556f33b2857af1ee6e5822a8d307a0b0805b5f86940f733604d",
+    "bytes": 949478
   },
   "metrics": {
     "resources": 68543,
@@ -11,16 +11,16 @@
     "linker_free_ram": 71824,
     "image_bytes": 59248,
     "native_binary": 57828,
-    "pbw": 943538,
+    "pbw": 949478,
     "timetable": 24203,
-    "measured_free_heap": 31528
+    "measured_free_heap": 31588
   },
   "status": {
     "github": {
       "state": "verified",
       "details": {
-        "release_url": "https://github.com/ewijaya/kasugabus-pebble/releases/tag/v2.2.1",
-        "asset_url": "https://github.com/ewijaya/kasugabus-pebble/releases/download/v2.2.1/kasugabus-pebble.pbw"
+        "release_url": "https://github.com/ewijaya/kasugabus-pebble/releases/tag/v2.2.2",
+        "asset_url": "https://github.com/ewijaya/kasugabus-pebble/releases/download/v2.2.2/kasugabus-pebble.pbw"
       }
     },
     "appstore": {
