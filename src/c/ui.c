@@ -35,6 +35,24 @@ static GFont font(unsigned n) {
 static GFont bold_font(unsigned n) {
   return fonts_get_system_font(n==28?FONT_KEY_GOTHIC_28_BOLD:n==24?FONT_KEY_GOTHIC_24_BOLD:n==18?FONT_KEY_GOTHIC_18_BOLD:FONT_KEY_GOTHIC_14);
 }
+/* Bundled Noto Sans Condensed Bold (Latin only) for the home bus block. Fonts are
+ * loaded on first use and kept for the app's lifetime. */
+static GFont noto(unsigned n) {
+  static GFont cache[6];
+  static const uint8_t sizes[]={20,24,28,32,36,42};
+  static const uint32_t ids[]={RESOURCE_ID_NOTO_BOLD_20,RESOURCE_ID_NOTO_BOLD_24,RESOURCE_ID_NOTO_BOLD_28,
+    RESOURCE_ID_NOTO_BOLD_32,RESOURCE_ID_NOTO_BOLD_36,RESOURCE_ID_NOTO_BOLD_42};
+  unsigned i=0;
+  while(i+1<sizeof(sizes)&&sizes[i]<n)i++;
+  if(!cache[i])cache[i]=fonts_load_custom_font(resource_get_handle(ids[i]));
+  return cache[i];
+}
+static int width_font(const char *s,GFont f);
+static unsigned fit_size(const char *s,unsigned max) {
+  unsigned n=max;
+  while(n>20&&width_font(s,noto(n))>184)n=n>=36?n-(n==42?6:4):n-4;
+  return n;
+}
 static int height_font(const char *s,int width,GFont f) {
   if(!s||!s[0])return 0;
   GSize size=graphics_text_layout_get_content_size(s,f,GRect(0,0,width,30000),GTextOverflowModeWordWrap,GTextAlignmentLeft);
@@ -49,7 +67,8 @@ static void text_font(GContext *c,const char *s,int x,int y,int w,int h,GFont f,
 }
 static int width_font(const char *s,GFont f) {
   if(!s||!s[0])return 0;
-  return graphics_text_layout_get_content_size(s,f,GRect(0,0,184,200),GTextOverflowModeWordWrap,GTextAlignmentLeft).w;
+  /* Measure unwrapped: a screen-width box would report a wrapped width. */
+  return graphics_text_layout_get_content_size(s,f,GRect(0,0,1000,200),GTextOverflowModeWordWrap,GTextAlignmentLeft).w;
 }
 static void text(GContext *c,const char *s,int x,int y,int w,int h,unsigned f,GColor color) {
   text_font(c,s,x,y,w,h,font(f),color);
@@ -174,11 +193,12 @@ static void home(GContext *c) {
   }
   else snprintf(destination,sizeof(destination),"%s",found==KB_QUERY_UNCONFIRMED?"Schedule unconfirmed":"No upcoming service");
   /* The compact clock block is identical for every text size; the bus block
-   * gets the remaining height. Pick the largest tier at or below the chosen
-   * size that fits, stepping down secondary lines before the stop name. */
-  static const uint8_t tiers[][6]={ /* stop, direction, route, countdown, destination, time */
-    {28,28,28,28,28,32},{28,24,28,28,24,32},{28,24,28,24,24,28},{28,18,28,24,18,28},
-    {24,18,24,24,18,28},{24,14,24,18,14,28},{18,14,18,18,14,28}};
+   * uses bundled Noto Sans Bold, which continues past the system font's
+   * 28 pt ceiling. Pick the largest tier at or below the chosen size that
+   * fits, stepping down secondary lines before the stop name. */
+  static const uint8_t tiers[][5]={ /* stop, direction, time/route, countdown, destination */
+    {36,32,42,32,32},{36,28,42,28,28},{32,28,36,28,28},{32,24,36,24,24},
+    {28,24,32,24,24},{28,20,28,20,20},{24,20,24,20,20},{20,20,20,20,20}};
   const unsigned tier_count=sizeof(tiers)/sizeof(tiers[0]);
   unsigned size=kb_pref_text_size(&app.prefs);
   unsigned tier=size==KB_TEXT_EXTRA_LARGE?0:size==KB_TEXT_LARGE?2:4;
@@ -186,35 +206,39 @@ static void home(GContext *c) {
   int clock_h=height(clock,104,34),side_h=2*((int)header+3);
   if(side_h>clock_h)clock_h=side_h;
   int top=2+clock_h+2+3,bottom=footer_top()-2;
-  int stop_h,direction_h,destination_h,departure_h,count_h,route_h,badge_w,time_w,count_x;
+  int stop_h,direction_h,destination_h,departure_h,count_h,badge_w,time_w,count_x;
   unsigned count_size;
-  GFont time_font;
+  bool count_below;
+  unsigned stop_size,direction_size,time_size,destination_size;
   for(;;) {
     const uint8_t *s=tiers[tier];
-    time_font=fonts_get_system_font(s[5]==36?FONT_KEY_LECO_36_BOLD_NUMBERS:s[5]==32?FONT_KEY_LECO_32_BOLD_NUMBERS:FONT_KEY_GOTHIC_28_BOLD);
-    stop_h=height_font(stop,184,bold_font(s[0]));
-    direction_h=height(direction,184,s[1]);
-    destination_h=height(destination,184,s[4]);
-    departure_h=0;count_h=0;route_h=0;badge_w=30;time_w=0;count_x=192;count_size=s[3];
+    /* Each line uses the largest size up to the tier's limit that stays on
+     * one line; it wraps only at the smallest size. */
+    stop_size=fit_size(stop,s[0]);direction_size=fit_size(direction,s[1]);
+    destination_size=fit_size(destination,s[4]);time_size=s[2];
+    stop_h=height_font(stop,184,noto(stop_size));
+    direction_h=height_font(direction,184,noto(direction_size));
+    destination_h=height_font(destination,184,noto(destination_size));
+    departure_h=0;count_h=0;badge_w=0;time_w=0;count_x=192;count_size=s[3];count_below=false;
     if(route[0]) {
-      int route_w=width_font(route,bold_font(s[2]))+8;
-      if(route_w>badge_w)badge_w=route_w;
-      time_w=width_font(tm,time_font)+2;
-      count_x=8+badge_w+6+time_w+6;
-      /* Shrink only the countdown when a long value such as "23 h 59 m"
-       * would otherwise wrap beside the departure time. */
-      while(count_size>14&&width_font(cd,font(count_size))>192-count_x)count_size=count_size==28?24:count_size==24?18:14;
-      count_h=height(cd,192-count_x,count_size);
-      departure_h=height_font(tm,time_w,time_font);
-      route_h=height_font(route,badge_w,bold_font(s[2]));
-      if(route_h>departure_h)departure_h=route_h;
-      if(count_h>departure_h)departure_h=count_h;
+      badge_w=width_font(route,noto(time_size))+10;
+      time_w=width_font(tm,noto(time_size))+4;
+      count_x=8+badge_w+6+time_w+8;
+      departure_h=height_font(tm,184,noto(time_size));
+      /* Keep the countdown beside the time when it fits at a readable size;
+       * otherwise give it its own right-aligned row at the tier size. */
+      while(count_size>20&&width_font(cd,noto(count_size))>192-count_x)count_size-=4;
+      if(width_font(cd,noto(count_size))>192-count_x) {
+        count_below=true;count_size=fit_size(cd,s[3]);count_x=8;
+      }
+      count_h=height_font(cd,184,noto(count_size));
+      if(!count_below&&count_h>departure_h)departure_h=count_h;
     }
-    if(top+stop_h+direction_h+departure_h+destination_h+5<=bottom||tier+1>=tier_count)break;
+    int rows=stop_h+direction_h+departure_h+(count_below?count_h:0)+destination_h+5;
+    if(top+rows<=bottom||tier+1>=tier_count)break;
     tier++;
   }
-  const uint8_t *s=tiers[tier];
-  int used=stop_h+direction_h+departure_h+destination_h+5;
+  int used=stop_h+direction_h+departure_h+(count_below?count_h:0)+destination_h+5;
   if(top+used>bottom)APP_LOG(APP_LOG_LEVEL_WARNING,"Home text overflow point%u size%u height%d",app.point,size,top+used);
   /* Spread any remaining height between the rows instead of leaving it
    * below the destination. */
@@ -231,21 +255,21 @@ static void home(GContext *c) {
   graphics_context_set_fill_color(c,colors.magenta);
   graphics_fill_rect(c,GRect(188,y+7,4,12),0,GCornerNone);
   y+=clock_h+2;line(c,y,colors.navigation);y+=3+gap;
-  strong(c,stop,8,y,184,stop_h,s[0],colors.foreground);y+=stop_h+1+gap;
-  text(c,direction,8,y,184,direction_h,s[1],colors.navigation);y+=direction_h+3+gap;
+  text_font(c,stop,8,y,184,stop_h,noto(stop_size),colors.foreground);y+=stop_h+1+gap;
+  text_font(c,direction,8,y,184,direction_h,noto(direction_size),colors.navigation);y+=direction_h+3+gap;
   if(route[0]) {
     graphics_context_set_fill_color(c,colors.departure);
-    graphics_fill_rect(c,GRect(8,y+2,badge_w,departure_h-2),3,GCornersAll);
+    graphics_fill_rect(c,GRect(8,y+3,badge_w,departure_h-3),3,GCornersAll);
     graphics_context_set_text_color(c,colors.badge_text);
-    graphics_draw_text(c,route,bold_font(s[2]),GRect(8,y+(departure_h-route_h)/2,badge_w,route_h),
-                       GTextOverflowModeWordWrap,GTextAlignmentCenter,NULL);
-    text_font(c,tm,8+badge_w+6,y+departure_h-height_font(tm,time_w,time_font),time_w,departure_h,time_font,colors.departure);
+    graphics_draw_text(c,route,noto(time_size),GRect(8,y,badge_w,departure_h),GTextOverflowModeWordWrap,GTextAlignmentCenter,NULL);
+    text_font(c,tm,8+badge_w+6,y,time_w,departure_h,noto(time_size),colors.departure);
     graphics_context_set_text_color(c,colors.departure);
-    graphics_draw_text(c,cd,font(count_size),GRect(count_x,y+departure_h-count_h,192-count_x,count_h),
+    int count_y=count_below?y+departure_h:y+departure_h-count_h;
+    graphics_draw_text(c,cd,noto(count_size),GRect(count_x,count_y,192-count_x,count_h),
                        GTextOverflowModeWordWrap,GTextAlignmentRight,NULL);
-    y+=departure_h+1+gap;
+    y+=departure_h+(count_below?count_h:0)+1+gap;
   }
-  text(c,destination,8,y,184,destination_h,s[4],route[0]?colors.foreground:colors.warning);
+  text_font(c,destination,8,y,184,destination_h,noto(destination_size),route[0]?colors.foreground:colors.warning);
   d=app_dataset();
   if(app.override.day_type!=KB_DAY_UNKNOWN&&app.override.jst_day==kb_jst_day(now))snprintf(b,sizeof(b),"Override %s JST",short_day_name(app.override.day_type));
   else if(app.store.recovery_notice)snprintf(b,sizeof(b),"Recovery data | JST");
@@ -652,6 +676,7 @@ static void list(GContext *c) {
     else all_label(sub,sizeof(sub));
   }
   else if(app.notice[0])snprintf(sub,sizeof(sub),"%s",app.notice);
+  else if(app.screen==KB_SCREEN_SETTINGS)snprintf(sub,sizeof(sub),"KasugaBus v%s",KB_APP_VERSION);
   int top=heading(c,screen_title(),sub);
   int bottom=footer_top()-2,viewport=bottom-top;
   int count=choices();

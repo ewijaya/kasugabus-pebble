@@ -3,6 +3,7 @@
 #
 # Feel free to customize this to your needs.
 #
+import json
 import os.path
 
 top = '.'
@@ -32,6 +33,9 @@ def build(ctx):
     cached_env = ctx.env
     for platform in ctx.env.TARGET_PLATFORMS:
         ctx.env = ctx.all_envs[platform]
+        # Shown on the watch's Settings screen; package.json is the single source.
+        version = json.loads(ctx.path.find_node('package.json').read())['version']
+        ctx.env.append_unique('DEFINES', 'KB_APP_VERSION="{}"'.format(version))
         ctx.set_group(ctx.env.PLATFORM_NAME)
         app_elf = '{}/pebble-app.elf'.format(ctx.env.BUILD_DIR)
         ctx.pbl_build(source=ctx.path.ant_glob('src/c/**/*.c'), target=app_elf, bin_type='app')

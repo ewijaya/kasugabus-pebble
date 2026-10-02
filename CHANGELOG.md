@@ -2,17 +2,18 @@
 
 ## 2.0.1
 
-- Bigger bus information on the home screen. Standard now uses the former
-  Large sizes, Large the former Extra Large sizes, and Extra Large enlarges
-  the direction, destination and countdown further with a larger departure
-  time. A compact clock with the date beside it frees height for the bus
-  information; it is the same at every text size. Spare height is spread
-  between rows instead of left empty below the destination.
+- Bigger bus information on the home screen in bundled Noto Sans Condensed
+  Bold (SIL Open Font License), which continues past the system font's
+  28 pt limit. Each line uses the largest size that fits on one line; the
+  departure time grows with each text size. A compact clock with the date
+  beside it frees height for the bus information and is the same at every
+  text size. Spare height is spread between rows.
 - Countdowns of 60 minutes or more show hours, such as `1 h 10 m` or `2 h`,
   on the home screen and departure boards.
 - When the phone refuses location, Nearby's Refresh row explains that the
   Pebble app needs location allowed all the time.
 - Phone settings show Preferences before Usual stop.
+- The watch's Settings screen shows the app version.
 
 Timetable content, storage and the phone–watch protocol are unchanged.
 

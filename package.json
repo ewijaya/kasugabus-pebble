@@ -77,6 +77,42 @@
           "name": "JP_28",
           "file": "fonts/NotoSansJP-Regular.ttf",
           "characterRegex": "[ 春日丘公園峠緑ヶ阪大東口医学部病院前]"
+        },
+        {
+          "type": "font",
+          "name": "NOTO_BOLD_20",
+          "file": "fonts/NotoSans-CondensedBold.ttf",
+          "characterRegex": "[ -~]"
+        },
+        {
+          "type": "font",
+          "name": "NOTO_BOLD_24",
+          "file": "fonts/NotoSans-CondensedBold.ttf",
+          "characterRegex": "[ -~]"
+        },
+        {
+          "type": "font",
+          "name": "NOTO_BOLD_28",
+          "file": "fonts/NotoSans-CondensedBold.ttf",
+          "characterRegex": "[ -~]"
+        },
+        {
+          "type": "font",
+          "name": "NOTO_BOLD_32",
+          "file": "fonts/NotoSans-CondensedBold.ttf",
+          "characterRegex": "[ -~]"
+        },
+        {
+          "type": "font",
+          "name": "NOTO_BOLD_36",
+          "file": "fonts/NotoSans-CondensedBold.ttf",
+          "characterRegex": "[ -~]"
+        },
+        {
+          "type": "font",
+          "name": "NOTO_BOLD_42",
+          "file": "fonts/NotoSans-CondensedBold.ttf",
+          "characterRegex": "[ -~]"
         }
       ]
     }
