@@ -1,0 +1,50 @@
+name: Watch timetable sources
+
+# Weekly check of the official operator sources. It only reports: a change
+# opens or updates one issue for the documented source review. It never edits
+# data, builds the app or publishes a timetable feed.
+on:
+  schedule:
+    - cron: '15 0 * * 1' # Mondays 09:15 JST
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: kasugabus-source-watch
+  cancel-in-progress: true
+
+jobs:
+  watch:
+    if: github.repository == 'ewijaya/kasugabus-pebble'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.13'
+      - name: Compare live sources with the reviewed catalogue
+        id: watch
+        run: |
+          python3 tools/source_watch.py --report report.md > summary.json
+          cat summary.json
+          echo "changed=$(python3 -c 'import json;print(json.load(open("summary.json"))["changed"])')" >> "$GITHUB_OUTPUT"
+          cat report.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Open or update the review issue
+        if: steps.watch.outputs.changed != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          title='Timetable sources changed: review needed'
+          number=$(gh issue list --state open --search "\"$title\" in:title" --json number --jq '.[0].number')
+          if [ -n "$number" ]; then
+            gh issue comment "$number" --body-file report.md
+          else
+            gh issue create --title "$title" --body-file report.md
+          fi

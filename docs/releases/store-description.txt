@@ -18,6 +18,8 @@ Optional Nearby requests one phone location fix and ranks six verified Hankyu bo
 
 The initial bundled timetable covers 1 October–27 December 2026. Source review is due 1 November; later service dates remain unconfirmed. Reviewed timetable revisions download through your connected phone without reinstalling the app. Automatic checks run daily when the app opens; Data status also offers a manual check. The bundled timetable remains usable offline. A successful feed check does not certify operator source freshness.
 
+Version 2.1 puts more on the watch: hold Select in a stop list to add a favourite, use Up and Down on the home screen to step through later buses or switch stops (configurable), and see the next bus in the launcher. Hold Select on a departure for a single leave-now buzz based on your walking time, or set a daily commute alarm that follows the weekday, Saturday and holiday timetables. Reminders use scheduled times, not live arrivals.
+
 Broader physical GPS/permission and connection-loss/update-recovery checks, outdoor readability, battery observations and seven days of use remain outstanding. Candidate-specific physical observations and automated/emulator results are documented in the source repository.
 
 Version 2.0.0 was published at the owner’s request with some final emulator update/recovery and All departures layout checks deferred. The source verification report records the completed checks and remaining limitations.

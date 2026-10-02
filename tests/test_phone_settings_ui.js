@@ -6,10 +6,22 @@ item('DefaultId','1');item('Buffer','2');item('save-preferences','');item('valid
 item('NearbyStartup',false);item('LocationEnabled',false);
 item('TextSize','1');item('Theme','0');
 item('HomeAction','0');
+var extrasDefaults=require('../src/pkjs/extras').toClay(require('../src/pkjs/extras').defaults());Object.keys(extrasDefaults).forEach(function(key){item(key,extrasDefaults[key]);});
 for(var i=0;i<12;i+=1)item('Favourite'+i,i===0?'1':'0');ids.forEach(function(id){item('Walk'+id,'');});
 custom.call({EVENTS:{AFTER_BUILD:'build'},on:function(event,fn){build=fn;},meta:{userData:{ids:ids,walkKeys:ids.map(function(id){return 'Walk'+id;})}},getItemById:function(id){return items[id];},getItemByMessageKey:function(key){return items[key];}});
 build();assert.strictEqual(disabled,false);items.Favourite1.value='1';items.Favourite1.changed();assert.strictEqual(disabled,true);assert.match(items['validation-message'].value,/once/);items.Favourite1.value='0';items.Favourite1.changed();assert.strictEqual(disabled,false);
 assert.strictEqual(items.NearbyStartup.disabled,true,'initial saved main OFF must disable startup');
+// Version 2.1 sections: enabled features need their stops, distinct hours and days.
+items.ProfilesEnabled.set(true);assert.strictEqual(disabled,true);assert.match(items['validation-message'].value,/both time profiles/);
+items.ProfileA.set('1');items.ProfileB.set('2');assert.strictEqual(disabled,false);
+items.ProfileBHour.set(items.ProfileAHour.value);assert.match(items['validation-message'].value,/different start hours/);
+items.ProfileBHour.set('15');items.ProfilesEnabled.set(false);assert.strictEqual(disabled,false);
+items.CommuteEnabled.set(true);assert.match(items['validation-message'].value,/commute stop/);
+items.CommutePoint.set('3');items.CommuteDays.set([false,false,false,false,false,false,false]);assert.match(items['validation-message'].value,/commute day/);
+items.CommuteDays.set([false,true,true,true,true,true,false]);items.CommuteTime.set('7:5');assert.match(items['validation-message'].value,/HH:MM/);
+items.CommuteTime.set('07:40');assert.strictEqual(disabled,false);
+items.HeadsUp.set('31');assert.match(items['validation-message'].value,/Heads-up/);items.HeadsUp.set('5');assert.strictEqual(disabled,false);
+items.CommuteEnabled.set(false);
 items.NearbyStartup.set(true);assert.strictEqual(items.NearbyStartup.value,false);assert.strictEqual(items.NearbyStartup.disabled,true);assert.strictEqual(disabled,false);
 items.LocationEnabled.set(true);assert.strictEqual(items.NearbyStartup.disabled,false);assert.strictEqual(items.NearbyStartup.value,false);
 items.NearbyStartup.set(true);assert.strictEqual(disabled,false);items.LocationEnabled.set(false);assert.strictEqual(items.NearbyStartup.value,false);assert.strictEqual(items.NearbyStartup.disabled,true);assert.strictEqual(disabled,false);
@@ -59,7 +71,7 @@ function catalogue(){var data=[];catalog.forEach(function(p){var text=Array.from
 state(bytes);listeners.showConfiguration();catalogue();assert.strictEqual(opened.length,1);assert.strictEqual(clays[0].values.Buffer,2);
 var before=sent.length;listeners.webviewclosed({response:''});assert.strictEqual(sent.length,before);
 var values=settings.toClay(old,catalog);values.Favourite1=1;listeners.webviewclosed({response:JSON.stringify(values)});assert.strictEqual(sent.length,before);
-values=settings.toClay(old,catalog);values.Buffer=7;values.TextSize=2;values.Theme=3;listeners.webviewclosed({response:JSON.stringify(values)});assert.strictEqual(sent[sent.length-1].TYPE,11);assert.strictEqual(sent[sent.length-1].DATA.length,80);assert.strictEqual(sent[sent.length-1].DATA[0],2);assert.strictEqual(sent[sent.length-1].DATA[6],2);assert.strictEqual(sent[sent.length-1].DATA[7],3);
+values=settings.toClay(old,catalog);values.Buffer=7;values.TextSize=2;values.Theme=3;listeners.webviewclosed({response:JSON.stringify(values)});assert.strictEqual(sent[sent.length-1].TYPE,11);assert.strictEqual(sent[sent.length-1].DATA.length,108);assert.strictEqual(sent[sent.length-1].DATA[80],1,'extras follow the 80 preference bytes');assert.deepStrictEqual(sent[sent.length-1].DATA.slice(81,85),[3,1,4,5],'a form without button keys keeps the current actions');assert.strictEqual(sent[sent.length-1].DATA[0],2);assert.strictEqual(sent[sent.length-1].DATA[6],2);assert.strictEqual(sent[sent.length-1].DATA[7],3);
 state(bytes); // The watch returns its old record when the durable save fails.
 listeners.showConfiguration();catalogue();assert.strictEqual(clays[1].values.Buffer,2,'unconfirmed settings must not replace previous snapshot');assert.strictEqual(clays[1].values.TextSize,1);assert.strictEqual(clays[1].values.Theme,0);
 state(settings.encode(settings.fromClay(values,catalog),catalog));listeners.showConfiguration();catalogue();assert.strictEqual(clays[2].values.Buffer,7);assert.strictEqual(clays[2].values.TextSize,2);assert.strictEqual(clays[2].values.Theme,3);
@@ -71,7 +83,7 @@ var unavailable={flags:27,defaultId:99,buffer:8,textSize:2,theme:3,favourites:[9
 state(settings.encode(unavailable,allKnown));listeners.showConfiguration();catalogue();var removed=clays[clays.length-1],removedFields=fields(removed.config);
 assert.strictEqual(removed.values.DefaultId,99);assert.strictEqual(removed.values.TextSize,2);assert.strictEqual(removed.values.Theme,3);assert.strictEqual(removed.values.LocationEnabled,true);assert.strictEqual(removed.values.Walk99,'0');assert.match(removedFields.Walk99.description,/Clear/);assert.ok(removedFields.DefaultId.options.some(function(option){return option.value==='99';}));
 before=sent.length;var preserved=Object.assign({},removed.values);preserved.Theme=0;listeners.webviewclosed({response:JSON.stringify(preserved)});assert.strictEqual(sent.length,before,'appearance edits cannot silently remove unavailable boarding IDs');
-preserved.DefaultId=2;preserved.Favourite0=0;preserved.Walk99='';listeners.webviewclosed({response:JSON.stringify(preserved)});var validSaved=settings.decode(sent[sent.length-1].DATA,catalog);
+preserved.DefaultId=2;preserved.Favourite0=0;preserved.Walk99='';listeners.webviewclosed({response:JSON.stringify(preserved)});var validSaved=settings.decode(sent[sent.length-1].DATA.slice(0,80),catalog);
 assert.strictEqual(validSaved.textSize,2);assert.strictEqual(validSaved.theme,0);assert.strictEqual(validSaved.flags,19);assert.strictEqual(validSaved.buffer,8);assert.deepStrictEqual(validSaved.favourites,[2]);assert.deepStrictEqual(validSaved.walks,{2:11});
 state(settings.encode(validSaved,catalog));var invalidState=settings.encode(validSaved,catalog);invalidState[7]=4;state(invalidState);listeners.showConfiguration();catalogue();assert.strictEqual(clays[clays.length-1].values.Theme,0,'invalid watch appearance bytes must not overwrite confirmed snapshot');
 state(bytes);
@@ -82,7 +94,7 @@ assert.strictEqual(locationCalls,0,'all preceding configuration opens and saves 
   state(savedBytes);listeners.ready();listeners.showConfiguration();catalogue();var current=clays[clays.length-1];
   assert.strictEqual(current.values.LocationEnabled,!!(flags&2));assert.strictEqual(current.values.NearbyStartup,!!(flags&4));
   listeners.webviewclosed({response:JSON.stringify(current.values)});
-  assert.strictEqual(sent[sent.length-1].TYPE,11);assert.deepStrictEqual(sent[sent.length-1].DATA,savedBytes);
+  assert.strictEqual(sent[sent.length-1].TYPE,11);assert.deepStrictEqual(sent[sent.length-1].DATA.slice(0,80),savedBytes);assert.strictEqual(sent[sent.length-1].DATA.length,108);
   state(savedBytes);listeners.showConfiguration();catalogue();
   assert.strictEqual(clays[clays.length-1].values.LocationEnabled,!!(flags&2));assert.strictEqual(clays[clays.length-1].values.NearbyStartup,!!(flags&4));
   assert.strictEqual(locationCalls,0,'ready, STATE, settings open and save alone must never request location');
@@ -130,7 +142,7 @@ function settingsAck(message,status,request){listeners.appmessage({payload:{TYPE
 function queryReference(reference,request,version){listeners.appmessage({payload:{TYPE:14,FLAGS:reference,REQUEST:request,VERSION:version||1,DATA:coordinates}});}
 var enabled=Object.assign({},old,{flags:19}),enabledBytes=settings.encode(enabled,catalog),privateFix={coords:{latitude:0.0012345,longitude:0.0004321,accuracy:12.25},timestamp:Date.now()};
 state(enabledBytes);var beforeHomeGps=locationCalls,homeRequest=settingsAction(1,enabled);
-assert.ok(require('../src/pkjs/protocol').get(homeRequest,'REQUEST')>0);assert.deepStrictEqual(homeRequest.DATA,enabledBytes);assert.strictEqual(locationCalls,beforeHomeGps,'SDK transport success is not a settings commit');
+assert.ok(require('../src/pkjs/protocol').get(homeRequest,'REQUEST')>0);assert.deepStrictEqual(homeRequest.DATA.slice(0,80),enabledBytes);assert.strictEqual(locationCalls,beforeHomeGps,'SDK transport success is not a settings commit');
 settingsAck(homeRequest,0,homeRequest.REQUEST+1);state(enabledBytes);assert.strictEqual(locationCalls,beforeHomeGps,'matching state plus wrong ACK cannot request location');
 settingsAck(homeRequest,0);assert.strictEqual(locationCalls,beforeHomeGps+1,'matching ACK and validated state start exactly one fix');
 locationCallbacks[locationCallbacks.length-1](privateFix);assert.strictEqual(sent[sent.length-1].TYPE,16);assert.strictEqual(sent[sent.length-1].STATUS,0);assert.deepStrictEqual(Object.keys(sent[sent.length-1]).sort(),['STATUS','TYPE']);assert.strictEqual(Object.keys(privateStore).length,1);
@@ -152,7 +164,7 @@ before=sent.length;settingsAction(1,old);assert.strictEqual(sent.filter(function
 console.log('PASS home save rejects malformed state, failed or expired ACK and disabled location without replacing the saved home');
 state(bytes);beforeQuery=locationCalls;queryReference(0,101);assert.strictEqual(sent[sent.length-1].STATUS,8);queryReference(1,102);assert.strictEqual(sent[sent.length-1].STATUS,8);assert.strictEqual(locationCalls,beforeQuery);
 var homeNotifications=sent.filter(function(m){return m.TYPE===16;}).length;var clearRequest=settingsAction(2,old);
-assert.deepStrictEqual(clearRequest.DATA,bytes);assert.strictEqual(clearRequest.REQUEST,undefined);assert.strictEqual(Object.keys(privateStore).length,0);assert.strictEqual(sent.filter(function(m){return m.TYPE===16;}).length,homeNotifications+1);assert.strictEqual(sent.filter(function(m){return m.TYPE===16;}).slice(-1)[0].STATUS,9);assert.strictEqual(locationCalls,beforeQuery,'Clear is immediate and uses no GPS while main location is OFF');
+assert.deepStrictEqual(clearRequest.DATA.slice(0,80),bytes);assert.strictEqual(clearRequest.REQUEST,undefined);assert.strictEqual(Object.keys(privateStore).length,0);assert.strictEqual(sent.filter(function(m){return m.TYPE===16;}).length,homeNotifications+1);assert.strictEqual(sent.filter(function(m){return m.TYPE===16;}).slice(-1)[0].STATUS,9);assert.strictEqual(locationCalls,beforeQuery,'Clear is immediate and uses no GPS while main location is OFF');
 state(enabledBytes);queryReference(1,103);assert.strictEqual(sent[sent.length-1].STATUS,9);assert.strictEqual(locationCalls,beforeQuery);
 homeRequest=settingsAction(1,enabled);settingsAck(homeRequest,0);state(enabledBytes);locationCallbacks[locationCallbacks.length-1](privateFix);savedHomeRaw=privateStore[Object.keys(privateStore)[0]];
 storageFail=true;homeNotifications=sent.filter(function(m){return m.TYPE===16;}).length;beforeQuery=locationCalls;settingsAction(2,enabled);assert.strictEqual(privateStore[Object.keys(privateStore)[0]],savedHomeRaw);assert.strictEqual(sent.filter(function(m){return m.TYPE===16;}).length,homeNotifications);assert.strictEqual(locationCalls,beforeQuery);
@@ -177,7 +189,7 @@ homeDelivery='fail';settingsAction(2,enabled);assert.strictEqual(JSON.parse(priv
 // while its JS timers/listeners do not survive into the restarted worker.
 timers=[];listeners={};homeDelivery='success';vm.runInNewContext(fs.readFileSync(path.resolve(__dirname,'../src/pkjs/index.js'),'utf8'),context);listeners.ready();
 assert.strictEqual(sent[sent.length-1].TYPE,16);assert.strictEqual(sent[sent.length-1].STATUS,9);assert.strictEqual(Object.keys(privateStore).length,0);assert.strictEqual(locationCalls,beforeQuery,'restart retries a saved clear without acquiring location');
-state(bytes);listeners.showConfiguration();catalogue();listeners.webviewclosed({response:JSON.stringify(clays[clays.length-1].values)});assert.deepStrictEqual(sent[sent.length-1].DATA,bytes);assert.strictEqual(locationCalls,beforeQuery);assert.strictEqual(clays[clays.length-1].values.HomeAction,'0');
+state(bytes);listeners.showConfiguration();catalogue();listeners.webviewclosed({response:JSON.stringify(clays[clays.length-1].values)});assert.deepStrictEqual(sent[sent.length-1].DATA.slice(0,80),bytes);assert.strictEqual(locationCalls,beforeQuery);assert.strictEqual(clays[clays.length-1].values.HomeAction,'0');
 assert.ok(!/0\.0012345|0\.0004321|latitude|longitude|savedAt/.test(JSON.stringify(sent)+JSON.stringify(logs)+opened.map(decodeURIComponent).join('')));
 logs.forEach(function(message){assert.strictEqual(message,'KasugaBus preferences rejected.','phone diagnostics must not expose coordinates, per-pole distances, accuracy or timestamps');});
 console.log('PASS home notification retries are bounded, resume on STATE/ready after restart, and never acquire or expose coordinates');

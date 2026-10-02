@@ -8,6 +8,7 @@ static palette_t colors;
 static int scroll_limit;
 static char document_buffer[2200];
 static const char *size_names[]={"Standard","Large","Extra Large"};
+static const char *action_names[]={"Nothing","Next departure","Previous departure","Switch favourite stop","Flip direction","Open Nearby","Open All departures","Open departure board"};
 static const char *theme_names[]={"Neon Dark","Neon Light","High Contrast Dark","High Contrast Light"};
 static palette_t palette(unsigned theme) {
   if(theme==KB_THEME_NEON_LIGHT)return (palette_t){GColorWhite,GColorBlack,GColorDukeBlue,GColorDarkGreen,GColorDarkCandyAppleRed,GColorPurple,GColorWhite};
@@ -180,7 +181,13 @@ static void home(GContext *c) {
   kb_query_t q=app_query();
   kb_trip_t t;
   kb_query_state_t state;
-  int found=kb_query_home(&q,&t,&state);
+  int found=app.home_offset?kb_upcoming_at(&q,(size_t)app.home_offset,&t,&state):kb_query_home(&q,&t,&state);
+  /* Browsing past the last known bus steps back to the last one found. */
+  while(app.home_offset>0&&found!=KB_QUERY_FOUND) {
+    app.home_offset--;
+    found=app.home_offset?kb_upcoming_at(&q,(size_t)app.home_offset,&t,&state):kb_query_home(&q,&t,&state);
+  }
+  char later[40]="";
   if(found==KB_QUERY_FOUND) {
     d=kb_trip_dataset(&q,&t);
     kb_pattern_t pattern;
@@ -189,6 +196,17 @@ static void home(GContext *c) {
       snprintf(destination,sizeof(destination),"%s",pattern.destination);
       time_string(t.departure_utc,tm,sizeof(tm));
       countdown(&t,cd,sizeof(cd));
+    }
+    /* Later buses at this stop, after the strings above are copied: another
+     * service date can replace the shared dataset cache. */
+    for(unsigned k=1;k<=app.extras.more;k++) {
+      kb_trip_t next;
+      kb_query_state_t next_state;
+      if(kb_upcoming_at(&q,(size_t)app.home_offset+k,&next,&next_state)!=KB_QUERY_FOUND)break;
+      char when[12];
+      time_string(next.departure_utc,when,sizeof(when));
+      size_t used=strlen(later);
+      snprintf(later+used,sizeof(later)-used,"%s%s",used?"  ":"Then ",when);
     }
   }
   else snprintf(destination,sizeof(destination),"%s",found==KB_QUERY_UNCONFIRMED?"Schedule unconfirmed":"No upcoming service");
@@ -242,6 +260,11 @@ static void home(GContext *c) {
     tier++;
   }
   int used=stop_h+direction_h+departure_h+(count_below?count_h:0)+destination_h+5;
+  /* The later-buses line is optional: it never shrinks the bus text. */
+  unsigned later_size=destination_size<24?destination_size:24;
+  int later_h=later[0]?height_font(later,184,noto(later_size)):0;
+  if(later_h&&top+used+later_h<=bottom)used+=later_h;
+  else later_h=0;
   if(top+used>bottom)APP_LOG(APP_LOG_LEVEL_WARNING,"Home text overflow point%u size%u height%d",app.point,size,top+used);
   /* Spread any remaining height between the rows instead of leaving it
    * below the destination. */
@@ -275,6 +298,7 @@ static void home(GContext *c) {
     y+=departure_h+(count_below?count_h:0)+1+gap;
   }
   text_font(c,destination,8,y,184,destination_h,noto(destination_size),route[0]?colors.foreground:colors.warning);
+  if(later_h)text_font(c,later,8,y+destination_h+gap,184,later_h,noto(later_size),colors.navigation);
   d=app_dataset();
   if(app.override.day_type!=KB_DAY_UNKNOWN&&app.override.jst_day==kb_jst_day(now))snprintf(b,sizeof(b),"Override %s JST",short_day_name(app.override.day_type));
   else if(app.store.recovery_notice)snprintf(b,sizeof(b),"Recovery data | JST");
@@ -287,6 +311,7 @@ static void home(GContext *c) {
   else if(state.today_no_service)snprintf(b,sizeof(b),"No service today | JST");
   else if(app.changed)snprintf(b,sizeof(b),"New data | Scheduled JST");
   else snprintf(b,sizeof(b),"Scheduled JST | %s",short_day_name(found==KB_QUERY_FOUND?t.day_type:state.today_type));
+  if(app.home_offset)snprintf(b,sizeof(b),"+%d | BACK: soonest",app.home_offset);
   if(compact) {
     /* The clock row is hidden: show local time first, then the status with
      * its redundant "Scheduled" dropped to keep one footer line. */
@@ -295,7 +320,7 @@ static void home(GContext *c) {
     snprintf(status,sizeof(status),"%s",rest);
     char *sched=strstr(status," | Scheduled JST");
     if(sched)memmove(sched+3,sched+13,strlen(sched+13)+1);
-    snprintf(b,sizeof(b),"%s%s%s | %s",local.tm_gmtoff==32400?"":"Local ",clock,
+    snprintf(b,sizeof(b),"%s%s%s | %.60s",local.tm_gmtoff==32400?"":"Local ",clock,
              clock_is_24h_style()?"":local.tm_hour<12?"AM":"PM",status);
   }
   footer(c,b);
@@ -371,7 +396,8 @@ static int choices(void) {
     }
     case KB_SCREEN_NEARBY:return app.nearby_count+1;
     case KB_SCREEN_CONTEXT:return 3;
-    case KB_SCREEN_SETTINGS:return 8;
+    case KB_SCREEN_SETTINGS:return 9;
+    case KB_SCREEN_BUTTONS:return 4;
     case KB_SCREEN_TEXT_SIZE:return 3;
     case KB_SCREEN_THEME:return 4;
     case KB_SCREEN_ALL_REFERENCE:return 4;
@@ -400,7 +426,7 @@ static void point_choice(const kb_dataset_t *d,uint16_t id,choice_t *c) {
   if(d&&kb_boarding_point_get(d,id,&p)) {
     kb_operator_get(d,p.operator_id,&o);
     snprintf(c->title,sizeof(c->title),"%s",p.short_name);
-    snprintf(c->sub,sizeof(c->sub),"%s | %s",o.short_name,p.direction);
+    snprintf(c->sub,sizeof(c->sub),"%s%s | %s",app_is_favourite(id)?"Fav | ":"",o.short_name,p.direction);
   }
   else  {
     snprintf(c->title,sizeof(c->title),"Unavailable favourite %u",id);
@@ -454,7 +480,7 @@ static void choice(int n,choice_t *c) {
           snprintf(c->title,sizeof(c->title),"%s",p.direction);
           kb_operator_t o;
           kb_operator_get(d,p.operator_id,&o);
-          snprintf(c->sub,sizeof(c->sub),"%s | %s",o.name,p.short_name);
+          snprintf(c->sub,sizeof(c->sub),"%s%s | %s",app_is_favourite(p.id)?"Fav | ":"",o.name,p.short_name);
           break;
         }
       }
@@ -550,9 +576,15 @@ static void choice(int n,choice_t *c) {
       snprintf(c->sub,sizeof(c->sub),n?"Temporary: ends JST midnight":"Use verified operator calendar");
       break;
     }
+    case KB_SCREEN_BUTTONS: {
+      const char *names[]={"Up","Down","Hold Up","Hold Down"};
+      snprintf(c->title,sizeof(c->title),"%s",names[n]);
+      snprintf(c->sub,sizeof(c->sub),"%s",action_names[app.extras.buttons[n]%KB_ACTION_COUNT]);
+      break;
+    }
     case KB_SCREEN_SETTINGS: {
       const char *a[]= {
-        "Text size","Colour theme","Service-day override","Reduced motion","Automatic updates","Phone settings","Reset preferences","Restore bundled data"
+        "Text size","Colour theme","Service-day override","Reduced motion","Automatic updates","Phone settings","Reset preferences","Restore bundled data","Home buttons"
       };
       snprintf(c->title,sizeof(c->title),"%s",a[n]);
       if(n==0)snprintf(c->sub,sizeof(c->sub),"%s",size_names[kb_pref_text_size(&app.prefs)]);
@@ -560,6 +592,7 @@ static void choice(int n,choice_t *c) {
       else if(n==3)snprintf(c->sub,sizeof(c->sub),"%s",app.prefs.bytes[1]&KB_PREF_REDUCED_MOTION?"On":"Off (no idle animation)");
       else if(n==4)snprintf(c->sub,sizeof(c->sub),"%s",app.prefs.bytes[1]&KB_PREF_AUTO?"On - daily on launch":"Off - manual check available");
       else if(n==5)snprintf(c->sub,sizeof(c->sub),"Open KasugaBus settings in phone");
+      else if(n==8)snprintf(c->sub,sizeof(c->sub),"Up/Down actions on home");
       else snprintf(c->sub,sizeof(c->sub),"%s",n==2?"Ends at next JST date":n==6?"Timetables remain stored":"Explicit dated recovery");
       break;
     }
@@ -584,6 +617,7 @@ static const char *screen_title(void) {
   switch(app.screen) {
     case KB_SCREEN_MENU:return "KasugaBus";
     case KB_SCREEN_HELP:return "Help";
+    case KB_SCREEN_BUTTONS:return "Home buttons";
     case KB_SCREEN_PICKER:return "Choose stops";
     case KB_SCREEN_FAVOURITES:return "Favourites";
     case KB_SCREEN_GROUPS:return "All stops";
@@ -913,20 +947,57 @@ static void details(GContext *c) {
     else snprintf(walk+used,sizeof(walk)-used,"Approx. %lum\n",(unsigned long)metres);
   }
   date_string(o.source_verified_on,source,sizeof(source));
-  snprintf(s,sizeof(document_buffer),"%s\n%s\n%s\n\nRoute %s\nTo %s\n%s  %s JST%s\n%s%s | Scheduled\n%s\n%s\n%s\nSource verified %s\nData v%lu\n\nSELECT: Japanese name",p.name,p.direction,o.name,pattern.route,pattern.destination,date,tm,origin,day_name(app.detail.day_type),app.detail.overridden?" (Override)":"",walk,p.guidance,pattern.route_transitions,source,(unsigned long)d->release_version);
+  char reminder[160];
+  if(app_reminder_matches(&app.detail)) {
+    char lt[12];time_string(app.reminder_leave,lt,sizeof(lt));
+    snprintf(reminder,sizeof(reminder),"%.60s%sReminder: leave %s JST\nHold SELECT: cancel",app.notice,app.notice[0]?"\n":"",lt);
+  }
+  else snprintf(reminder,sizeof(reminder),"%.60s%sHold SELECT: leave-now reminder",app.notice,app.notice[0]?"\n":"");
+  snprintf(s,sizeof(document_buffer),"%s\n%s\n%s\n\nRoute %s\nTo %s\n%s  %s JST%s\n%s%s | Scheduled\n%s\n%s\n%s\nSource verified %s\nData v%lu\n\n%s\nSELECT: Japanese name",p.name,p.direction,o.name,pattern.route,pattern.destination,date,tm,origin,day_name(app.detail.day_type),app.detail.overridden?" (Override)":"",walk,p.guidance,pattern.route_transitions,source,(unsigned long)d->release_version,reminder);
   document(c,s,4,"UP/DOWN | BACK");
+}
+static void reminder_screen(GContext *c) {
+  bool commute=app.reminder_kind>=KB_WAKE_COMMUTE;
+  bool heads=app.reminder_kind==KB_WAKE_HEADS_UP||app.reminder_kind==KB_WAKE_COMMUTE_HEADS_UP;
+  int64_t departure=commute?app.commute_departure:app.reminder_departure;
+  uint16_t point_id=commute?app.commute_point:app.reminder_point;
+  uint8_t pattern_id=commute?app.commute_pattern:app.reminder_pattern;
+  int64_t leave=app_leave_time(point_id,departure),now=time(NULL);
+  char title[40];
+  if(heads&&leave>now)snprintf(title,sizeof(title),"Leave in %ld min",(long)((leave-now+59)/60));
+  else snprintf(title,sizeof(title),"%s",departure>now?"Leave now":"Bus has left");
+  const kb_dataset_t *d=app_dataset();
+  kb_boarding_point_t p;
+  kb_pattern_t pattern;
+  char tm[12],cd[24];
+  kb_trip_t trip={0};
+  trip.departure_utc=departure;
+  time_string(departure,tm,sizeof(tm));countdown(&trip,cd,sizeof(cd));
+  bool known=d&&kb_boarding_point_get(d,point_id,&p)&&kb_pattern_get(d,pattern_id,&pattern);
+  int top=heading(c,title,commute?"Commute alarm":"Reminder");
+  if(known)snprintf(document_buffer,sizeof(document_buffer),"Bus %s at %s JST\n%s\n%s\n%s\nTo %s\n\nSELECT: departure board\nBACK: home",
+    pattern.route,tm,cd,p.short_name,p.direction,pattern.destination);
+  else snprintf(document_buffer,sizeof(document_buffer),"Bus at %s JST\n%s\n\nThe timetable changed; check the departure board.",tm,cd);
+  document(c,document_buffer,top+4,"SELECT: board | BACK");
+  graphics_context_set_fill_color(c,colors.background);
+  graphics_fill_rect(c,GRect(0,0,200,top+2),0,GCornerNone);
+  heading(c,title,commute?"Commute alarm":"Reminder");
 }
 static void help(GContext *c) {
   int top=heading(c,"Help",NULL);
   document(c,
-    "HOME\nNext scheduled bus from your stop, with its route, time and countdown.\n"
-    "UP/DOWN: switch favourite stops\nSELECT: departure board\nHold SELECT: menu\n\n"
+    "HOME\nNext scheduled bus from your stop, with its route, time, countdown and later buses.\n"
+    "DOWN: next bus  UP: switch favourite stop\nHold UP: other direction  Hold DOWN: Nearby\n"
+    "BACK: soonest bus again\nSELECT: departure board\nHold SELECT: menu\n"
+    "Other direction applies where a stop has more than one boarding direction. Change these in Settings > Home buttons.\n\n"
     "BOARD\nUP/DOWN: choose a bus\nSELECT: full details\nHold SELECT: refresh\n\n"
+    "DETAILS\nHold SELECT: buzz once when it is time to leave (walking time + buffer). Hold again to cancel.\n\n"
+    "FAVOURITES\nIn a stop list, hold SELECT to add or remove a favourite.\n\n"
     "MENU\nStops: favourites, Nearby, stop list, bus numbers and All departures\n"
     "Trip context: walking time from your saved origin\n"
     "Data status: timetable dates and update check\n"
     "Settings: text size, colour theme and more\n\n"
-    "PHONE\nIn the Pebble app, open KasugaBus settings for favourites, walking times, location and display.\n\n"
+    "PHONE\nIn the Pebble app, open KasugaBus settings for favourites, buttons, commute alarm, time profiles, walking times, location and display.\n\n"
     "Times are scheduled (JST), not live arrivals.",
     top+4,"UP/DOWN | BACK");
   /* Scrolled text passes under the title; repaint the title over it. */
@@ -998,6 +1069,7 @@ static void draw(Layer *layer,GContext *c) {
   else if(app.screen==KB_SCREEN_JAPANESE)japanese(c);
   else if(app.screen==KB_SCREEN_ALL_INFO)all_info(c);
   else if(app.screen==KB_SCREEN_HELP)help(c);
+  else if(app.screen==KB_SCREEN_REMINDER)reminder_screen(c);
   else list(c);
   APP_LOG(APP_LOG_LEVEL_DEBUG,"UI screen%d heap%lu",app.screen,(unsigned long)heap_bytes_free());
   APP_LOG(APP_LOG_LEVEL_DEBUG,"UI selection%d scroll%d limit%d",app.selected,app.scroll,scroll_limit);
@@ -1009,8 +1081,11 @@ static void draw(Layer *layer,GContext *c) {
     if(app.screen==KB_SCREEN_ALL_BOARD&&app.board_has_focus)APP_LOG(APP_LOG_LEVEL_DEBUG,"All trip day%ld minute%u point%u pattern%u service%u version%lu",(long)app.board_focus.service_day,app.board_focus.minute,app.board_focus.boarding_point_id,app.board_focus.pattern_id,app.board_focus.service_id,(unsigned long)app.board_focus.release_version);
   }
 }
+static void clicks(void *ctx);
 void ui_open(int screen) {
+  bool home_changed=(screen==KB_SCREEN_HOME)!=(app.screen==KB_SCREEN_HOME);
   app.screen=screen;
+  if(home_changed&&app.window)window_set_click_config_provider(app.window,clicks);
   app.selected=0;
   app.scroll=0;
   scroll_limit=0;
@@ -1072,7 +1147,7 @@ void ui_refresh(void) {
   app.selected=1;
 }
 static bool scroll_screen(void) {
-  return app.screen==KB_SCREEN_DETAILS||app.screen==KB_SCREEN_STATUS||app.screen==KB_SCREEN_HELP||app.screen==KB_SCREEN_JAPANESE||app.screen==KB_SCREEN_ALL_INFO||
+  return app.screen==KB_SCREEN_DETAILS||app.screen==KB_SCREEN_STATUS||app.screen==KB_SCREEN_HELP||app.screen==KB_SCREEN_REMINDER||app.screen==KB_SCREEN_JAPANESE||app.screen==KB_SCREEN_ALL_INFO||
     (app.screen==KB_SCREEN_NEARBY&&!(app.prefs.bytes[1]&KB_PREF_LOCATION));
 }
 static void scroll_by(int amount) {
@@ -1080,18 +1155,74 @@ static void scroll_by(int amount) {
   if(app.scroll<0)app.scroll=0;
   if(app.scroll>scroll_limit)app.scroll=scroll_limit;
 }
+static AppTimer *s_offset_timer;
+static void reset_offset(void *ctx) {
+  (void)ctx;
+  s_offset_timer=NULL;
+  if(app.home_offset) {
+    app.home_offset=0;
+    app_redraw();
+  }
+}
+static void set_offset(int offset) {
+  app.home_offset=offset<0?0:offset>20?20:offset;
+  if(s_offset_timer)app_timer_cancel(s_offset_timer);
+  s_offset_timer=app.home_offset?app_timer_register(30000,reset_offset,NULL):NULL;
+}
+static void switch_point(uint16_t id) {
+  if(id&&id!=app.point) {
+    app.point=id;
+    set_offset(0);
+  }
+}
+/* Next boarding point at the same stop group: the other side of the road. */
+static void flip_direction(void) {
+  const kb_dataset_t *d=app_dataset();
+  kb_boarding_point_t current,p;
+  if(!d||!kb_boarding_point_get(d,app.point,&current))return;
+  size_t n=kb_boarding_point_count(d),start=0;
+  for(size_t i=0;i<n;i++)if(kb_boarding_point_at(d,i,&p)&&p.id==app.point)start=i;
+  for(size_t k=1;k<n;k++)
+    if(kb_boarding_point_at(d,(start+k)%n,&p)&&p.group_id==current.group_id) {
+      switch_point(p.id);
+      return;
+    }
+}
+static void home_action(unsigned action) {
+  unsigned n=app.prefs.bytes[5];
+  switch(action) {
+    case KB_ACTION_NEXT:set_offset(app.home_offset+1);break;
+    case KB_ACTION_PREVIOUS:set_offset(app.home_offset-1);break;
+    case KB_ACTION_FAVOURITE:
+      if(n>=2) {
+        unsigned i=0;
+        while(i<n&&kb_pref_favourite(&app.prefs,i)!=app.point)i++;
+        switch_point(kb_pref_favourite(&app.prefs,(i+1)%n));
+      }
+      else flip_direction();
+      break;
+    case KB_ACTION_FLIP:flip_direction();break;
+    case KB_ACTION_NEARBY:ui_open(KB_SCREEN_NEARBY);app_request_location();break;
+    case KB_ACTION_ALL:ui_open(KB_SCREEN_ALL_REFERENCE);break;
+    case KB_ACTION_BOARD:ui_open(KB_SCREEN_BOARD);break;
+    default:break;
+  }
+}
+static void long_up(ClickRecognizerRef r,void *ctx) {
+  (void)r;(void)ctx;
+  if(app.screen==KB_SCREEN_HOME)home_action(app.extras.buttons[KB_BUTTON_HOLD_UP]);
+  app_redraw();
+}
+static void long_down(ClickRecognizerRef r,void *ctx) {
+  (void)r;(void)ctx;
+  if(app.screen==KB_SCREEN_HOME)home_action(app.extras.buttons[KB_BUTTON_HOLD_DOWN]);
+  app_redraw();
+}
 static void up(ClickRecognizerRef r,void *ctx) {
   (void)r;
   (void)ctx;
   if(app.screen==KB_SCREEN_ALL_BOARD||app.screen==KB_SCREEN_ALL_POINTS)ui_refresh();
-  if(app.screen==KB_SCREEN_HOME) {
-    unsigned n=app.prefs.bytes[5];
-    if(n) {
-      unsigned i=0;
-      while(i<n&&kb_pref_favourite(&app.prefs,i)!=app.point)i++;
-      app.point=kb_pref_favourite(&app.prefs,(i+n-1)%n);
-    }
-  }
+  if(app.screen==KB_SCREEN_HOME)home_action(app.extras.buttons[KB_BUTTON_UP]);
   else if(scroll_screen()||app.scroll>0) {
     scroll_by(-(int)body_size()*2);
   }
@@ -1114,14 +1245,7 @@ static void down(ClickRecognizerRef r,void *ctx) {
   (void)r;
   (void)ctx;
   if(app.screen==KB_SCREEN_ALL_BOARD||app.screen==KB_SCREEN_ALL_POINTS)ui_refresh();
-  if(app.screen==KB_SCREEN_HOME) {
-    unsigned n=app.prefs.bytes[5];
-    if(n) {
-      unsigned i=0;
-      while(i<n&&kb_pref_favourite(&app.prefs,i)!=app.point)i++;
-      app.point=kb_pref_favourite(&app.prefs,(i+1)%n);
-    }
-  }
+  if(app.screen==KB_SCREEN_HOME)home_action(app.extras.buttons[KB_BUTTON_DOWN]);
   else if(scroll_screen()||(scroll_limit&&app.scroll<scroll_limit)) {
     scroll_by((int)body_size()*2);
   }
@@ -1163,6 +1287,7 @@ static void select(ClickRecognizerRef r,void *ctx) {
   (void)ctx;
   app_dismiss_hint();
   if(app.screen==KB_SCREEN_HOME)ui_open(KB_SCREEN_BOARD);
+  else if(app.screen==KB_SCREEN_REMINDER) {app.reminder_kind=0;ui_open(KB_SCREEN_BOARD);}
   else if(app.screen==KB_SCREEN_BOARD||app.screen==KB_SCREEN_ALL_BOARD) {
     if(!app.selected)ui_open(app.screen==KB_SCREEN_ALL_BOARD?KB_SCREEN_ALL_POINTS:KB_SCREEN_PICKER);
     else if(app.board_has_focus) {
@@ -1275,7 +1400,13 @@ static void select(ClickRecognizerRef r,void *ctx) {
       app_send_state();
     }
     else if(app.selected==5)snprintf(app.notice,sizeof(app.notice),"Use companion app > KasugaBus");
+    else if(app.selected==8)ui_open(KB_SCREEN_BUTTONS);
     else ui_open(app.selected==6?KB_SCREEN_RESET:KB_SCREEN_RESTORE);
+  }
+  else if(app.screen==KB_SCREEN_BUTTONS) {
+    kb_extras_t e=app.extras;
+    e.buttons[app.selected]=(uint8_t)((e.buttons[app.selected]+1)%KB_ACTION_COUNT);
+    if(app_save_extras(&e))app_send_state();
   }
   else if(app.screen==KB_SCREEN_TEXT_SIZE||app.screen==KB_SCREEN_THEME) {
     bool size_picker=app.screen==KB_SCREEN_TEXT_SIZE;
@@ -1307,7 +1438,13 @@ static void back(ClickRecognizerRef r,void *ctx) {
   (void)r;
   (void)ctx;
   switch(app.screen) {
-    case KB_SCREEN_HOME:window_stack_pop(false);
+    case KB_SCREEN_HOME:
+    if(app.home_offset) {
+      set_offset(0);
+      app_redraw();
+      return;
+    }
+    window_stack_pop(false);
     return;
     case KB_SCREEN_DETAILS:app.screen=app.detail_origin==KB_SCREEN_ALL_BOARD?KB_SCREEN_ALL_BOARD:KB_SCREEN_BOARD;
     app.selected=app.return_screen;
@@ -1342,6 +1479,10 @@ static void back(ClickRecognizerRef r,void *ctx) {
     break;
     case KB_SCREEN_HELP:ui_open(KB_SCREEN_MENU);app.selected=4;
     break;
+    case KB_SCREEN_BUTTONS:ui_open(KB_SCREEN_SETTINGS);app.selected=8;
+    break;
+    case KB_SCREEN_REMINDER:app.reminder_kind=0;ui_open(KB_SCREEN_HOME);
+    break;
     case KB_SCREEN_TEXT_SIZE:ui_open(KB_SCREEN_SETTINGS);app.selected=0;
     break;
     case KB_SCREEN_THEME:ui_open(KB_SCREEN_SETTINGS);app.selected=1;
@@ -1358,6 +1499,26 @@ static void long_select(ClickRecognizerRef r,void *ctx) {
     app.changed=false;
     ui_open(KB_SCREEN_BOARD);
   }
+  else if(app.screen==KB_SCREEN_DETAILS) {
+    if(app_reminder_matches(&app.detail)) {
+      app_cancel_reminder();
+      snprintf(app.notice,sizeof(app.notice),"Reminder cancelled");
+    }
+    else if(app_set_reminder(&app.detail))snprintf(app.notice,sizeof(app.notice),"Reminder set");
+    else snprintf(app.notice,sizeof(app.notice),"Too late to remind");
+    app_redraw();
+  }
+  else if(app.screen==KB_SCREEN_POINTS||app.screen==KB_SCREEN_FAVOURITES||(app.screen==KB_SCREEN_NEARBY&&app.selected>0)) {
+    choice_t ch;
+    if(app.selected>=0&&app.selected<choices()) {
+      choice(app.selected,&ch);
+      bool was=app_is_favourite(ch.id);
+      if(app_toggle_favourite(ch.id))snprintf(app.notice,sizeof(app.notice),was?"Removed from favourites":"Added to favourites (%u/12)",app.prefs.bytes[5]);
+      else snprintf(app.notice,sizeof(app.notice),!was&&app.prefs.bytes[5]>=12?"Favourites full (12)":"Favourite not saved");
+      if(app.screen==KB_SCREEN_FAVOURITES&&app.selected>=choices()&&app.selected>0)app.selected--;
+    }
+    app_redraw();
+  }
   else if(app.screen==KB_SCREEN_ALL_POINTS||app.screen==KB_SCREEN_ALL_BOARD) {
     app.all_info_return=app.screen;app.all_info_selected=app.selected;
     ui_open(KB_SCREEN_ALL_INFO);
@@ -1367,8 +1528,17 @@ static void long_select(ClickRecognizerRef r,void *ctx) {
 }
 static void clicks(void *ctx) {
   (void)ctx;
-  window_single_repeating_click_subscribe(BUTTON_ID_UP,150,up);
-  window_single_repeating_click_subscribe(BUTTON_ID_DOWN,150,down);
+  if(app.screen==KB_SCREEN_HOME) {
+    /* Repeating clicks would swallow holds, so home uses plain clicks. */
+    window_single_click_subscribe(BUTTON_ID_UP,up);
+    window_single_click_subscribe(BUTTON_ID_DOWN,down);
+    window_long_click_subscribe(BUTTON_ID_UP,550,long_up,NULL);
+    window_long_click_subscribe(BUTTON_ID_DOWN,550,long_down,NULL);
+  }
+  else {
+    window_single_repeating_click_subscribe(BUTTON_ID_UP,150,up);
+    window_single_repeating_click_subscribe(BUTTON_ID_DOWN,150,down);
+  }
   window_single_click_subscribe(BUTTON_ID_SELECT,select);
   window_long_click_subscribe(BUTTON_ID_SELECT,550,long_select,NULL);
   window_single_click_subscribe(BUTTON_ID_BACK,back);

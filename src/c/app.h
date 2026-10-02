@@ -4,6 +4,7 @@
 #include "storage.h"
 #include "preferences.h"
 #include "all_preferences.h"
+#include "extras.h"
 #define KB_MAX_POINTS 32
 #define KB_SCREEN_HOME 0
 #define KB_SCREEN_BOARD 1
@@ -30,6 +31,13 @@
 #define KB_SCREEN_ALL_BOARD 22
 #define KB_SCREEN_ALL_INFO 23
 #define KB_SCREEN_HELP 24
+#define KB_SCREEN_BUTTONS 25
+#define KB_SCREEN_REMINDER 26
+/* Wakeup cookies: one-shot or commute, leave time or earlier heads-up. */
+#define KB_WAKE_LEAVE 1
+#define KB_WAKE_HEADS_UP 2
+#define KB_WAKE_COMMUTE 3
+#define KB_WAKE_COMMUTE_HEADS_UP 4
 typedef struct  {
   uint16_t id;
   uint32_t metres;
@@ -71,6 +79,18 @@ typedef struct  {
   unsigned nearby_count;
   int64_t location_started,check_started;
   char notice[80];
+  kb_extras_t extras;
+  uint32_t extras_generation;
+  uint8_t extras_slot;
+  /* Home browsing: 0 is the soonest bus; reset after 30 idle seconds. */
+  int home_offset;
+  int64_t home_offset_at;
+  /* One-shot reminder and the scheduled commute trip, persisted at key 16. */
+  bool reminder_active;
+  int64_t reminder_departure,reminder_leave,commute_departure;
+  uint16_t reminder_point,commute_point;
+  uint8_t reminder_pattern,commute_pattern;
+  int reminder_kind;
 }
 kb_app_t;
 extern kb_app_t app;
@@ -88,6 +108,17 @@ void app_restore_timetable(void);
 void app_dismiss_hint(void);
 void app_redraw(void);
 void app_send_state(void);
+bool app_save_extras(const kb_extras_t *);
+bool app_toggle_favourite(uint16_t);
+bool app_is_favourite(uint16_t);
+int64_t app_leave_time(uint16_t point,int64_t departure);
+bool app_set_reminder(const kb_trip_t *);
+void app_cancel_reminder(void);
+bool app_reminder_matches(const kb_trip_t *);
+void app_reschedule_wakeups(void);
+void app_load_reminders(void);
+void app_show_wakeup(int32_t cookie);
+void app_reload_glance(void);
 void ui_init(void);
 void ui_open(int);
 void ui_refresh(void);

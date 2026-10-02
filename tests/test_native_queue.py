@@ -165,7 +165,9 @@ static struct {
   char route_number[1024];
   kb_trip_t board_focus;
   struct { uint16_t ids[32];unsigned count; } all_prefs;
+  struct { uint8_t buttons[4]; } extras;
 } app;
+#define KB_BUTTON_DOWN 1
 static kb_query_t active_query;
 #define time(ignored) (active_query.now_utc)
 static kb_query_t app_query(void) {return active_query;}
@@ -175,6 +177,8 @@ static unsigned body_size(void) {return 28;}
 static void scroll_by(int amount) {app.scroll+=amount;}
 static uint16_t kb_pref_favourite(const void *preferences,unsigned index) {(void)preferences;(void)index;return 0;}
 static void app_redraw(void) {}
+/* Home actions are outside this board-navigation boundary. */
+static void home_action(unsigned action) {(void)action;(void)kb_pref_favourite(NULL,0);}
 static void ui_remember_all_point(void) {}
 static unsigned all_point_ids(uint16_t *ids) {(void)ids;return 0;}
 static int choices(void) {return 4;}

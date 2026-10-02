@@ -65,3 +65,25 @@ counter is persisted with preferences and advances before CHECK or Restore;
 clock changes and app restarts cannot reauthorize a pre-Restore download.
 
 STATE STATUS2 cancels the phone updater after Restore bundled timetable. Restore advances REQUEST before sending that state. Every BEGIN must include the current watch REQUEST; a delayed BEGIN from an old download is rejected even if its session was not yet known when Restore ran. CHUNK/COMMIT remain bound to the accepted session. The phone cancels fetch/transfer work and ignores callbacks belonging to a cancelled job, including callbacks arriving after a new check starts.
+
+## Version 2.1 extra settings
+
+SETTINGS11 DATA may carry 108 bytes: the 80 preference bytes above followed by
+28 extra-settings bytes. The watch validates both records before writing either
+and still accepts an 80-byte message, which leaves the extras unchanged. STATE2
+DATA always carries the same 108 bytes. The phone keeps the watch's current
+extras for any key missing from a submitted form.
+
+Extras bytes (little-endian): schema u8=1; home button actions u8 ×4 at1 (Up,
+Down, hold Up, hold Down: 0 nothing, 1 next departure, 2 previous departure,
+3 switch favourite (flip direction with fewer than two), 4 flip direction,
+5 Nearby, 6 All departures, 7 departure board); flags u8 at5 (profiles1,
+commute2); later departures on home u8 at6 (0..2); heads-up minutes u8 at7
+(0..30, 0 off); profile A point u16 at8 and start hour u8 at10; profile B point
+u16 at12 and start hour u8 at14; commute point u16 at16, earliest JST minute
+u16 at18 (0..1439) and day mask u8 at20 (bit0 Sunday..bit6 Saturday). Bytes 11,
+15 and 21..27 are reserved zero. Enabled profiles need two known points with
+different hours; an enabled commute needs a known point and at least one day.
+The watch stores the record as KBX1 with a generation and CRC32 in two banks
+(keys 14/15). Reminder state is a separate local record (key 16) that never
+leaves the watch.

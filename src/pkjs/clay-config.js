@@ -1,4 +1,5 @@
 'use strict';
+var extras=require('./extras');
 module.exports=function(catalog,snapshot,hasHome,homeStatus){
   var options=[{label:'None / open stop picker',value:'0'}],favourites=[],walks=[];
   catalog.forEach(function(p){options.push({label:p.label,value:String(p.id)});});
@@ -6,6 +7,8 @@ module.exports=function(catalog,snapshot,hasHome,homeStatus){
     var seen={};catalog.forEach(function(p){seen[p.id]=true;});
     snapshot.favourites.concat([snapshot.defaultId]).forEach(function(id){if(id&&!seen[id]){options.push({label:'Unavailable boarding point #'+id+' — remove to save',value:String(id)});seen[id]=true;}});
   }
+  var actions=extras.ACTION_LABELS.map(function(label,i){return {label:label,value:String(i)};}),hours=[];
+  for(var h=0;h<24;h+=1)hours.push({label:(h<10?'0':'')+h+':00',value:String(h)});
   for(var i=0;i<12;i+=1)favourites.push({type:'select',messageKey:'Favourite'+i,label:'Favourite '+(i+1),options:options,defaultValue:'0'});
   catalog.forEach(function(p){walks.push({type:'input',messageKey:'Walk'+p.id,label:p.label,defaultValue:'',description:'Minutes from your saved origin; blank means unset.',attributes:{type:'number',min:0,max:120,step:1}});});
   if(snapshot)Object.keys(snapshot.walks).forEach(function(id){if(!catalog.some(function(p){return p.id===Number(id);}))walks.push({type:'input',messageKey:'Walk'+id,label:'Unavailable boarding point #'+id,defaultValue:String(snapshot.walks[id]),description:'Clear this unavailable walking allowance to save.',attributes:{type:'number',min:0,max:120,step:1}});});
@@ -23,6 +26,23 @@ module.exports=function(catalog,snapshot,hasHome,homeStatus){
       {type:'select',messageKey:'TextSize',label:'Text size',defaultValue:'1',description:'Large is the default. Larger text wraps and shows fewer rows.',options:[{label:'Standard',value:'0'},{label:'Large (default)',value:'1'},{label:'Extra Large',value:'2'}]},
       {type:'select',messageKey:'Theme',label:'Theme',defaultValue:'0',description:'Choose a dark or light background, with neon accents or plain high contrast.',options:[{label:'Neon Dark',value:'0'},{label:'Neon Light',value:'1'},{label:'High Contrast Dark',value:'2'},{label:'High Contrast Light',value:'3'}]},
       {type:'toggle',messageKey:'ReducedMotion',label:'Reduce motion',defaultValue:true}]},
+    {type:'section',items:[{type:'heading',defaultValue:'Watch buttons'},
+      {type:'text',defaultValue:'What Up and Down do on the home screen. Back returns to the soonest bus after browsing later departures.'}].concat(
+      ['Up','Down','Hold Up','Hold Down'].map(function(label,i){return {type:'select',messageKey:extras.BUTTON_KEYS[i],label:label,defaultValue:String(extras.defaults().buttons[i]),options:actions};})).concat([
+      {type:'select',messageKey:'HomeMore',label:'Later departures on home',defaultValue:'2',description:'Shown under the destination when there is room.',options:[{label:'None',value:'0'},{label:'1',value:'1'},{label:'2',value:'2'}]}])},
+    {type:'section',items:[{type:'heading',defaultValue:'Reminders'},
+      {type:'text',defaultValue:'On the watch, hold Select on a departure\'s details to get one leave-now buzz for that bus. Leave time uses your walking time and buffer for that stop.'},
+      {type:'input',messageKey:'HeadsUp',label:'Heads-up before leave time (minutes)',defaultValue:'0',description:'0 turns the early heads-up buzz off.',attributes:{type:'number',min:0,max:30,step:1}},
+      {type:'toggle',messageKey:'CommuteEnabled',label:'Daily commute alarm',defaultValue:false,description:'One buzz on chosen days for the first bus at or after your time. Days without service are skipped.'},
+      {type:'select',messageKey:'CommutePoint',label:'Commute stop',defaultValue:'0',options:options},
+      {type:'input',messageKey:'CommuteTime',label:'Earliest bus time',defaultValue:'08:00',attributes:{type:'time'}},
+      {type:'checkboxgroup',messageKey:'CommuteDays',label:'Commute days',defaultValue:[false,true,true,true,true,true,false],options:extras.DAY_NAMES}]},
+    {type:'section',items:[{type:'heading',defaultValue:'Time profiles'},
+      {type:'toggle',messageKey:'ProfilesEnabled',label:'Choose home stop by time of day',defaultValue:false,description:'When KasugaBus opens, it shows profile A from its start hour and profile B from its start hour.'},
+      {type:'select',messageKey:'ProfileA',label:'Profile A stop (e.g. morning)',defaultValue:'0',options:options},
+      {type:'select',messageKey:'ProfileAHour',label:'Profile A starts at',defaultValue:'4',options:hours},
+      {type:'select',messageKey:'ProfileB',label:'Profile B stop (e.g. evening)',defaultValue:'0',options:options},
+      {type:'select',messageKey:'ProfileBHour',label:'Profile B starts at',defaultValue:'15',options:hours}]},
     {type:'section',items:[{type:'heading',defaultValue:'Usual stop'}, {type:'select',messageKey:'DefaultId',label:'Default boarding point',options:options,defaultValue:'0'}].concat(favourites)},
     {type:'section',items:[{type:'heading',defaultValue:'Saved origin walking times'}, {type:'input',messageKey:'Buffer',label:'Additional buffer (minutes)',defaultValue:'2',attributes:{type:'number',min:0,max:30,step:1}}, {type:'text',defaultValue:'These allowances apply only when you select Saved origin on the watch. At stop and Nearby do not reuse them.'}].concat(walks)},
     {type:'text',id:'validation-message',defaultValue:'Checking preferences…'},

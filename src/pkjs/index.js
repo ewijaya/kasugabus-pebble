@@ -1,5 +1,5 @@
 'use strict';
-var Clay=require('@rebble/clay'),p=require('./protocol'),settings=require('./settings'),config=require('./feed-config');
+var Clay=require('@rebble/clay'),p=require('./protocol'),settings=require('./settings'),extras=require('./extras'),config=require('./feed-config');
 var catalog=require('./catalog.json').boardingPoints,snapshot=null,state=null,clay=null,catalogBatch=null,settingsOpening=false,settingsTimer=null,homeAction=null,settingsRequest=Math.floor(Date.now()%4294967295);
 var send=require('./sender')({send:function(message,success,failure){Pebble.sendAppMessage(message,success,failure);},schedule:schedule,cancel:cancel});
 function schedule(callback,delay){return setTimeout(callback,delay);}
@@ -24,7 +24,8 @@ function openSettings(){
   // field used by the custom page without copying account/watch tokens.
   clay.meta.userData={ids:catalog.map(function(p){return p.id;}),walkKeys:walkKeys};
   if(Pebble.getActiveWatchInfo)clay.meta.activeWatchInfo=Pebble.getActiveWatchInfo();
-  var values=snapshot?settings.toClay(snapshot,catalog):{};values.HomeAction='0';clay.setSettings(values);
+  var values=snapshot?settings.toClay(snapshot,catalog):{},more=extras.toClay(snapshot&&snapshot.extras||extras.defaults());
+  Object.keys(more).forEach(function(key){values[key]=more[key];});values.HomeAction='0';clay.setSettings(values);
   Pebble.openURL(clay.generateUrl());
 }
 function knownWithUnavailable(bytes){
@@ -41,13 +42,15 @@ Pebble.addEventListener('webviewclosed',function(event){
   try{
     var text=event.response.charAt(0)==='{'?event.response:decodeURIComponent(event.response),values=JSON.parse(text);
     var candidate=settings.fromClay(values,catalog),bytes=settings.encode(candidate,catalog);
+    // One SETTINGS message carries both records so the watch saves both or neither.
+    var extraBytes=extras.encode(extras.fromClay(values,catalog,snapshot&&snapshot.extras),catalog);
     var action=typeof values.HomeAction==='undefined'?0:values.HomeAction;
     if(action&&typeof action==='object')action=action.value;
     if(!(typeof action==='number'||(typeof action==='string'&&/^[0-9]+$/.test(action)))||!settings.integer(Number(action),0,2))throw new Error('Invalid saved home action');
     action=Number(action);if(action===1&&!(candidate.flags&2))throw new Error('Phone location is disabled');
     invalidateLocations();
     if(action===2)reference.clear();
-    var message={TYPE:p.type.SETTINGS,DATA:bytes};
+    var message={TYPE:p.type.SETTINGS,DATA:bytes.concat(extraBytes)};
     if(action===1){
       if(!state||!settings.integer(state.version,1,4294967295))throw new Error('Watch state is unavailable');
       settingsRequest=settingsRequest%4294967295+1;message.REQUEST=settingsRequest;
@@ -56,7 +59,7 @@ Pebble.addEventListener('webviewclosed',function(event){
     }
     send(message,null,function(){if(homeAction&&homeAction.request===message.REQUEST)cancelHomeAction();});
     // Do not mutate the confirmed snapshot until a valid watch STATE replies.
-  }catch(e){console.log('KasugaBus preferences rejected.');cancelHomeAction();if(snapshot){var previous=settings.toClay(snapshot,catalog);previous.HomeAction='0';clay.setSettings(previous);}}
+  }catch(e){console.log('KasugaBus preferences rejected.');cancelHomeAction();if(snapshot){var previous=settings.toClay(snapshot,catalog),old=extras.toClay(snapshot.extras||extras.defaults());Object.keys(old).forEach(function(key){previous[key]=old[key];});previous.HomeAction='0';clay.setSettings(previous);}}
 });
 Pebble.addEventListener('appmessage',function(event){
   var msg=event.payload||{},type=p.get(msg,'TYPE');
@@ -67,7 +70,8 @@ Pebble.addEventListener('appmessage',function(event){
     state={version:p.get(msg,'VERSION')||0,pending:p.get(msg,'PENDING')||0,flags:p.get(msg,'FLAGS')||0,request:p.get(msg,'REQUEST')||0};
     var maximum=p.get(msg,'LENGTH');if(settings.integer(maximum,128,32768))config.maxPayload=maximum;
     updater.state(state);if((oldVersion&&oldVersion!==state.version)||((oldFlags&2)&&!(state.flags&2)))invalidateLocations();
-    try{var bytes=p.get(msg,'DATA');snapshot=settings.decode(bytes,knownWithUnavailable(bytes));
+    try{var data=p.get(msg,'DATA'),bytes=Array.isArray(data)?data.slice(0,80):data;snapshot=settings.decode(bytes,knownWithUnavailable(bytes));
+      try{snapshot.extras=Array.isArray(data)&&data.length===80+extras.BYTES?extras.decode(data.slice(80)):extras.defaults();}catch(ignore){snapshot.extras=extras.defaults();}
       if(homeAction){var canonical=settings.encode(snapshot,knownWithUnavailable(bytes));homeAction.matched=canonical.every(function(value,index){return value===homeAction.bytes[index];})&&snapshot.flags===state.flags;completeHomeAction();}
     }catch(ignore){if(homeAction)homeAction.matched=false;}
     reference.retryNotification();

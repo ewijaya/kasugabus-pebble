@@ -110,6 +110,13 @@ uint32_t app_all_distance(uint16_t id) {
   for(unsigned i=0;i<app.all_nearby_count;i++)if(app.all_nearby[i].id==id)return app.all_nearby[i].metres;
   return UINT32_MAX;
 }
+bool app_save_extras(const kb_extras_t *candidate) {
+  if(!kb_extras_commit(&app.extras,candidate,&app.extras_generation,&app.extras_slot,p_write,NULL)) {
+    snprintf(app.notice,sizeof(app.notice),"Settings not saved");return false;
+  }
+  app_reschedule_wakeups();
+  return true;
+}
 bool app_save_all_preferences(const kb_all_preferences_t *candidate) {
   bool changed=app.all_prefs.reference!=candidate->reference;
   if(!kb_all_preferences_commit(&app.all_prefs,candidate,&app.all_generation,&app.all_slot,p_write,NULL)) {
@@ -293,7 +300,10 @@ void app_send_state(void) {
     s_request_hello=false;
   }
   field(m,4,KB_MAX_DATASET_BYTES);
-  bytes(m,app.prefs.bytes,80);
+  uint8_t state_bytes[KB_PREF_BYTES+KB_EXTRAS_WIRE_BYTES];
+  memcpy(state_bytes,app.prefs.bytes,KB_PREF_BYTES);
+  kb_extras_encode(&app.extras,state_bytes+KB_PREF_BYTES);
+  bytes(m,state_bytes,sizeof(state_bytes));
   s_catalogue_index=0;
   app.catalogue_seq=0;
   s_catalogue_version=version;
@@ -658,9 +668,15 @@ static void inbox(DictionaryIterator *it,void *ctx) {
   }
   else if(type==11) {
     kb_preferences_t p;
+    kb_extras_t e=app.extras;
     int result=2;
-    if(payload&&kb_preferences_parse(&p,data->value->data,data->length,app_point_exists,NULL)) {
-      result=app_save_preferences(&p)?0:5;
+    /* 80 preference bytes, optionally followed by the 28 extras bytes; both
+     * validate before either record is written. */
+    bool with_extras=payload&&data->length==KB_PREF_BYTES+KB_EXTRAS_WIRE_BYTES;
+    if(payload&&(data->length==KB_PREF_BYTES||with_extras)&&
+       kb_preferences_parse(&p,data->value->data,KB_PREF_BYTES,app_point_exists,NULL)&&
+       (!with_extras||kb_extras_parse(&e,data->value->data+KB_PREF_BYTES,KB_EXTRAS_WIRE_BYTES,app_point_exists,NULL))) {
+      result=app_save_preferences(&p)&&(!with_extras||app_save_extras(&e))?0:5;
       if(!result)snprintf(app.notice,sizeof(app.notice),"Settings saved");
     }
     else snprintf(app.notice,sizeof(app.notice),"Settings rejected");
@@ -793,6 +809,10 @@ static void connection(bool connected) {
   }
   app_redraw();
 }
+static void wakeup(WakeupId id,int32_t cookie) {
+  (void)id;
+  app_show_wakeup(cookie);
+}
 static void init(void) {
   APP_LOG(APP_LOG_LEVEL_DEBUG,"INIT entered");
   memset(&app,0,sizeof(app));
@@ -817,6 +837,14 @@ static void init(void) {
   }
   load_preferences();
   load_all_preferences();
+  kb_extras_load(&app.extras,&app.extras_generation,&app.extras_slot,p_read,NULL);
+  app_load_reminders();
+  {
+    /* A time profile chooses the opening stop; a wakeup chooses its own. */
+    time_t now=time(NULL);
+    uint16_t profile=kb_extras_profile_point(&app.extras,(unsigned)localtime(&now)->tm_hour);
+    if(profile&&app_point_exists(NULL,profile))app.point=profile;
+  }
   app.location_request=(uint32_t)time(NULL);
   app.all_request=(uint32_t)time(NULL);
   app_message_register_inbox_received(inbox);
@@ -826,6 +854,11 @@ static void init(void) {
   ui_init();
   if((app.prefs.bytes[1]&(KB_PREF_LOCATION|KB_PREF_NEARBY_START))==(KB_PREF_LOCATION|KB_PREF_NEARBY_START))ui_open(KB_SCREEN_NEARBY);
   else if(!app_point_exists(NULL,app.point))ui_open(KB_SCREEN_PICKER);
+  WakeupId wake_id;
+  int32_t cookie=0;
+  if(launch_reason()==APP_LAUNCH_WAKEUP&&wakeup_get_launch_event(&wake_id,&cookie))app_show_wakeup(cookie);
+  else app_reschedule_wakeups();
+  wakeup_service_subscribe(wakeup);
   /* A clock correction may change the hour/date while keeping its minute. */
   tick_timer_service_subscribe(MINUTE_UNIT|HOUR_UNIT|DAY_UNIT|MONTH_UNIT|YEAR_UNIT,tick);
   app_focus_service_subscribe(focus);
@@ -845,6 +878,10 @@ int main(void) {
   connection_service_unsubscribe();
   app_focus_service_unsubscribe();
   app_message_deregister_callbacks();
+  /* Leaving re-arms the next commute occurrence and refreshes the glance. */
+  app.reminder_kind=0;
+  app_reschedule_wakeups();
+  app_reload_glance();
   if(app.japanese)fonts_unload_custom_font(app.japanese);
   layer_destroy(app.layer);
   window_destroy(app.window);

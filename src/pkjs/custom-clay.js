@@ -26,10 +26,22 @@ module.exports=function(){
       if(!validChoice(page.getItemByMessageKey('Theme').get(),3))error='Choose one of the four themes.';
       if(!validChoice(homeAction.get(),2))error='Choose Keep, Save current phone location as home or Clear saved home.';
       else if(Number(homeAction.get())===1&&!location.get())error='Turn on phone location to save your current location as home. Clear remains available.';
+      function item(key){return page.getItemByMessageKey(key);}
+      if(!validInteger(item('HeadsUp').get()===''?'0':item('HeadsUp').get(),0,30))error='Heads-up must be whole minutes from 0 to 30.';
+      if(item('ProfilesEnabled').get()){
+        if(!known(item('ProfileA').get())||!known(item('ProfileB').get()))error='Choose a stop for both time profiles.';
+        else if(item('ProfileAHour').get()===item('ProfileBHour').get())error='The two profiles need different start hours.';
+      }
+      if(item('CommuteEnabled').get()){
+        var days=item('CommuteDays').get();
+        if(!known(item('CommutePoint').get()))error='Choose the commute stop.';
+        else if(!/^([01][0-9]|2[0-3]):[0-5][0-9]$/.test(item('CommuteTime').get()||''))error='Enter the commute time as HH:MM.';
+        else if(!Array.isArray(days)||!days.some(function(on){return on;}))error='Choose at least one commute day.';
+      }
       message.set(error||'Preferences are ready to save. Walking times apply only in Saved origin context.');
       if(error)save.disable();else save.enable();
     }
-    ['DefaultId','Buffer','NearbyStartup','LocationEnabled','TextSize','Theme','HomeAction'].concat(walkKeys).forEach(function(key){page.getItemByMessageKey(key).on('change',validate);});
+    ['DefaultId','Buffer','NearbyStartup','LocationEnabled','TextSize','Theme','HomeAction','HeadsUp','ProfilesEnabled','ProfileA','ProfileAHour','ProfileB','ProfileBHour','CommuteEnabled','CommutePoint','CommuteTime','CommuteDays'].concat(walkKeys).forEach(function(key){page.getItemByMessageKey(key).on('change',validate);});
     for(var i=0;i<12;i+=1)page.getItemByMessageKey('Favourite'+i).on('change',validate);
     validate();
   });

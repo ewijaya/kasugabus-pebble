@@ -9,6 +9,8 @@ Version **2.0.0** includes adjustable text sizes, four dark/light themes and a b
 
 Version **2.0.1** enlarges the home screen's bus information with a bundled bold condensed font, growing the departure time and countdown with each text size, shows countdowns of 60 minutes or more in hours (`1 h 10 m`), explains a phone-refused Nearby location request, lists Preferences first in phone settings, shows the app version on the watch's Settings screen, and adds a Help screen (hold Select → Help). See [the 2.0.1 notes](docs/releases/2.0.1.md).
 
+Version **2.1.0** adds favourites on the watch (hold Select in a stop list), configurable Up/Down home buttons, later buses on home, an App Glance in the launcher, leave-now reminders and a daily commute alarm, time-based home stops, and a weekly official-source watch. See [the 2.1.0 notes](docs/releases/2.1.0.md).
+
 A large clock and one scheduled departure form the Neon Transit home screen. The departure board, full details, favourites, all-stop picker, Nearby, trip context and data status work through the watch buttons. Timetables run offline; phone location, Clay settings and timetable downloads add optional connected functions.
 
 ![KasugaBus 1.0.0 — native Emery emulator capture](artifacts/screenshots/release-1.0.0-home.png)

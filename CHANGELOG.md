@@ -1,5 +1,28 @@
 # Changelog
 
+## 2.1.0
+
+- Favourites on the watch: in a stop list, hold Select to add or remove a
+  favourite (up to 12). Favourites show "Fav" in stop lists.
+- Configurable home buttons. Defaults: Down shows the next bus, Up switches
+  favourite stop (or flips direction with fewer than two favourites), hold Up
+  flips direction, hold Down opens Nearby. Back returns to the soonest bus.
+  Change them under Settings → Home buttons or in phone settings.
+- Home lists up to two later buses ("Then 12:33 13:03") when there is room.
+- App Glance: the launcher shows the next bus at your stop without opening
+  KasugaBus.
+- Leave-now reminders: hold Select on a departure's details for one buzz at
+  your leave time (walking time + buffer), with an optional heads-up buzz.
+  Quiet Time shows the reminder without vibrating.
+- Daily commute alarm: one buzz on chosen days for the first bus at or after
+  your time, following the weekday/Saturday/holiday timetable.
+- Time profiles: open on one stop in the morning and another later in the day.
+- Weekly source watch: a scheduled check of the official timetable sources
+  opens a review issue when timetables or notices change.
+
+Timetable content and the timetable feed format are unchanged. The phone and
+watch exchange 28 additional settings bytes; see docs/PROTOCOL.md.
+
 ## 2.0.1
 
 - Bigger bus information on the home screen in bundled Noto Sans Condensed
