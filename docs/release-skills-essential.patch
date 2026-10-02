@@ -1,0 +1,182 @@
+--- a/.agents/skills/kasugabus-release/SKILL.md
++++ b/.agents/skills/kasugabus-release/SKILL.md
+@@ -16,22 +16,28 @@
+ Use the saved existing listing and choose any later version from the actual
+ diff; maintaining the workflow does not authorize another release.
+ 
+-Before freezing a first complete release, review `docs/VERIFICATION.md` and PRD
+-sections 15/16. Require current dataset/operator/calendar and source-review
+-validity, configured and live-validated production timetable hosting, a
+-deployed update without PBW reinstall, actual phone/companion/watch-firmware
+-physical checks and seven-day use results. The full preflight is in
+-`docs/releasing.md`; absent or incomplete evidence remains a release blocker.
+-A later explicit incremental-release scope must name its omissions and must
+-not imply the first complete release's criteria passed. Scripts do not certify
+-these acceptance results merely by passing the build/runtime audit.
++## Default: essential, change-based validation
+ 
+-Run `scripts/test.py`, a clean `check_release.py --static-only`, exercise the
+-actual runtime paths and seal logs with `--complete-runtime`. A missing raw log
+-or static linker free RAM cannot prove runtime headroom. Prepare with the sealed
+-`--audit`, notes, desired destinations and `--physical`. The same PBW is
+-physically installed and frozen under `.release/VERSION/`; an existing candidate
+-cannot be overwritten.
++Follow `docs/releasing.md` → “Essential validation” for incremental releases.
++Run `check_release.py --plan`, then one `--static-only` audit; it already runs
++all automated tests. Never run `scripts/test.py` again as a separate release step.
++Use the audit's change-bound `validation_policy.required_scenarios`: launch and
++navigation by default; transfer only for affected storage/updater/protocol/shared
++entrypoint/build/dependency changes or unknown inputs. `--full` is opt-in.
++Capture the exact PBW for 90 seconds, seal its actual logs, then freeze it once.
++Review only the recorded targeted checks; at most five relevant screenshots for
++layout changes, including largest text. No routine full theme/size/screen matrix.
++No routine audit subagents. Read concise summaries and failure details only.
++Target 5–10 minutes locally (not a guarantee); allow one emulator retry, then
++report the gap instead of starting prolonged debugging. Required failures remain
++failures; an exception requires explicit owner acceptance, never elapsed time.
++Use two remote verification attempts, then report propagation pending.
++Reuse unchanged source/PBW evidence; never attribute old tests to new bytes.
++Listing-only edits require no new build or emulator. Broader device/endurance and
++seven-day checks retain their honest status but do not block ordinary incremental
++releases. Read first-complete acceptance gates only when making that claim.
++Keep exact-artifact physical approval, PBW digest/identity, credentials,
++existing-listing preservation and resumable publication guards unchanged.
+ 
+ For a new store app, freeze the complete app-specific listing and artwork with
+ the PBW. A null store ID is permitted only through the explicit first-publication
+@@ -60,7 +66,7 @@
+ SDK upload adapter refuses redirects before forwarding credentials. Do not reset
+ that baseline to silence a mismatch. Do not substitute
+ mutable `build/` output, automatically overwrite differing releases or silently
+-publish a draft. `verify --attempts 3` is read-only remote verification with
++publish a draft. `verify --attempts 2` is read-only remote verification with
+ bounded retry; it does not upload or build. Keep a partial release pending until
+ every selected destination verifies. The final publication-status doc commit
+ is allowed only by the actual release request, never workflow maintenance.
+--- a/.agents/skills/kasugabus-build-audit/SKILL.md
++++ b/.agents/skills/kasugabus-build-audit/SKILL.md
+@@ -32,18 +32,30 @@
+ launcher; compile success does not validate that limit. Inspect the selected
+ icon in the actual launcher and preserve transparency/luminance legibility.
+ 
+-`--static-only` truthfully leaves runtime release acceptance incomplete.
+-Install the exact artifact, exercise launch/navigation/update transfer, capture
+-actual logs after the build and use `--complete-runtime` to hash/bind them to
+-that digest. Require the minimum measured free heap from those paths; never
+-infer peak allocation from binary size or static free RAM. Label emulator and
+-physical evidence separately. Report unmeasured phone/device acceptance and
+-production-hosting limitations rather than claiming they passed.
++## Default: essential, change-based validation
+ 
+-A successful audit is build/runtime evidence, not release readiness. For an
+-actual first complete release, review `docs/VERIFICATION.md` against PRD
+-sections 15/16 and the full `docs/releasing.md` preflight: current dataset and
+-source-review validity, live production hosting, physical phone/watch/firmware
+-checks and seven-day use remain independent gates. Keep missing results as
+-release blockers unless a later explicit scoped-release decision records a
+-limited incremental build and its omissions.
++Follow `docs/releasing.md` → “Essential validation” for incremental releases.
++Run `check_release.py --plan`, then one `--static-only` audit; it already runs
++all automated tests. Never run `scripts/test.py` again as a separate release step.
++Use the audit's change-bound `validation_policy.required_scenarios`: launch and
++navigation by default; transfer only for affected storage/updater/protocol/shared
++entrypoint/build/dependency changes or unknown inputs. `--full` is opt-in.
++Capture the exact PBW for 90 seconds, seal its actual logs, then freeze it once.
++Review only the recorded targeted checks; at most five relevant screenshots for
++layout changes, including largest text. No routine full theme/size/screen matrix.
++No routine audit subagents. Read concise summaries and failure details only.
++Target 5–10 minutes locally (not a guarantee); allow one emulator retry, then
++report the gap instead of starting prolonged debugging. Required failures remain
++failures; an exception requires explicit owner acceptance, never elapsed time.
++Use two remote verification attempts, then report propagation pending.
++Reuse unchanged source/PBW evidence; never attribute old tests to new bytes.
++Listing-only edits require no new build or emulator. Broader device/endurance and
++seven-day checks retain their honest status but do not block ordinary incremental
++releases. Read first-complete acceptance gates only when making that claim.
++Keep exact-artifact physical approval, PBW digest/identity, credentials,
++existing-listing preservation and resumable publication guards unchanged.
++
++Static-only audit leaves runtime incomplete. Seal actual exact-PBW logs with
++`--complete-runtime`; measured heap must satisfy the budget on required paths.
++Never substitute linker free RAM for measured heap or emulator results for
++physical observations. See docs/releasing.md for capture and sealing commands.
+--- a/.agents/skills/kasugabus-publish-release/SKILL.md
++++ b/.agents/skills/kasugabus-publish-release/SKILL.md
+@@ -46,18 +46,28 @@
+ within the approved scope. Preserve data and runtime code during release prep.
+ Do not invent live predictions, physical test results or production hosting.
+ 
+-For the first complete personal release, read `docs/VERIFICATION.md` against
+-PRD sections 15 and 16. Review current per-operator/calendar validity and
+-source review dates; require configured and live-validated production HTTPS
+-hosting with a deployed timetable-only update; record actual phone OS,
+-companion version, watch firmware and physical acceptance, plus the seven-day
+-use review. Missing/failed/unobserved evidence remains a release blocker even
+-when the build audit passes. Follow the detailed preflight in `docs/releasing.md`.
+-An explicit scoped-release decision may permit a named incremental build with
+-omissions; it must not be described as the completed first personal-release
+-milestone. The owner approved 1.0.0 with named physical/seven-day limitations,
+-which remain recorded. Creating or validating this workflow does not establish
+-release readiness.
++## Default: essential, change-based validation
++
++Follow `docs/releasing.md` → “Essential validation” for incremental releases.
++Run `check_release.py --plan`, then one `--static-only` audit; it already runs
++all automated tests. Never run `scripts/test.py` again as a separate release step.
++Use the audit's change-bound `validation_policy.required_scenarios`: launch and
++navigation by default; transfer only for affected storage/updater/protocol/shared
++entrypoint/build/dependency changes or unknown inputs. `--full` is opt-in.
++Capture the exact PBW for 90 seconds, seal its actual logs, then freeze it once.
++Review only the recorded targeted checks; at most five relevant screenshots for
++layout changes, including largest text. No routine full theme/size/screen matrix.
++No routine audit subagents. Read concise summaries and failure details only.
++Target 5–10 minutes locally (not a guarantee); allow one emulator retry, then
++report the gap instead of starting prolonged debugging. Required failures remain
++failures; an exception requires explicit owner acceptance, never elapsed time.
++Use two remote verification attempts, then report propagation pending.
++Reuse unchanged source/PBW evidence; never attribute old tests to new bytes.
++Listing-only edits require no new build or emulator. Broader device/endurance and
++seven-day checks retain their honest status but do not block ordinary incremental
++releases. Read first-complete acceptance gates only when making that claim.
++Keep exact-artifact physical approval, PBW digest/identity, credentials,
++existing-listing preservation and resumable publication guards unchanged.
+ 
+ Run the consolidated checks and clean build, seal actual runtime evidence for
+ that exact PBW, then freeze/install one physical candidate using `release.py
+--- a/.agents/skills/kasugabus-appstore/SKILL.md
++++ b/.agents/skills/kasugabus-appstore/SKILL.md
+@@ -57,11 +57,29 @@
+ 
+ Read [docs/releasing.md](../../../docs/releasing.md). For releases, use the
+ frozen artifact and approval flow in [kasugabus-release](../kasugabus-release/SKILL.md).
+-Before publishing first-complete-release claims, review `docs/VERIFICATION.md`,
+-PRD sections 15/16 and `docs/releasing.md` acceptance gates. Keep pending
+-dataset/source review, live hosting, actual phone/watch firmware and seven-day
+-checks as blockers; only an explicitly scoped incremental release may carry
+-the corresponding documented limitations. A build audit is not acceptance.
++## Default: essential, change-based validation
++
++Follow `docs/releasing.md` → “Essential validation” for incremental releases.
++Run `check_release.py --plan`, then one `--static-only` audit; it already runs
++all automated tests. Never run `scripts/test.py` again as a separate release step.
++Use the audit's change-bound `validation_policy.required_scenarios`: launch and
++navigation by default; transfer only for affected storage/updater/protocol/shared
++entrypoint/build/dependency changes or unknown inputs. `--full` is opt-in.
++Capture the exact PBW for 90 seconds, seal its actual logs, then freeze it once.
++Review only the recorded targeted checks; at most five relevant screenshots for
++layout changes, including largest text. No routine full theme/size/screen matrix.
++No routine audit subagents. Read concise summaries and failure details only.
++Target 5–10 minutes locally (not a guarantee); allow one emulator retry, then
++report the gap instead of starting prolonged debugging. Required failures remain
++failures; an exception requires explicit owner acceptance, never elapsed time.
++Use two remote verification attempts, then report propagation pending.
++Reuse unchanged source/PBW evidence; never attribute old tests to new bytes.
++Listing-only edits require no new build or emulator. Broader device/endurance and
++seven-day checks retain their honest status but do not block ordinary incremental
++releases. Read first-complete acceptance gates only when making that claim.
++Keep exact-artifact physical approval, PBW digest/identity, credentials,
++existing-listing preservation and resumable publication guards unchanged.
++
+ Inspect the installed Pebble publisher code/help before invoking its private
+ upload method; check signature compatibility. The top-level `pebble publish`
+ rebuilds and may register an app, so it is excluded.

@@ -3,7 +3,7 @@
 > **2.0.0 status (1 October 2026):** published to the existing GitHub and RePebble
 > destinations with explicit owner approval of the installed PBW and named
 > incomplete-validation exceptions. See [the 2.0.0 report](releases/2.0.0-verification.md).
-> The standard runtime gate remains unchanged for future candidates; do not
+> Historical reports retain their original runtime requirements; do not
 > treat this exception as a passed full audit or permission to skip future checks.
 > Read-only verification of this exceptional historical release is available through
 > `artifacts/releases/2.0.0/verify_published.py` using the installed Pebble Tool
@@ -74,6 +74,58 @@ Project identity is package `kasugabus`, display `KasugaBus`, UUID
 build output is `build/kasugabus-pebble.pbw` because the Pebble tool names the
 PBW after this project directory. No identifier or listing copy from the
 reference project is used.
+
+## Essential validation (default for future incremental releases)
+
+The matching change-based instructions are installed in all four release skills.
+The owner applied `docs/release-skills-essential.patch`; reverse-check verification
+confirmed the complete patch is present. Do not apply it again. No app release
+is needed for this workflow change.
+
+Use change-based validation, not a repeat of initial acceptance. Target 5–10
+minutes of local validation, excluding owner approval/uploads; this is a budget
+for deciding when to stop, not a promise or permission to mark failures passed.
+
+1. Review Git changes and run `python3 scripts/check_release.py --plan` for the
+   committed-source scope (uncommitted edits are not included). The latest
+   ancestor version tag supplies the baseline. Commit the intended source only
+   when the actual release is authorized; the audit requires a clean tree.
+2. Run `python3 scripts/check_release.py --static-only` **once**. It already runs
+   the consolidated automated suite. Do not run `scripts/test.py` separately.
+   Successful output is summarized; full logs are in `build/release-tests.log`
+   and `build/release-build.log`. Existing unchanged exact-source/PBW audits can
+   be reused; never rebuild just because release prose changed.
+3. Install that exact PBW and capture 90 seconds of launch/navigation logs.
+   Use the audit's `validation_policy.required_scenarios` when sealing evidence.
+   UI, settings, calendar/data and resource changes normally require only this
+   smoke capture plus targeted checks. Updater/storage/protocol, shared entrypoint,
+   dependency/build changes and unclassified inputs also require update-transfer.
+   Review `targeted_checks`: changed calendar/data needs source/calendar review;
+   changed location/preferences needs representative behavior/persistence checks;
+   changed layout needs at most five native screenshots, including largest text.
+   When transfer code changes, exercise current/future and interrupted recovery
+   once; automated tests already cover regression cases. Do not repeat the entire
+   theme × size × screen matrix. A successful transfer marker alone does not
+   certify interruption recovery.
+4. Freeze once, obtain exact-PBW physical approval, publish the same bytes and
+   verify GitHub, Dashboard, general/Emery catalogs and public page. Default
+   remote verification is two attempts; report remaining propagation as pending.
+
+`--full` explicitly requests all runtime scenarios. Full visual matrices,
+endurance/seven-day reviews and expanded device testing are opt-in QA, not
+routine release prerequisites. Preserve their honest outstanding status and do
+not claim full PRD acceptance. The first-complete milestone below still describes
+that broader claim, not the default incremental release.
+
+No routine audit subagents. Read concise pass/fail summaries, opening detailed
+logs only on failure. Allow one emulator retry; if it still fails, stop that
+check and report the gap. Do not launch GDB/fixture repair loops during release
+validation. Required failing/missing checks block publication unless the owner
+explicitly accepts a documented exception; elapsed time is not approval.
+Metadata-only listing edits need no new PBW, build or emulator; use the existing
+listing-preservation/read-back procedure. Never treat old artifact observations
+as proof for new bytes. The exact-PBW hash, identity, approval, credential and
+listing-preservation guards remain unchanged.
 
 ## Scope and preflight
 
@@ -162,8 +214,8 @@ Workflow creation and validation itself makes no release-readiness claim.
 
 ## One clean build and actual memory evidence
 
-Run `python3 scripts/test.py` for all data/codec/calendar, C preference/storage,
-phone and controlled HTTP-feed suites. This also checks the bundled binary and
+The single audit command runs all data/codec/calendar, C preference/storage,
+phone and controlled HTTP-feed suites. It also checks the bundled binary and
 phone catalogue against the editable dataset; regenerate only from reviewed
 source data when stale.
 
@@ -190,11 +242,12 @@ installation of the exact audited PBW and actual logs outside `build/`:
 
 ```sh
 python3 scripts/capture_runtime.py --environment emulator \
-  --output artifacts/release-runtime.log --seconds 900 \
+  --output artifacts/release-runtime.log --seconds 90 \
   --stop-file artifacts/runtime-capture.stop
 ```
 
-While capture runs, exercise navigation and a complete controlled update.
+While capture runs, exercise navigation. Exercise a controlled update only when
+required by the saved validation policy (or explicitly requested full audit).
 The capture script calls `pebble install --logs` on the named, hash-checked
 artifact, then records a SHA-bound installation receipt alongside the raw log.
 It never rebuilds. Use `--environment physical` for a phone-connected watch.
@@ -202,17 +255,20 @@ Stop early with Ctrl-C or by creating the named stop file; both finalize the
 receipt. Capture lasts at most 1800 seconds and never overwrites old evidence.
 Record
 the minimum observed `heapNN`, `heap=NN` or `heap NN` value, including the
-transfer path rather than only an idle launch. Then seal the existing audit:
+transfer path when required by the policy, rather than only an idle launch. Then seal the existing audit:
 
 ```sh
 python3 scripts/check_release.py \
   --complete-runtime artifacts/release-runtime.log \
-  --environment emulator --scenarios launch,navigation,update-transfer
+  --environment emulator --scenarios launch,navigation
 ```
+
+Add `,update-transfer` to `--scenarios` only after actually exercising it when
+required by `validation_policy.required_scenarios`.
 
 The raw log and receipt must be captured after the clean build. They are hashed
 and bound to the same PBW digest and installed environment. The raw log must
-contain launch, UI-render and successful update-commit markers and meet 20
+contain launch, UI-render and, when required, successful update-commit markers and meet 20
 percent measured free-heap headroom. Scenario names still attest the exact
 interactions exercised; the helper does not drive the human QA or turn
 fabricated logs into evidence. It does not

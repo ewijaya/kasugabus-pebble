@@ -16,22 +16,28 @@ create repositories or commit unrelated work to satisfy a guard. Version 1.0.0 w
 Use the saved existing listing and choose any later version from the actual
 diff; maintaining the workflow does not authorize another release.
 
-Before freezing a first complete release, review `docs/VERIFICATION.md` and PRD
-sections 15/16. Require current dataset/operator/calendar and source-review
-validity, configured and live-validated production timetable hosting, a
-deployed update without PBW reinstall, actual phone/companion/watch-firmware
-physical checks and seven-day use results. The full preflight is in
-`docs/releasing.md`; absent or incomplete evidence remains a release blocker.
-A later explicit incremental-release scope must name its omissions and must
-not imply the first complete release's criteria passed. Scripts do not certify
-these acceptance results merely by passing the build/runtime audit.
+## Default: essential, change-based validation
 
-Run `scripts/test.py`, a clean `check_release.py --static-only`, exercise the
-actual runtime paths and seal logs with `--complete-runtime`. A missing raw log
-or static linker free RAM cannot prove runtime headroom. Prepare with the sealed
-`--audit`, notes, desired destinations and `--physical`. The same PBW is
-physically installed and frozen under `.release/VERSION/`; an existing candidate
-cannot be overwritten.
+Follow `docs/releasing.md` → “Essential validation” for incremental releases.
+Run `check_release.py --plan`, then one `--static-only` audit; it already runs
+all automated tests. Never run `scripts/test.py` again as a separate release step.
+Use the audit's change-bound `validation_policy.required_scenarios`: launch and
+navigation by default; transfer only for affected storage/updater/protocol/shared
+entrypoint/build/dependency changes or unknown inputs. `--full` is opt-in.
+Capture the exact PBW for 90 seconds, seal its actual logs, then freeze it once.
+Review only the recorded targeted checks; at most five relevant screenshots for
+layout changes, including largest text. No routine full theme/size/screen matrix.
+No routine audit subagents. Read concise summaries and failure details only.
+Target 5–10 minutes locally (not a guarantee); allow one emulator retry, then
+report the gap instead of starting prolonged debugging. Required failures remain
+failures; an exception requires explicit owner acceptance, never elapsed time.
+Use two remote verification attempts, then report propagation pending.
+Reuse unchanged source/PBW evidence; never attribute old tests to new bytes.
+Listing-only edits require no new build or emulator. Broader device/endurance and
+seven-day checks retain their honest status but do not block ordinary incremental
+releases. Read first-complete acceptance gates only when making that claim.
+Keep exact-artifact physical approval, PBW digest/identity, credentials,
+existing-listing preservation and resumable publication guards unchanged.
 
 For a new store app, freeze the complete app-specific listing and artwork with
 the PBW. A null store ID is permitted only through the explicit first-publication
@@ -60,7 +66,7 @@ Its original preservation baseline survives failed retries, and the installed
 SDK upload adapter refuses redirects before forwarding credentials. Do not reset
 that baseline to silence a mismatch. Do not substitute
 mutable `build/` output, automatically overwrite differing releases or silently
-publish a draft. `verify --attempts 3` is read-only remote verification with
+publish a draft. `verify --attempts 2` is read-only remote verification with
 bounded retry; it does not upload or build. Keep a partial release pending until
 every selected destination verifies. The final publication-status doc commit
 is allowed only by the actual release request, never workflow maintenance.

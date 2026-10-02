@@ -752,7 +752,7 @@ def main(argv=None):
     p.add_argument("--approve-physical", action="store_true")
     p = commands.add_parser("verify", help="Read-only bounded verification, preserving partial status")
     p.add_argument("version")
-    p.add_argument("--attempts", type=int, default=3)
+    p.add_argument("--attempts", type=int, default=2)
     p = commands.add_parser("begin-registration", help="Approve frozen first listing and journal intent before Dashboard New; never submit/upload")
     p.add_argument("version")
     p.add_argument("--approve-publish", required=True)

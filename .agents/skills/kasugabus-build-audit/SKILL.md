@@ -32,18 +32,30 @@ Launcher icons need a real 25×25 PNG canvas on this SDK's Emery default
 launcher; compile success does not validate that limit. Inspect the selected
 icon in the actual launcher and preserve transparency/luminance legibility.
 
-`--static-only` truthfully leaves runtime release acceptance incomplete.
-Install the exact artifact, exercise launch/navigation/update transfer, capture
-actual logs after the build and use `--complete-runtime` to hash/bind them to
-that digest. Require the minimum measured free heap from those paths; never
-infer peak allocation from binary size or static free RAM. Label emulator and
-physical evidence separately. Report unmeasured phone/device acceptance and
-production-hosting limitations rather than claiming they passed.
+## Default: essential, change-based validation
 
-A successful audit is build/runtime evidence, not release readiness. For an
-actual first complete release, review `docs/VERIFICATION.md` against PRD
-sections 15/16 and the full `docs/releasing.md` preflight: current dataset and
-source-review validity, live production hosting, physical phone/watch/firmware
-checks and seven-day use remain independent gates. Keep missing results as
-release blockers unless a later explicit scoped-release decision records a
-limited incremental build and its omissions.
+Follow `docs/releasing.md` → “Essential validation” for incremental releases.
+Run `check_release.py --plan`, then one `--static-only` audit; it already runs
+all automated tests. Never run `scripts/test.py` again as a separate release step.
+Use the audit's change-bound `validation_policy.required_scenarios`: launch and
+navigation by default; transfer only for affected storage/updater/protocol/shared
+entrypoint/build/dependency changes or unknown inputs. `--full` is opt-in.
+Capture the exact PBW for 90 seconds, seal its actual logs, then freeze it once.
+Review only the recorded targeted checks; at most five relevant screenshots for
+layout changes, including largest text. No routine full theme/size/screen matrix.
+No routine audit subagents. Read concise summaries and failure details only.
+Target 5–10 minutes locally (not a guarantee); allow one emulator retry, then
+report the gap instead of starting prolonged debugging. Required failures remain
+failures; an exception requires explicit owner acceptance, never elapsed time.
+Use two remote verification attempts, then report propagation pending.
+Reuse unchanged source/PBW evidence; never attribute old tests to new bytes.
+Listing-only edits require no new build or emulator. Broader device/endurance and
+seven-day checks retain their honest status but do not block ordinary incremental
+releases. Read first-complete acceptance gates only when making that claim.
+Keep exact-artifact physical approval, PBW digest/identity, credentials,
+existing-listing preservation and resumable publication guards unchanged.
+
+Static-only audit leaves runtime incomplete. Seal actual exact-PBW logs with
+`--complete-runtime`; measured heap must satisfy the budget on required paths.
+Never substitute linker free RAM for measured heap or emulator results for
+physical observations. See docs/releasing.md for capture and sealing commands.

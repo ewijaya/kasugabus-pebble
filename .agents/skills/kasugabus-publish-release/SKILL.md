@@ -46,18 +46,28 @@ README, CHANGELOG, release notes and the proposed listing description only
 within the approved scope. Preserve data and runtime code during release prep.
 Do not invent live predictions, physical test results or production hosting.
 
-For the first complete personal release, read `docs/VERIFICATION.md` against
-PRD sections 15 and 16. Review current per-operator/calendar validity and
-source review dates; require configured and live-validated production HTTPS
-hosting with a deployed timetable-only update; record actual phone OS,
-companion version, watch firmware and physical acceptance, plus the seven-day
-use review. Missing/failed/unobserved evidence remains a release blocker even
-when the build audit passes. Follow the detailed preflight in `docs/releasing.md`.
-An explicit scoped-release decision may permit a named incremental build with
-omissions; it must not be described as the completed first personal-release
-milestone. The owner approved 1.0.0 with named physical/seven-day limitations,
-which remain recorded. Creating or validating this workflow does not establish
-release readiness.
+## Default: essential, change-based validation
+
+Follow `docs/releasing.md` → “Essential validation” for incremental releases.
+Run `check_release.py --plan`, then one `--static-only` audit; it already runs
+all automated tests. Never run `scripts/test.py` again as a separate release step.
+Use the audit's change-bound `validation_policy.required_scenarios`: launch and
+navigation by default; transfer only for affected storage/updater/protocol/shared
+entrypoint/build/dependency changes or unknown inputs. `--full` is opt-in.
+Capture the exact PBW for 90 seconds, seal its actual logs, then freeze it once.
+Review only the recorded targeted checks; at most five relevant screenshots for
+layout changes, including largest text. No routine full theme/size/screen matrix.
+No routine audit subagents. Read concise summaries and failure details only.
+Target 5–10 minutes locally (not a guarantee); allow one emulator retry, then
+report the gap instead of starting prolonged debugging. Required failures remain
+failures; an exception requires explicit owner acceptance, never elapsed time.
+Use two remote verification attempts, then report propagation pending.
+Reuse unchanged source/PBW evidence; never attribute old tests to new bytes.
+Listing-only edits require no new build or emulator. Broader device/endurance and
+seven-day checks retain their honest status but do not block ordinary incremental
+releases. Read first-complete acceptance gates only when making that claim.
+Keep exact-artifact physical approval, PBW digest/identity, credentials,
+existing-listing preservation and resumable publication guards unchanged.
 
 Run the consolidated checks and clean build, seal actual runtime evidence for
 that exact PBW, then freeze/install one physical candidate using `release.py

@@ -9,6 +9,7 @@ import shutil
 import subprocess
 import sys
 import zipfile
+from release_policy import make_policy, required_scenarios
 from release_common import ARTIFACT, ROOT, atomic_json, digest, inspect_pbw, require, source_fingerprint
 
 
@@ -37,9 +38,10 @@ def validate_audit(report, bundle, version, root=ROOT, require_runtime=True, req
         require(source_fingerprint(root) == {k: report["source"][k] for k in ("fingerprint", "files")}, "Project source changed after the audited build")
     budgets = json.loads((Path(root) / "tests/build-budgets.json").read_text())
     check_budgets(report["metrics"], budgets)
+    scenarios = required_scenarios(report, budgets, root)
     if require_runtime:
         runtime = report.get("runtime") or {}
-        require(runtime.get("environment") in ("emulator", "physical") and set(budgets["required_runtime_scenarios"]) <= set(runtime.get("scenarios", [])), "Runtime measurements do not cover required scenarios")
+        require(runtime.get("environment") in ("emulator", "physical") and set(scenarios) <= set(runtime.get("scenarios", [])), "Runtime measurements do not cover required scenarios")
         evidence = Path(runtime.get("evidence_path", ""))
         require(evidence.is_file() and digest(evidence.read_bytes()) == runtime.get("evidence_sha256"), "Runtime evidence is missing or changed")
         receipt_path = Path(runtime.get("install_receipt_path", ""))
@@ -57,7 +59,7 @@ def validate_audit(report, bundle, version, root=ROOT, require_runtime=True, req
             "navigation": r"\bUI screen[0-9]+ heap[0-9]+[ \t]*$",
             "update-transfer": r"\bUpdate commit session[0-9]+ status[34] heap[0-9]+[ \t]*$",
         }
-        for scenario in budgets["required_runtime_scenarios"]:
+        for scenario in scenarios:
             require(re.search(markers[scenario], text, re.MULTILINE), "Raw log does not evidence runtime scenario: " + scenario)
         heaps = [int(n) for n in re.findall(r"\bheap(?:=|:|\s)*([0-9]+)", text)]
         require(heaps and min(heaps) == report["metrics"].get("measured_free_heap"), "Heap measurement does not match raw runtime log")
@@ -78,18 +80,25 @@ def clean_build_output(root):
         shutil.rmtree(output)
 
 
-def build_audit(static_only=False, root=ROOT):
+def build_audit(static_only=False, root=ROOT, full=False):
     root = Path(root)
     package = json.loads((root / "package.json").read_text())
     require(package["name"] == "kasugabus" and package["pebble"]["targetPlatforms"] == ["emery"], "Unexpected package/platform")
+    require(not subprocess.run(["git", "status", "--porcelain"], cwd=root, check=True, capture_output=True, text=True).stdout.strip(), "Commit intended source before the release audit; preserve unrelated work")
+    policy = make_policy(root, full)
     source = source_fingerprint(root)
     source["git_commit"] = subprocess.run(["git", "rev-parse", "HEAD"], cwd=root, check=True, text=True, capture_output=True, timeout=30).stdout.strip() if (root / ".git").exists() else None
-    subprocess.run([sys.executable, "scripts/test.py"], cwd=root, check=True, timeout=600)
+    tests = subprocess.run([sys.executable, "scripts/test.py"], cwd=root, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, timeout=600)
+    if tests.returncode:
+        print(tests.stdout[-12000:], flush=True)
+        tests.check_returncode()
     clean_build_output(root)
     result = subprocess.run(["pebble", "build"], cwd=root, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=600)
-    print(result.stdout, flush=True)
+    if result.returncode:
+        print(result.stdout[-12000:], flush=True)
     result.check_returncode()
     (root / "build/release-build.log").write_text(result.stdout)
+    (root / "build/release-tests.log").write_text(tests.stdout)
     metrics = parse_metrics(result.stdout)
     bundle = root / "build" / ARTIFACT
     artifact = inspect_pbw(bundle, package["version"])
@@ -101,7 +110,7 @@ def build_audit(static_only=False, root=ROOT):
     require(source_fingerprint(root) == {k: source[k] for k in ("fingerprint", "files")}, "Project source changed during tests/build; audit refused")
     toolchain = subprocess.run(["pebble", "--version"], cwd=root, check=True, capture_output=True, text=True).stdout.strip()
     report = {"schema": 1, "version": package["version"], "clean_build": True, "tests_passed": True,
-        "created_at": datetime.datetime.now(datetime.timezone.utc).isoformat(), "artifact": artifact, "metrics": metrics, "toolchain": toolchain, "source": source, "runtime": None}
+        "created_at": datetime.datetime.now(datetime.timezone.utc).isoformat(), "artifact": artifact, "metrics": metrics, "toolchain": toolchain, "source": source, "runtime": None, "validation_policy": policy}
     atomic_json(root / "build/release-audit.json", report)
     if (root / ".git").exists():
         subprocess.run(["git", "diff", "--check"], cwd=root, check=True)
@@ -132,16 +141,22 @@ def complete_runtime(path, environment, scenarios, root=ROOT):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--plan", action="store_true", help="Print change-based scope without tests/builds")
+    parser.add_argument("--full", action="store_true", help="Explicitly request full runtime coverage")
     parser.add_argument("--static-only", action="store_true", help="Pass static checks while honestly leaving runtime release gate incomplete")
     parser.add_argument("--complete-runtime", type=Path)
     parser.add_argument("--environment", choices=["emulator", "physical"])
     parser.add_argument("--scenarios", help="Comma-separated scenarios actually exercised in the raw log")
     args = parser.parse_args(argv)
-    if args.complete_runtime:
-        require(args.environment and args.scenarios and not args.static_only, "Runtime completion requires environment/scenarios and no --static-only")
+    if args.plan:
+        require(not args.complete_runtime and not args.static_only, "Use --plan separately from build/runtime operations")
+        print("Scope for committed HEAD only; working-tree edits are excluded.", file=sys.stderr)
+        print(json.dumps(make_policy(full=args.full), indent=2))
+    elif args.complete_runtime:
+        require(args.environment and args.scenarios and not args.static_only and not args.full, "Runtime completion requires environment/scenarios and no --static-only")
         complete_runtime(args.complete_runtime, args.environment, args.scenarios.split(","))
     else:
-        build_audit(args.static_only)
+        build_audit(args.static_only, full=args.full)
 
 
 if __name__ == "__main__":
