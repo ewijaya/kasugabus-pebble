@@ -15,6 +15,8 @@
   Pebble app needs location allowed all the time.
 - Phone settings show Preferences before Usual stop.
 - The watch's Settings screen shows the app version.
+- A Help screen (hold Select → Help) explains the buttons and menus.
+- Phone settings label Large as the default text size.
 
 Timetable content, storage and the phone–watch protocol are unchanged.
 

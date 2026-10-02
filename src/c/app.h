@@ -29,6 +29,7 @@
 #define KB_SCREEN_ALL_POINTS 21
 #define KB_SCREEN_ALL_BOARD 22
 #define KB_SCREEN_ALL_INFO 23
+#define KB_SCREEN_HELP 24
 typedef struct  {
   uint16_t id;
   uint32_t metres;

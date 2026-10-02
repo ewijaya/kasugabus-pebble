@@ -7,7 +7,7 @@ This initial release retains the stated physical and seven-day validation limita
 
 Version **2.0.0** includes adjustable text sizes, four dark/light themes and a banner identifying the Minami-kasugaoka coverage area. Open **Settings → Text size** for Standard, Large (default) or Extra Large; **Settings → Colour theme** offers Neon Dark, Neon Light, High Contrast Dark and High Contrast Light. These choices are also available in phone settings. See [the accessibility update](docs/ACCESSIBILITY_V2.md).
 
-Version **2.0.1** enlarges the home screen's bus information with a bundled bold condensed font, growing the departure time and countdown with each text size, shows countdowns of 60 minutes or more in hours (`1 h 10 m`), explains a phone-refused Nearby location request, lists Preferences first in phone settings, and shows the app version on the watch's Settings screen. See [the 2.0.1 notes](docs/releases/2.0.1.md).
+Version **2.0.1** enlarges the home screen's bus information with a bundled bold condensed font, growing the departure time and countdown with each text size, shows countdowns of 60 minutes or more in hours (`1 h 10 m`), explains a phone-refused Nearby location request, lists Preferences first in phone settings, shows the app version on the watch's Settings screen, and adds a Help screen (hold Select → Help). See [the 2.0.1 notes](docs/releases/2.0.1.md).
 
 A large clock and one scheduled departure form the Neon Transit home screen. The departure board, full details, favourites, all-stop picker, Nearby, trip context and data status work through the watch buttons. Timetables run offline; phone location, Clay settings and timetable downloads add optional connected functions.
 

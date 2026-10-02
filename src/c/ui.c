@@ -356,7 +356,7 @@ static void all_label(char *s,size_t n) {
 static int choices(void) {
   const kb_dataset_t *d=app_dataset();
   switch(app.screen) {
-    case KB_SCREEN_MENU:return 4;
+    case KB_SCREEN_MENU:return 5;
     case KB_SCREEN_PICKER:return 5;
     case KB_SCREEN_FAVOURITES:return app.prefs.bytes[5];
     case KB_SCREEN_GROUPS:return d?kb_stop_group_count(d):0;
@@ -414,10 +414,10 @@ static void choice(int n,choice_t *c) {
   switch(app.screen) {
     case KB_SCREEN_MENU: {
       const char *a[]= {
-        "Stops","Trip context","Data status","Settings"
+        "Stops","Trip context","Data status","Settings","Help"
       };
       const char *b[]= {
-        "Favourites / Nearby / All","Walk allowance / At stop","Source dates and updates","Calendar and display"
+        "Favourites / Nearby / All","Walk allowance / At stop","Source dates and updates","Calendar and display","How to use KasugaBus"
       };
       snprintf(c->title,sizeof(c->title),"%s",a[n]);
       snprintf(c->sub,sizeof(c->sub),"%s",b[n]);
@@ -583,6 +583,7 @@ static void choice(int n,choice_t *c) {
 static const char *screen_title(void) {
   switch(app.screen) {
     case KB_SCREEN_MENU:return "KasugaBus";
+    case KB_SCREEN_HELP:return "Help";
     case KB_SCREEN_PICKER:return "Choose stops";
     case KB_SCREEN_FAVOURITES:return "Favourites";
     case KB_SCREEN_GROUPS:return "All stops";
@@ -915,6 +916,24 @@ static void details(GContext *c) {
   snprintf(s,sizeof(document_buffer),"%s\n%s\n%s\n\nRoute %s\nTo %s\n%s  %s JST%s\n%s%s | Scheduled\n%s\n%s\n%s\nSource verified %s\nData v%lu\n\nSELECT: Japanese name",p.name,p.direction,o.name,pattern.route,pattern.destination,date,tm,origin,day_name(app.detail.day_type),app.detail.overridden?" (Override)":"",walk,p.guidance,pattern.route_transitions,source,(unsigned long)d->release_version);
   document(c,s,4,"UP/DOWN | BACK");
 }
+static void help(GContext *c) {
+  int top=heading(c,"Help",NULL);
+  document(c,
+    "HOME\nNext scheduled bus from your stop, with its route, time and countdown.\n"
+    "UP/DOWN: switch favourite stops\nSELECT: departure board\nHold SELECT: menu\n\n"
+    "BOARD\nUP/DOWN: choose a bus\nSELECT: full details\nHold SELECT: refresh\n\n"
+    "MENU\nStops: favourites, Nearby, stop list, bus numbers and All departures\n"
+    "Trip context: walking time from your saved origin\n"
+    "Data status: timetable dates and update check\n"
+    "Settings: text size, colour theme and more\n\n"
+    "PHONE\nIn the Pebble app, open KasugaBus settings for favourites, walking times, location and display.\n\n"
+    "Times are scheduled (JST), not live arrivals.",
+    top+4,"UP/DOWN | BACK");
+  /* Scrolled text passes under the title; repaint the title over it. */
+  graphics_context_set_fill_color(c,colors.background);
+  graphics_fill_rect(c,GRect(0,0,200,top+2),0,GCornerNone);
+  heading(c,"Help",NULL);
+}
 static void status(GContext *c) {
   char *s=document_buffer;
   char vf[20]="Unavailable",rv[20]="Unset",from[20]="?",until[20]="?",future[20]="None",feed[40]="Never",attempt[40]="Never";
@@ -978,6 +997,7 @@ static void draw(Layer *layer,GContext *c) {
   else if(app.screen==KB_SCREEN_STATUS)status(c);
   else if(app.screen==KB_SCREEN_JAPANESE)japanese(c);
   else if(app.screen==KB_SCREEN_ALL_INFO)all_info(c);
+  else if(app.screen==KB_SCREEN_HELP)help(c);
   else list(c);
   APP_LOG(APP_LOG_LEVEL_DEBUG,"UI screen%d heap%lu",app.screen,(unsigned long)heap_bytes_free());
   APP_LOG(APP_LOG_LEVEL_DEBUG,"UI selection%d scroll%d limit%d",app.selected,app.scroll,scroll_limit);
@@ -1052,7 +1072,7 @@ void ui_refresh(void) {
   app.selected=1;
 }
 static bool scroll_screen(void) {
-  return app.screen==KB_SCREEN_DETAILS||app.screen==KB_SCREEN_STATUS||app.screen==KB_SCREEN_JAPANESE||app.screen==KB_SCREEN_ALL_INFO||
+  return app.screen==KB_SCREEN_DETAILS||app.screen==KB_SCREEN_STATUS||app.screen==KB_SCREEN_HELP||app.screen==KB_SCREEN_JAPANESE||app.screen==KB_SCREEN_ALL_INFO||
     (app.screen==KB_SCREEN_NEARBY&&!(app.prefs.bytes[1]&KB_PREF_LOCATION));
 }
 static void scroll_by(int amount) {
@@ -1156,7 +1176,7 @@ static void select(ClickRecognizerRef r,void *ctx) {
   else if(app.screen==KB_SCREEN_STATUS)app_check_updates(true);
   else if(app.screen==KB_SCREEN_MENU) {
     int a[]= {
-      KB_SCREEN_PICKER,KB_SCREEN_CONTEXT,KB_SCREEN_STATUS,KB_SCREEN_SETTINGS
+      KB_SCREEN_PICKER,KB_SCREEN_CONTEXT,KB_SCREEN_STATUS,KB_SCREEN_SETTINGS,KB_SCREEN_HELP
     };
     ui_open(a[app.selected]);
   }
@@ -1319,6 +1339,8 @@ static void back(ClickRecognizerRef r,void *ctx) {
     case KB_SCREEN_GROUPS:case KB_SCREEN_FAVOURITES:case KB_SCREEN_NEARBY:ui_open(KB_SCREEN_PICKER);
     break;
     case KB_SCREEN_RESET:case KB_SCREEN_RESTORE:case KB_SCREEN_OVERRIDE:ui_open(KB_SCREEN_SETTINGS);
+    break;
+    case KB_SCREEN_HELP:ui_open(KB_SCREEN_MENU);app.selected=4;
     break;
     case KB_SCREEN_TEXT_SIZE:ui_open(KB_SCREEN_SETTINGS);app.selected=0;
     break;
