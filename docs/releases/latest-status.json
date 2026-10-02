@@ -1,24 +1,25 @@
 {
-  "version": "2.0.0",
-  "commit": "5a6d3fb9dc856591a2833f7ab13578a4c1a6b852",
+  "version": "2.0.1",
+  "commit": "89ef60f433ebd1561b768bbfe6c69aeb0371b817",
   "artifact": {
-    "sha256": "fb578a00327aa1a3469ebcb6eede5b7738ffb9d19c7ec3d3e4bbaa9e2548fb8b",
-    "bytes": 871207
+    "sha256": "8dad92ff99b4f8ced03282d7746d7952e90ed59ab347a66e8a03b39761ee8053",
+    "bytes": 907123
   },
   "metrics": {
-    "resources": 35240,
-    "static_ram": 55834,
-    "linker_free_ram": 75238,
-    "native_binary": 48784,
-    "pbw": 871207,
-    "timetable": 24203
+    "resources": 67002,
+    "static_ram": 58768,
+    "linker_free_ram": 72304,
+    "native_binary": 51700,
+    "pbw": 907123,
+    "timetable": 24203,
+    "measured_free_heap": 36716
   },
   "status": {
     "github": {
       "state": "verified",
       "details": {
-        "release_url": "https://github.com/ewijaya/kasugabus-pebble/releases/tag/v2.0.0",
-        "asset_url": "https://github.com/ewijaya/kasugabus-pebble/releases/download/v2.0.0/kasugabus-pebble.pbw"
+        "release_url": "https://github.com/ewijaya/kasugabus-pebble/releases/tag/v2.0.1",
+        "asset_url": "https://github.com/ewijaya/kasugabus-pebble/releases/download/v2.0.1/kasugabus-pebble.pbw"
       }
     },
     "appstore": {
@@ -31,10 +32,5 @@
         "mobile_cache": "not observed; Emery catalog is a proxy"
       }
     }
-  },
-  "validation": {
-    "standardRuntimeAuditComplete": false,
-    "ownerAcceptedLimitations": true,
-    "report": "docs/releases/2.0.0-verification.md"
   }
 }
