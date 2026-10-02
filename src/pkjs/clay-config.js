@@ -12,8 +12,6 @@ module.exports=function(catalog,snapshot,hasHome,homeStatus){
   return [
     {type:'heading',defaultValue:'KasugaBus'},
     {type:'text',defaultValue:'Scheduled buses. Choose operator and boarding direction. Set favourite slots in order; choose None to remove. Save at most 12 walking allowances; a blank walking time stays unset.'},
-    {type:'section',items:[{type:'heading',defaultValue:'Usual stop'}, {type:'select',messageKey:'DefaultId',label:'Default boarding point',options:options,defaultValue:'0'}].concat(favourites)},
-    {type:'section',items:[{type:'heading',defaultValue:'Saved origin walking times'}, {type:'input',messageKey:'Buffer',label:'Additional buffer (minutes)',defaultValue:'2',attributes:{type:'number',min:0,max:30,step:1}}, {type:'text',defaultValue:'These allowances apply only when you select Saved origin on the watch. At stop and Nearby do not reuse them.'}].concat(walks)},
     {type:'section',items:[{type:'heading',defaultValue:'Preferences'},
       {type:'toggle',messageKey:'AutoChecks',label:'Daily timetable check on launch',defaultValue:true},
       {type:'toggle',messageKey:'LocationEnabled',label:'Use phone location for Nearby',description:'Uses your phone’s location when you open Nearby or refresh it. No continuous tracking.',defaultValue:false},
@@ -25,6 +23,8 @@ module.exports=function(catalog,snapshot,hasHome,homeStatus){
       {type:'select',messageKey:'TextSize',label:'Text size',defaultValue:'1',description:'Large is the default. Larger text wraps and shows fewer rows.',options:[{label:'Standard',value:'0'},{label:'Large',value:'1'},{label:'Extra Large',value:'2'}]},
       {type:'select',messageKey:'Theme',label:'Theme',defaultValue:'0',description:'Choose a dark or light background, with neon accents or plain high contrast.',options:[{label:'Neon Dark',value:'0'},{label:'Neon Light',value:'1'},{label:'High Contrast Dark',value:'2'},{label:'High Contrast Light',value:'3'}]},
       {type:'toggle',messageKey:'ReducedMotion',label:'Reduce motion',defaultValue:true}]},
+    {type:'section',items:[{type:'heading',defaultValue:'Usual stop'}, {type:'select',messageKey:'DefaultId',label:'Default boarding point',options:options,defaultValue:'0'}].concat(favourites)},
+    {type:'section',items:[{type:'heading',defaultValue:'Saved origin walking times'}, {type:'input',messageKey:'Buffer',label:'Additional buffer (minutes)',defaultValue:'2',attributes:{type:'number',min:0,max:30,step:1}}, {type:'text',defaultValue:'These allowances apply only when you select Saved origin on the watch. At stop and Nearby do not reuse them.'}].concat(walks)},
     {type:'text',id:'validation-message',defaultValue:'Checking preferences…'},
     {type:'submit',id:'save-preferences',defaultValue:'Save preferences'}
   ];

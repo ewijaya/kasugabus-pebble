@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.0.1
+
+- Text size now visibly scales the home screen's bus information (stop,
+  direction, route badge, countdown and destination). The clock and date
+  stay the same size for every text size, and spare height is spread between
+  rows instead of left empty below the destination.
+- Countdowns of 60 minutes or more show hours, such as `1 h 10 m` or `2 h`,
+  on the home screen and departure boards.
+- When the phone refuses location, Nearby's Refresh row explains that the
+  Pebble app needs location allowed all the time.
+- Phone settings show Preferences before Usual stop.
+
+Timetable content, storage and the phone–watch protocol are unchanged.
+
 ## 2.0.0 — in preparation
 
 - Standard, Large and Extra Large text choices in watch and phone settings;

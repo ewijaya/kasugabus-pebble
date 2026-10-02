@@ -47,6 +47,10 @@ static void text_font(GContext *c,const char *s,int x,int y,int w,int h,GFont f,
   graphics_context_set_text_color(c,color);
   graphics_draw_text(c,s,f,GRect(x,y,w,h),GTextOverflowModeWordWrap,GTextAlignmentLeft,NULL);
 }
+static int width_font(const char *s,GFont f) {
+  if(!s||!s[0])return 0;
+  return graphics_text_layout_get_content_size(s,f,GRect(0,0,184,200),GTextOverflowModeWordWrap,GTextAlignmentLeft).w;
+}
 static void text(GContext *c,const char *s,int x,int y,int w,int h,unsigned f,GColor color) {
   text_font(c,s,x,y,w,h,font(f),color);
 }
@@ -102,7 +106,9 @@ static void countdown(const kb_trip_t *t,char *b,size_t n) {
   int s=kb_countdown(time(NULL),t->departure_utc,&m);
   if(s==KB_COUNTDOWN_EXPIRED)snprintf(b,n,"Earlier");
   else if(s==KB_COUNTDOWN_DUE)snprintf(b,n,"Due");
-  else snprintf(b,n,"%lu min",(unsigned long)m);
+  else if(m<60)snprintf(b,n,"%lu min",(unsigned long)m);
+  else if(m%60==0)snprintf(b,n,"%lu h",(unsigned long)(m/60));
+  else snprintf(b,n,"%lu h %lu m",(unsigned long)(m/60),(unsigned long)(m%60));
 }
 static unsigned nearby_status_now(void) {
   unsigned status=app.nearby_status;
@@ -167,61 +173,72 @@ static void home(GContext *c) {
     }
   }
   else snprintf(destination,sizeof(destination),"%s",found==KB_QUERY_UNCONFIRMED?"Schedule unconfirmed":"No upcoming service");
-  unsigned primary=body_size(),secondary=meta_size();
-  int stop_h=height_font(stop,184,bold_font(primary));
-  int direction_h=height(direction,184,secondary);
-  int destination_h=height(destination,184,secondary);
-  int departure_h=height_font(tm,82,bold_font(28)),count_h=height(cd,47,secondary);
-  int route_h=height_font(route,44,bold_font(primary));
-  if(route_h>departure_h)departure_h=route_h;
-  if(count_h>departure_h)departure_h=count_h;
-  if(!route[0])departure_h=0;
-  unsigned clock_size=kb_pref_text_size(&app.prefs)==KB_TEXT_EXTRA_LARGE?34:42;
-  int clock_h=height(clock,184,clock_size);
-  int body_h=stop_h+direction_h+departure_h+destination_h+12;
-  bool date_header=kb_pref_text_size(&app.prefs)!=KB_TEXT_EXTRA_LARGE;
-  int date_h=date_header?(int)meta_size()+5:0;
-  if(clock_h+body_h+date_h+7>footer_top())date_h=0;
-  if(clock_h+body_h+7>footer_top()&&clock_size==42) {
-    clock_size=34;clock_h=height(clock,184,clock_size);
+  /* The clock block is identical for every text size; only the bus block
+   * scales. Pick the largest tier at or below the chosen size that fits,
+   * stepping down secondary lines before the stop name. */
+  static const uint8_t tiers[][5]={ /* stop, direction, route, countdown, destination */
+    {28,24,28,24,24},{28,18,28,24,18},{24,18,24,24,18},{24,14,24,18,14},{18,14,18,18,14}};
+  const unsigned tier_count=sizeof(tiers)/sizeof(tiers[0]);
+  unsigned size=kb_pref_text_size(&app.prefs);
+  unsigned tier=size==KB_TEXT_EXTRA_LARGE?0:size==KB_TEXT_LARGE?2:4;
+  const unsigned header=18;
+  int date_h=(int)header+5,clock_h=height(clock,184,42);
+  int top=2+date_h+clock_h+2+3,bottom=footer_top()-2;
+  int stop_h,direction_h,destination_h,departure_h,count_h,route_h,badge_w,time_w,count_x;
+  unsigned count_size;
+  for(;;) {
+    const uint8_t *s=tiers[tier];
+    stop_h=height_font(stop,184,bold_font(s[0]));
+    direction_h=height(direction,184,s[1]);
+    destination_h=height(destination,184,s[4]);
+    departure_h=0;count_h=0;route_h=0;badge_w=48;time_w=0;count_x=192;count_size=s[3];
+    if(route[0]) {
+      int route_w=width_font(route,bold_font(s[2]))+8;
+      if(route_w>badge_w)badge_w=route_w;
+      time_w=width_font(tm,bold_font(28))+2;
+      count_x=8+badge_w+6+time_w+6;
+      /* Shrink only the countdown when a long value such as "23 h 59 m"
+       * would otherwise wrap beside the departure time. */
+      while(count_size>14&&width_font(cd,font(count_size))>192-count_x)count_size=count_size==24?18:14;
+      count_h=height(cd,192-count_x,count_size);
+      departure_h=height_font(tm,time_w,bold_font(28));
+      route_h=height_font(route,badge_w,bold_font(s[2]));
+      if(route_h>departure_h)departure_h=route_h;
+      if(count_h>departure_h)departure_h=count_h;
+    }
+    if(top+stop_h+direction_h+departure_h+destination_h+5<=bottom||tier+1>=tier_count)break;
+    tier++;
   }
-  if(!date_h) {
-    clock_size=34;clock_h=height(clock,132,clock_size);
-    int side_h=2*((int)secondary+3);if(side_h>clock_h)clock_h=side_h;
-  }
-  /* Only the decorative clock date yields space. The footer always retains
-   * future service dates and explicit review/override/recovery warnings. */
-  if(clock_h+body_h+7>footer_top())APP_LOG(APP_LOG_LEVEL_WARNING,"Home text overflow point%u size%u height%d",app.point,kb_pref_text_size(&app.prefs),clock_h+body_h+7);
+  const uint8_t *s=tiers[tier];
+  int used=stop_h+direction_h+departure_h+destination_h+5;
+  if(top+used>bottom)APP_LOG(APP_LOG_LEVEL_WARNING,"Home text overflow point%u size%u height%d",app.point,size,top+used);
+  /* Spread any remaining height between the rows instead of leaving it
+   * below the destination. */
+  int gap=top+used<bottom?(bottom-top-used)/4:0;
+  if(gap>8)gap=8;
   int y=2;
-  if(date_h) {
-    strftime(b,sizeof(b),"%a %d %b",&local);
-    text(c,b,8,y,134,date_h,secondary,colors.navigation);
-    text(c,local.tm_gmtoff==32400?"JST":"LOCAL",150,y,46,date_h,secondary,colors.foreground);
-    y+=date_h;
-  }
-  text(c,clock,8,y,date_h?184:132,clock_h,clock_size,colors.foreground);
-  if(!date_h) {
-    strftime(b,sizeof(b),"%d%b",&local);
-    text(c,b,147,y,47,(int)secondary+3,secondary,colors.navigation);
-    text(c,local.tm_gmtoff==32400?"JST":"LOCAL",147,y+(int)secondary+3,47,(int)secondary+3,secondary,colors.foreground);
-  }
-  if(!clock_is_24h_style())text(c,local.tm_hour<12?"AM":"PM",date_h?163:105,y+clock_h-23,32,23,secondary,colors.navigation);
-  if(date_h) {
-    graphics_context_set_fill_color(c,colors.magenta);
-    graphics_fill_rect(c,GRect(188,y+7,4,12),0,GCornerNone);
-  }
-  y+=clock_h+2;line(c,y,colors.navigation);y+=3;
-  strong(c,stop,8,y,184,stop_h,primary,colors.foreground);y+=stop_h+1;
-  text(c,direction,8,y,184,direction_h,secondary,colors.navigation);y+=direction_h+3;
+  strftime(b,sizeof(b),"%a %d %b",&local);
+  text(c,b,8,y,134,date_h,header,colors.navigation);
+  text(c,local.tm_gmtoff==32400?"JST":"LOCAL",150,y,46,date_h,header,colors.foreground);
+  y+=date_h;
+  text(c,clock,8,y,184,clock_h,42,colors.foreground);
+  if(!clock_is_24h_style())text(c,local.tm_hour<12?"AM":"PM",163,y+clock_h-23,32,23,header,colors.navigation);
+  graphics_context_set_fill_color(c,colors.magenta);
+  graphics_fill_rect(c,GRect(188,y+7,4,12),0,GCornerNone);
+  y+=clock_h+2;line(c,y,colors.navigation);y+=3+gap;
+  strong(c,stop,8,y,184,stop_h,s[0],colors.foreground);y+=stop_h+1+gap;
+  text(c,direction,8,y,184,direction_h,s[1],colors.navigation);y+=direction_h+3+gap;
   if(route[0]) {
     graphics_context_set_fill_color(c,colors.departure);
-    graphics_fill_rect(c,GRect(8,y+2,48,departure_h-2),3,GCornersAll);
-    strong(c,route,10,y,44,departure_h,primary,colors.badge_text);
-    strong(c,tm,62,y,82,departure_h,28,colors.departure);
-    text(c,cd,147,y+3,47,departure_h,secondary,colors.departure);
-    y+=departure_h+1;
+    graphics_fill_rect(c,GRect(8,y+2,badge_w,departure_h-2),3,GCornersAll);
+    strong(c,route,10,y+(departure_h-route_h)/2,badge_w-4,route_h,s[2],colors.badge_text);
+    strong(c,tm,8+badge_w+6,y,time_w,departure_h,28,colors.departure);
+    graphics_context_set_text_color(c,colors.departure);
+    graphics_draw_text(c,cd,font(count_size),GRect(count_x,y+departure_h-count_h,192-count_x,count_h),
+                       GTextOverflowModeWordWrap,GTextAlignmentRight,NULL);
+    y+=departure_h+1+gap;
   }
-  text(c,destination,8,y,184,destination_h,secondary,route[0]?colors.foreground:colors.warning);
+  text(c,destination,8,y,184,destination_h,s[4],route[0]?colors.foreground:colors.warning);
   d=app_dataset();
   if(app.override.day_type!=KB_DAY_UNKNOWN&&app.override.jst_day==kb_jst_day(now))snprintf(b,sizeof(b),"Override %s JST",short_day_name(app.override.day_type));
   else if(app.store.recovery_notice)snprintf(b,sizeof(b),"Recovery data | JST");
@@ -446,7 +463,10 @@ static void choice(int n,choice_t *c) {
     }
     case KB_SCREEN_NEARBY:if(!n) {
       snprintf(c->title,sizeof(c->title),"Refresh location");
-      snprintf(c->sub,sizeof(c->sub),"Approx. straight-line distance");
+      /* The app toggle is on but the phone OS refused; PebbleKit JS runs in
+       * the background, so the Pebble app needs "Allow all the time". */
+      if(nearby_status_now()==3)snprintf(c->sub,sizeof(c->sub),"Phone: allow Pebble app location all the time");
+      else snprintf(c->sub,sizeof(c->sub),"Approx. straight-line distance");
     }
     else {
       point_choice(d,app.nearby[n-1].id,c);
