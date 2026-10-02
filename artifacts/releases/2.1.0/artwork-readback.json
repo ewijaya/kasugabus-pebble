@@ -1,0 +1,67 @@
+[
+ {
+  "order": 0,
+  "source": "docs/releases/assets/2.1.0/1-home-large.png",
+  "sourceSha256": "39cdec4ac08894a432cf67d30c53382926c91e8266bb769132b68567e1f1f695",
+  "url": "/api/assets/screenshots/f63e6ed24301414a95909564/emery/3ace1bf2-73ca-4347-82b0-275dd984beae.png",
+  "downloadSha256": "13487e9c8254a64e4852e2ffa5e38932df978cb93765e85c8c6f810263e43b42",
+  "dimensions": [
+   200,
+   228
+  ],
+  "unequalPixels": 8,
+  "totalPixels": 45600
+ },
+ {
+  "order": 1,
+  "source": "docs/releases/assets/2.1.0/2-home-extra-large.png",
+  "sourceSha256": "ccca0460897582ccd822467ac05cd78421d40e709f21e1cff183bebd0cc5802b",
+  "url": "/api/assets/screenshots/f63e6ed24301414a95909564/emery/0ecbf25d-ce85-40ed-aacb-c95f20cd3e41.png",
+  "downloadSha256": "5173dbadb82dedae74f9a34daa75bb9fa227a30800346882024d98cdb51626e0",
+  "dimensions": [
+   200,
+   228
+  ],
+  "unequalPixels": 8,
+  "totalPixels": 45600
+ },
+ {
+  "order": 2,
+  "source": "docs/releases/assets/2.1.0/3-leave-now.png",
+  "sourceSha256": "caceb377271dc48ab9558ab1cd7833817156389cebaeb8339f89e1995bd10313",
+  "url": "/api/assets/screenshots/f63e6ed24301414a95909564/emery/6215200f-085b-4f05-8cbd-f408f49590f6.png",
+  "downloadSha256": "a41b6dec19a6f0e3bf495c14f767e936ba04e641555391cb36ebf8481784f77b",
+  "dimensions": [
+   200,
+   228
+  ],
+  "unequalPixels": 0,
+  "totalPixels": 45600
+ },
+ {
+  "order": 3,
+  "source": "docs/releases/assets/2.1.0/4-favourites.png",
+  "sourceSha256": "3f7ceead9001f44a013679e1e4b142b66fb573638c1d1b99b1df8c375379f66e",
+  "url": "/api/assets/screenshots/f63e6ed24301414a95909564/emery/a8823c65-4ac0-4eee-b90f-1eefa77eb568.png",
+  "downloadSha256": "f79d45fff5073f028afb34a5fca70e3c74c6e232b3cf2e00c0c5262782ae3a34",
+  "dimensions": [
+   200,
+   228
+  ],
+  "unequalPixels": 8,
+  "totalPixels": 45600
+ },
+ {
+  "order": 4,
+  "source": "docs/releases/assets/2.1.0/5-home-buttons.png",
+  "sourceSha256": "22b0a452f3ee7569b3a77476a3cc41872f3985295e742714248510178af51065",
+  "url": "/api/assets/screenshots/f63e6ed24301414a95909564/emery/5da9d1be-c27e-426b-86f6-0f7d1fe1b016.png",
+  "downloadSha256": "7a5b9abfea237c5e2fec247c7c0c782af88974e1dd0a89dc003128030c176c03",
+  "dimensions": [
+   200,
+   228
+  ],
+  "unequalPixels": 8,
+  "totalPixels": 45600
+ }
+]

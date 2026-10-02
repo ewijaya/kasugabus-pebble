@@ -1,0 +1,50 @@
+{
+ "state": "verified",
+ "artifactSha256": "ebf8d3814cc1dcc2e147b1bb3411b722ba67aab84a0676ff710ea2d8c5872708",
+ "manifestSha256": "13406fac4710bf9f36806d8b1c757ce42544f574553ebcbb489672586477d822",
+ "startedAt": "2026-10-02T03:32:34.519172+00:00",
+ "before": {
+  "latest_version": "2.1.0",
+  "emery_screenshots": [
+   "/api/assets/screenshots/f63e6ed24301414a95909564/emery/6e0b6440-c5b8-405b-b6eb-fd499dbacef3.png",
+   "/api/assets/screenshots/f63e6ed24301414a95909564/emery/4afebd2b-31dd-4a2b-ba2e-2896a47f5fe2.png",
+   "/api/assets/screenshots/f63e6ed24301414a95909564/emery/2f35d33c-1dad-452f-a25e-18f4b7f110d6.png",
+   "/api/assets/screenshots/f63e6ed24301414a95909564/emery/de9bac21-f611-41be-bcc2-cd70a28873e1.png",
+   "/api/assets/screenshots/f63e6ed24301414a95909564/emery/897aa367-6347-4936-b162-072c5ed4f4f0.png"
+  ],
+  "emery_banner": "/api/assets/banners/f63e6ed24301414a95909564/emery/67709054-e44e-4b12-b5be-428275232772.png",
+  "icon_small": "/api/assets/icons/f63e6ed24301414a95909564/small/7b76be82-06e2-44e3-a7f8-0731acac4c53.png",
+  "icon_large": "/api/assets/icons/f63e6ed24301414a95909564/large/81fa5a98-7b86-4bcc-a1ce-554ea5d2e872.png",
+  "platforms": [
+   "emery"
+  ],
+  "preserved_sha256": "617136623072bfe84d4848cc97299dfa6c3e459d804ace88098c5e0ebfa933ac"
+ },
+ "submittedAt": "2026-10-02T03:32:48.745726+00:00",
+ "responseStatus": 200,
+ "checks": {
+  "five_new_screenshots": true,
+  "banner_unchanged": true,
+  "icons_unchanged": true,
+  "latest_version": true,
+  "dimensions_200x228": true,
+  "visually_equal": true
+ },
+ "after": {
+  "emery_screenshots": [
+   "/api/assets/screenshots/f63e6ed24301414a95909564/emery/3ace1bf2-73ca-4347-82b0-275dd984beae.png",
+   "/api/assets/screenshots/f63e6ed24301414a95909564/emery/0ecbf25d-ce85-40ed-aacb-c95f20cd3e41.png",
+   "/api/assets/screenshots/f63e6ed24301414a95909564/emery/6215200f-085b-4f05-8cbd-f408f49590f6.png",
+   "/api/assets/screenshots/f63e6ed24301414a95909564/emery/a8823c65-4ac0-4eee-b90f-1eefa77eb568.png",
+   "/api/assets/screenshots/f63e6ed24301414a95909564/emery/5da9d1be-c27e-426b-86f6-0f7d1fe1b016.png"
+  ]
+ },
+ "verifiedAt": "2026-10-02T03:33:10.790499+00:00",
+ "catalogGeneral": "five new screenshots in manifest order",
+ "catalogEmery": "five new screenshots in manifest order",
+ "publicPage": "five new screenshot URLs observed",
+ "unrelatedMetadataPreserved": "banner, icons and listing fields re-sent unchanged; banner/icon URLs unchanged on read-back",
+ "priorReleasesPreserved": "release verify 2.1.0 passed after the edit",
+ "visualReview": "downloads differ from sources by at most 8 of 45,600 pixels (server PNG optimisation)",
+ "publicVerifiedAt": "2026-10-02T03:33:46.814448+00:00"
+}
