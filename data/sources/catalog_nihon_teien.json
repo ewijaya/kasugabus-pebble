@@ -1,0 +1,29 @@
+[
+  {
+    "id": "kintetsu_stop_7_direction_1",
+    "path": "data/sources/kintetsu_stop_7_direction_1.pdf",
+    "url": "https://www.kintetsu-bus.co.jp/storage/uploads/pdf/2022_handai.pdf",
+    "sha256": "a07802b6f821342815ec16c3b74f2d3a945eaf1b1679d0173de609d6916d4ec7",
+    "bytes": 115579,
+    "retrieved_at": "2026-10-02",
+    "name_en": "Kintetsu current pole timetable: Nihon Teien-mae, direction 1"
+  },
+  {
+    "id": "kintetsu_stop_7_direction_2",
+    "path": "data/sources/kintetsu_stop_7_direction_2.pdf",
+    "url": "https://www.kintetsu-bus.co.jp/storage/uploads/pdf/2022_hankyuibaraki.pdf",
+    "sha256": "f7d8ca637e20df45861432d7a231310b5f18b6efb58e87846308617e700c3e8b",
+    "bytes": 107136,
+    "retrieved_at": "2026-10-02",
+    "name_en": "Kintetsu current pole timetable: Nihon Teien-mae, direction 2"
+  },
+  {
+    "id": "osm_nihon_teien_poles",
+    "path": "data/sources/osm_nihon_teien_poles.json",
+    "url": "https://www.openstreetmap.org/node/9229774649",
+    "sha256": "72fff21324785d5de6996b50910153071e058a35d9ddae977d6560d0fc8f0a3a",
+    "bytes": 1934,
+    "retrieved_at": "2026-10-02",
+    "name_en": "OpenStreetMap community-mapped platforms: Nihon Teien-mae"
+  }
+]

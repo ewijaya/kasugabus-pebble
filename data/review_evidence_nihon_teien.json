@@ -1,0 +1,28 @@
+{
+  "reviewed_at": "2026-10-02",
+  "reviewer": "Claude (owner-requested addition of 日本庭園前), with the owner's on-site pole photograph",
+  "scope": "Feed-only timetable v3 adding 日本庭園前 (Nihon Teien-mae) in both Kintetsu directions. All other data is the 2026-10-01 reviewed baseline.",
+  "sources": [
+    {
+      "id": "kintetsu_stop_7_direction_1",
+      "sha256": "a07802b6f821342815ec16c3b74f2d3a945eaf1b1679d0173de609d6916d4ec7"
+    },
+    {
+      "id": "kintetsu_stop_7_direction_2",
+      "sha256": "f7d8ca637e20df45861432d7a231310b5f18b6efb58e87846308617e700c3e8b"
+    },
+    {
+      "id": "osm_nihon_teien_poles",
+      "sha256": "72fff21324785d5de6996b50910153071e058a35d9ddae977d6560d0fc8f0a3a"
+    }
+  ],
+  "findings": [
+    "Official pole sheets 2022_hankyuibaraki ([12][22] to JR Ibaraki / Hankyu Ibaraki-shi, revised 2024-08-21) and 2022_handai ([24][25] to Handai hospital, revised 2025-12-21) were fetched from kintetsu-bus.co.jp on 2026-10-02.",
+    "The owner's photograph of the JR-bound pole (sheet code 2022-2, revised 2024-08-21) matches the official sheet: weekday 84, Saturday 52, Sunday/holiday 45 departures, identical minutes.",
+    "Every 日本庭園前 cell in the weekday, Saturday and Sunday/holiday line matrices (kintetsu_2/3/4, rows 15 and 28) maps to exactly one departure; every pole minute and marker maps to exactly one matrix departure.",
+    "Route 12 appears twice on weekdays only: 7:20 is printed on the Handai-bound row but the bus starts here for Ibaraki (next 南春日丘西 7:21); it is boarded at the Ibaraki pole, as the pole sheet and the owner's photo show. 21:03 arrives from Hankyu Ibaraki-shi and terminates here; it is not a departure.",
+    "Pole legend: ★ = [25] via Handai hospital/Honbu to Ibaraki Mihogaoka; ▲ = [25] via Ibaraki Mihogaoka to the Handai stops; unmarked = [24] to Handai Honbu.",
+    "Kintetsu notices changed after 2026-10-01 only for a hiring post and a June 2026 Tondabayashi-area timetable change; no Ibaraki-line revision.",
+    "Coordinates: Kintetsu's Jorudan map gives only a stop centre with an empty pole list. The two OpenStreetMap platforms (nodes 9229774649 and 9229774657) each sit beside a one-way carriageway whose left-hand direction matches the boarding direction. They are recorded as community_mapped_corroborated, not operator pole records."
+  ]
+}

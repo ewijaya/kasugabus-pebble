@@ -13,6 +13,8 @@ Version **2.1.0** adds favourites on the watch (hold Select in a stop list), con
 
 Version **2.1.1** fixes Nearby on phones whose companion app reports location times in another format (it showed "Phone unavailable"), adds a network-location fallback and a clearer "No location fix" message. See [the 2.1.1 notes](docs/releases/2.1.1.md).
 
+Timetable **v3** (feed-only, no app update) adds the **Nihon Teien-mae** stop (日本庭園前) in both directions, and shows all stop groups by romaji name. See [the v3 data notes](docs/DATA_RELEASE_3.md).
+
 The Neon Transit home screen leads with the next scheduled bus: route, departure time, countdown and later buses, with a compact clock at Standard text size or the time in the footer at Large and Extra Large. Up and Down browse later buses and switch stops; hold Select on a departure for a leave-now buzz, or in a stop list to add a favourite. The departure board, full details, all-stop picker, Nearby, trip context and data status work through the watch buttons. Timetables run offline; phone location, Clay settings and timetable downloads add optional connected functions.
 
 ![KasugaBus 2.1.0 home at Large text](docs/releases/assets/2.1.0/1-home-large.png) ![Leave-now reminder](docs/releases/assets/2.1.0/3-leave-now.png) ![Adding a favourite on the watch](docs/releases/assets/2.1.0/4-favourites.png)

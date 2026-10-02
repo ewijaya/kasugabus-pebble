@@ -90,12 +90,19 @@ def clock_minute(text):
     return h * 60 + m
 
 
-def call(name):
+# Feed-only extension: 日本庭園前 (Nihon Teien-mae), both Kintetsu directions.
+# The bundled baseline is rebuilt without it; see docs/DATA_RELEASE_3.md.
+EXTENSION_GROUP = (7, "Nihon Teien-mae", "日本庭園前", "Japanese Garden")
+EXTENSION_VERIFIED = "2026-10-02"
+
+
+def call(name, group_by_ja=None, group_names=None):
+    group_by_ja = GROUP_BY_JA if group_by_ja is None else group_by_ja
     if name not in NAMES:
         raise ValueError(f"English label missing: {name}")
-    item = {"name_en": NAMES[name], "name_ja": name}
-    if name in GROUP_BY_JA:
-        item["stop_group_id"] = GROUP_BY_JA[name]
+    item = {"name_en": (group_names or {}).get(name, NAMES[name]), "name_ja": name}
+    if name in group_by_ja:
+        item["stop_group_id"] = group_by_ja[name]
     return item
 
 
@@ -159,24 +166,43 @@ def pole_minutes(stop, direction):
     return result
 
 
-def build(write=True):
+def source_route_of(rows, column):
+    return rows[0][column]
+
+
+def build(write=True, extended=False):
+    """Baseline dataset, or with extended=True the feed-only v3 snapshot that
+    adds 日本庭園前 from its own reviewed sources (data/sources/catalog_nihon_teien.json)."""
     catalog = json.loads((DATA / "sources" / "catalog.json").read_text())
+    extension_ids = set()
+    if extended:
+        extension = json.loads((DATA / "sources" / "catalog_nihon_teien.json").read_text())
+        extension_ids = {s["id"] for s in extension}
+        catalog += extension
+    group_specs = GROUPS + ([EXTENSION_GROUP] if extended else [])
+    group_by_ja = {ja: gid for gid, _, ja, _ in group_specs}
     for source in catalog:
         source.setdefault("name_en", source["id"].replace("_", " "))
-        source["verified_at"] = VERIFIED
+        source["verified_at"] = EXTENSION_VERIFIED if source["id"] in extension_ids else VERIFIED
         source["review_due"] = REVIEW
         if source["id"].startswith("kintetsu"):
             source["operator_id"] = 1
             source.setdefault("revision_date", None)
             if re.fullmatch(r"kintetsu_stop_\d_direction_\d", source["id"]):
-                source["revision_date"] = "2025-12-21" if "direction_1" in source["id"] and any(f"stop_{i}_" in source["id"] for i in [4, 5, 6]) else "2024-08-21"
+                source["revision_date"] = "2025-12-21" if "direction_1" in source["id"] and any(f"stop_{i}_" in source["id"] for i in [4, 5, 6, 7]) else "2024-08-21"
             if re.fullmatch(r"kintetsu_[0-4]", source["id"]):
                 source["revision_date"] = "2024-08-21"
         elif source["id"].startswith("hankyu"):
             source["operator_id"] = 2
             source["revision_date"] = "2026-02-16" if re.fullmatch(r"hankyu_\d{6}", source["id"]) else None
-    groups = [{"id": i, "name_en": en, "name_ja": ja, "short_name_en": short}
-              for i, en, ja, short in GROUPS]
+        elif source["id"].startswith("osm_"):
+            source["revision_date"] = None
+    # v3 shows every stop group by its romaji name (owner preference,
+    # 2026-10-02): Hepburn of the official readings, official spellings where
+    # an operator publishes romaji. The baseline keeps its English short names.
+    groups = [{"id": i, "name_en": en, "name_ja": ja, "short_name_en": en if extended else short}
+              for i, en, ja, short in group_specs]
+    group_names = {ja: en for _, en, ja, _ in group_specs} if extended else None
     points = []
     point_specs = [
         (1, 1, "Ibaraki via Toge", "峠経由 茨木方面", 1, 1),
@@ -188,7 +214,13 @@ def build(write=True):
         (7, 5, "Ibaraki", "ＪＲ茨木駅・阪急茨木市駅方面", 5, 2),
         (8, 6, "University", "阪大本部前方面", 6, 1),
         (9, 6, "Ibaraki", "ＪＲ茨木駅・阪急茨木市駅方面", 6, 2),
-    ]
+    ] + ([
+        (10, 7, "University / Mihogaoka", "阪大病院方面", 7, 1),
+        (11, 7, "Ibaraki", "ＪＲ茨木駅・阪急茨木市駅方面", 7, 2),
+    ] if extended else [])
+    # Community-mapped platforms for 日本庭園前, corroborated by road direction
+    # and the owner's on-site pole photo; never presented as operator data.
+    osm_platform = {10: 9229774657, 11: 9229774649}
     pole_lookup = {}
     for pid, gid, en, ja, stop, direction in point_specs:
         points.append({"id": pid, "stop_group_id": gid, "operator_id": 1,
@@ -197,6 +229,14 @@ def build(write=True):
                        "coordinate_reason": "No actual pole location or shared-pole relationship was verified for this boarding direction. The official Jorudan map investigation exposed a named-stop centre and an empty pole list; the operator route diagram has no georeferenced pole markers. See data/coordinate_review.json.",
                        "evidence": [{"source_id": f"kintetsu_stop_{stop}_direction_{direction}", "page": 1}]})
         pole_lookup[pid] = pole_minutes(stop, direction)
+        if pid in osm_platform:
+            osm = json.loads((DATA / "sources" / "osm_nihon_teien_poles.json").read_text())
+            node = next(n for n in osm["platforms"] if n["node_id"] == osm_platform[pid])
+            points[-1].update({"coordinate": {"latitude": node["latitude"], "longitude": node["longitude"]},
+                               "coordinate_status": "community_mapped_corroborated",
+                               "coordinate_reason": "OpenStreetMap platform beside the one-way carriageway this direction uses; the operator publishes only a stop centre. Not an operator pole record.",
+                               "coordinate_evidence": {"source_id": "osm_nihon_teien_poles", "node_id": node["node_id"],
+                                                       "node_version": node["version"], "verified_at": EXTENSION_VERIFIED}})
 
     registry_path = DATA / "identity_registry.json"
     registry = json.loads(registry_path.read_text()) if registry_path.exists() else {"patterns": {}}
@@ -206,7 +246,7 @@ def build(write=True):
     def pattern(operator, bp, route, destination, names, transitions=(), note=None):
         record = {"operator_id": operator, "boarding_route": route,
                   "destination_en": NAMES[destination], "destination_ja": destination,
-                  "downstream_calls": [call(name) for name in names],
+                  "downstream_calls": [call(name, group_by_ja, group_names) for name in names],
                   "route_transitions": list(transitions)}
         if note:
             record["via_en"] = note
@@ -220,7 +260,7 @@ def build(write=True):
 
     matrix_rows = {0: [(1, 14), (2, 15), (3, 13)], 1: [(1, 14), (2, 15), (3, 13)]}
     for number in range(2, 5):
-        matrix_rows[number] = [(4, 17), (6, 19), (8, 20), (9, 23), (7, 24), (5, 26)]
+        matrix_rows[number] = [(4, 17), (6, 19), (8, 20), (9, 23), (7, 24), (5, 26)] + ([(10, 14), (11, 27)] if extended else [])
     service_ids = {0: 1, 1: 2, 2: 3, 3: 4, 4: 5}
     for number in range(5):
         pages = json.loads((DATA / "extraction" / f"kintetsu_{number}_tables.json").read_text())
@@ -232,6 +272,24 @@ def build(write=True):
                     minute = clock_minute(rows[row_index][column])
                     if minute is None:
                         assert rows[row_index][column] in [None, "", "↓"]
+                        continue
+                    if bp == 10 and not any(clock_minute(rows[r][column]) is not None for r in range(15, 26)):
+                        # Route 12 at 日本庭園前 only: the 7:20 bus starts here for
+                        # Ibaraki (printed on this row; boarded at point 11) and the
+                        # 21:03 bus terminates here (an arrival, not a departure).
+                        assert source_route_of(rows, column) == "12"
+                        if clock_minute(rows[28][column]) is None:
+                            continue
+                        names = [rows[r][0] for r in range(28, 39) if rows[r][0] and clock_minute(rows[r][column]) is not None]
+                        assert names[-1] == "阪急茨木市駅"
+                        pid = pattern(1, 11, "12", "阪急茨木市駅", names)
+                        departures.append({"boarding_point_id": 11, "pattern_id": pid,
+                                           "service_id": service_ids[number], "minute": minute,
+                                           "evidence": {"source_id": f"kintetsu_{number}", "page": page["page"],
+                                                        "row": row_index + 1, "column": column,
+                                                        "source_route_label": "12",
+                                                        "printed_time": rows[row_index][column],
+                                                        "independent_pole": pole_lookup[11][(day_type, minute)]}})
                         continue
                     ev = pole_lookup[bp][(day_type, minute)]
                     source_route = rows[0][column]
@@ -255,16 +313,14 @@ def build(write=True):
                     elif source_route == "25/22":
                         morning = clock_minute(rows[25][column]) is not None
                         if morning:
-                            if row_index == 17:
-                                assert ev["mark"] == "★"
-                            else:
-                                assert ev["mark"] == "★"
+                            assert ev["mark"] == "★"
                             route, destination, last_row = "25", "茨木美穂ヶ丘", 25
                             note = "via Handai Honbu (remain aboard)"
                             transitions = [{"at_name_ja": "阪大本部前", "from_route": "25", "to_route": "22",
                                             "source_ids": ["kintetsu_loop_notice", f"kintetsu_stop_{5 if bp == 6 else 6 if bp == 8 else 4}_direction_2"],
                                             "transfer_required": False}]
-                        elif bp == 4:
+                        elif bp in (4, 10):
+                            # Both poles: ▲ = [25] via Mihogaoka to the Handai stops.
                             assert ev["mark"] == "▲"
                             route, destination, last_row = "25", "阪大本部前", 21
                             note = "via Mihogaoka"
@@ -349,7 +405,7 @@ def build(write=True):
     services = [{"id": i, "operator_id": op, "day_types": types, "valid_from": FROM, "valid_until": UNTIL}
                 for i, op, types in [(1, 1, [1]), (2, 1, [2, 3]), (3, 1, [1]),
                                      (4, 1, [2]), (5, 1, [3]), (6, 2, [1])]]
-    dataset = {"schema_version": 1, "release_version": 1, "coverage_id": "minami-kasugaoka-v1",
+    dataset = {"schema_version": 1, "release_version": 3 if extended else 1, "coverage_id": "minami-kasugaoka-v1",
                "minimum_app_version": 1, "timezone": "Asia/Tokyo", "effective_from": FROM,
                "valid_from": FROM, "valid_until": UNTIL, "source_verified_at": VERIFIED,
                "review_due": REVIEW,
@@ -376,7 +432,7 @@ def build(write=True):
                               "verified_coordinate_count": sum(p["coordinate"] is not None for p in points)}}
     if write:
         dump(registry_path, registry)
-        dump(DATA / "timetable.json", dataset)
+        dump(DATA / ("timetable_v3.json" if extended else "timetable.json"), dataset)
     return dataset
 
 
@@ -384,8 +440,9 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--extract", action="store_true", help="refresh preserved PDF grids with pdfplumber")
+    parser.add_argument("--nihon-teien", action="store_true", help="write the feed-only v3 snapshot with 日本庭園前 to data/timetable_v3.json")
     args = parser.parse_args()
     if args.extract:
         extract()
-    result = build()
+    result = build(extended=args.nihon_teien)
     print(json.dumps(result["validation"], indent=2))

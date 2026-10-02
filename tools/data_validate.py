@@ -13,10 +13,13 @@ from pathlib import Path
 from data_build import DATA, ROOT, build, clock_minute, nuxt_objects, pole_minutes
 
 
-def validate(path=None):
+def validate(path=None, extended=None):
     path = Path(path or DATA / "timetable.json")
     raw = path.read_bytes()
     data = json.loads(raw)
+    # The feed-only v3 snapshot adds 日本庭園前 (group 7, points 10/11) from
+    # data/sources/catalog_nihon_teien.json; everything else is the baseline.
+    extended = any(p["id"] in (10, 11) for p in data["boarding_points"]) if extended is None else extended
     errors = []
 
     def check(condition, description):
@@ -36,13 +39,16 @@ def validate(path=None):
     operators = ids("operators")
     groups = ids("stop_groups")
     review = json.loads((DATA / "review_evidence.json").read_text())
+    reviewed = {s["id"]: s["sha256"] for s in review["sources"]}
+    if extended:
+        extension_review = json.loads((DATA / "review_evidence_nihon_teien.json").read_text())
+        reviewed.update({s["id"]: s["sha256"] for s in extension_review["sources"]})
     check(review["reviewed_at"] == data["source_verified_at"], "source verification date does not match review")
-    check({s["id"]: s["sha256"] for s in review["sources"]} ==
-          {s["id"]: s["sha256"] for s in sources.values()},
+    check(reviewed == {s["id"]: s["sha256"] for s in sources.values()},
           "sources changed since explicit visual and structured review")
-    check(len(groups) == 6, "six stop groups required")
+    check(len(groups) == (7 if extended else 6), "stop group count changed")
     check(set(operators) == {1, 2}, "operator identities changed")
-    check(len(points) == 15, "15 boarding identities expected")
+    check(len(points) == (17 if extended else 15), "boarding identity count changed")
     for source in sources.values():
         source_path = ROOT / source["path"]
         check(source_path.exists(), f"source missing: {source['id']}")
@@ -63,7 +69,14 @@ def validate(path=None):
     for point in points.values():
         check(point["stop_group_id"] in groups and point["operator_id"] in operators, f"bad boarding point reference: {point['id']}")
         coordinate = point.get("coordinate")
-        if coordinate:
+        if coordinate and point.get("coordinate_status") == "community_mapped_corroborated":
+            ev = point["coordinate_evidence"]
+            osm = json.loads((ROOT / sources[ev["source_id"]]["path"]).read_text())
+            nodes = [n for n in osm["platforms"] if n["node_id"] == ev["node_id"]]
+            check(extended and point["id"] in (10, 11) and len(nodes) == 1, f"community coordinate outside its reviewed scope: {point['id']}")
+            if nodes:
+                check(coordinate == {"latitude": nodes[0]["latitude"], "longitude": nodes[0]["longitude"]}, f"community coordinate altered: {point['id']}")
+        elif coordinate:
             ev = point["coordinate_evidence"]
             poles = json.loads((ROOT / sources[ev["source_id"]]["path"]).read_text())
             matches = [pole for g in poles["generations"] if g["isCurrent"] for pole in g["poles"] if pole["id"] == ev["pole_id"]]
@@ -81,6 +94,8 @@ def validate(path=None):
     target_rows = {0: {14: 1, 15: 2, 13: 3}, 1: {14: 1, 15: 2, 13: 3}}
     for i in [2, 3, 4]:
         target_rows[i] = {17: 4, 19: 6, 20: 8, 23: 9, 24: 7, 26: 5}
+        if extended:
+            target_rows[i].update({14: 10, 27: 11})
     expected = Counter()
     grids = {}
     for number, rows in target_rows.items():
@@ -92,7 +107,14 @@ def validate(path=None):
                 for column in range(1, len(table[0])):
                     value = clock_minute(table[row_index][column])
                     if value is not None:
-                        expected[(f"kintetsu_{number}", page["page"], row_index + 1, column, bp, value)] += 1
+                        target = bp
+                        if bp == 10 and not any(clock_minute(table[r][column]) is not None for r in range(15, 26)):
+                            # Route 12: starts here for Ibaraki (point 11) or terminates here.
+                            check(table[0][column] == "12", "unexpected non-Handai cell on the Handai row")
+                            if clock_minute(table[28][column]) is None:
+                                continue
+                            target = 11
+                        expected[(f"kintetsu_{number}", page["page"], row_index + 1, column, target, value)] += 1
             grids[(f"kintetsu_{number}", page["page"])] = page["rows"]
     actual = Counter()
     independent = Counter()
@@ -122,14 +144,14 @@ def validate(path=None):
             source_route = ev["source_route_label"]
             if bp in [1, 2, 3]:
                 route = "1" if expected_mark == "Ｊ" else "2"
-            elif bp in [5, 7, 9]:
-                route = "22"
+            elif bp in [5, 7, 9, 11]:
+                route = "12" if source_route == "12" else "22"
             elif expected_mark in ["★", "▲"]:
                 route = "25"
             else:
                 route = "24" if source_route == "24" else "22"
             check(patterns[pid]["boarding_route"] == route, f"wrong boarded route: bp{bp} minute{minute}")
-            check(patterns[pid]["boarding_route"] != "12", "out-of-scope route 12 included")
+            check(patterns[pid]["boarding_route"] != "12" or (extended and bp == 11), "out-of-scope route 12 included")
         else:
             obj = next(o for o in nuxt_objects(ROOT / sources[ev["source_id"]]["path"]) if "schedules" in o)
             col = obj["schedules"][ev["schedule_index"]]["columns"][ev["column_index"]]
@@ -147,6 +169,8 @@ def validate(path=None):
 
     mapping = {1: (1, 1), 2: (2, 1), 3: (3, 1), 4: (4, 1), 5: (4, 2),
                6: (5, 1), 7: (5, 2), 8: (6, 1), 9: (6, 2)}
+    if extended:
+        mapping.update({10: (7, 1), 11: (7, 2)})
     independent_expected = Counter()
     for bp, (stop, direction) in mapping.items():
         for day_type, minute in pole_minutes(stop, direction):
@@ -183,12 +207,12 @@ def validate(path=None):
     for operator in operators.values():
         check(operator["valid_from"] == data["valid_from"] and operator["valid_until"] == data["valid_until"], "operator validity silently extended")
     check(len(data["departures"]) == data["validation"]["departure_count"], "generated departure count mismatch")
-    check(len(data["departures"]) == 1411, "reviewed snapshot count changed")
-    check(len(patterns) == 32, "reviewed pattern count changed")
+    check(len(data["departures"]) == (1766 if extended else 1411), "reviewed snapshot count changed")
+    check(len(patterns) == (37 if extended else 32), "reviewed pattern count changed")
     # Reconstruct the full ordered patterns from their original matrix rows and
     # trip sections. This includes names, route transitions, loop revisits,
     # calendar/service associations and every evidence locator, not only counts.
-    reference = build(write=False)
+    reference = build(write=False, extended=extended)
     for field in ["schema_version", "release_version", "coverage_id", "minimum_app_version", "timezone", "effective_from", "valid_from", "valid_until", "source_verified_at", "review_due", "operators", "stop_groups", "boarding_points", "patterns", "services", "calendar", "departures", "sources", "validation"]:
         check(data[field] == reference[field], f"canonical {field} differs from complete source reconstruction")
     if errors:

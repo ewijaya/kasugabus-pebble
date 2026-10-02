@@ -1,19 +1,19 @@
 {
   "schema": 1,
   "coverage": "minami-kasugaoka-v1",
-  "published": "2026-10-01",
+  "published": "2026-10-02",
   "current": {
-    "version": 2,
+    "version": 3,
     "minAppVersion": 1,
     "effectiveFrom": "2026-10-01",
     "coverageFrom": "2026-10-01",
     "coverageThrough": "2026-12-27",
     "sourceVerified": "2026-10-01",
     "reviewDue": "2026-11-01",
-    "url": "https://ewijaya.github.io/kasugabus-pebble/timetables/releases/2-5c7adc806702a76e.bin",
-    "bytes": 24203,
-    "sha256": "5c7adc806702a76ea4e97e35fc41227c1b1bcf6ca6daec28ca7a0b1d24cbff61",
-    "crc32": 4116084579
+    "url": "https://ewijaya.github.io/kasugabus-pebble/timetables/releases/3-4ccdf5967127de1c.bin",
+    "bytes": 26578,
+    "sha256": "4ccdf5967127de1c925fa6b673465ab188a14109dce779d73d00f9da84a26fe6",
+    "crc32": 2289905742
   },
   "upcoming": null
 }

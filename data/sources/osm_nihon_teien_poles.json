@@ -1,0 +1,58 @@
+{
+  "source": "OpenStreetMap",
+  "license": "ODbL 1.0 (© OpenStreetMap contributors)",
+  "retrieved_at": "2026-10-02",
+  "query": "highway=bus_stop nodes named 日本庭園前 near the Kintetsu official stop centre 34.81269293027636,135.53890365145898",
+  "official_stop_centre": {
+    "source_id": "jorudan_teien_map",
+    "latitude": 34.81269293027636,
+    "longitude": 135.53890365145898,
+    "note": "Kintetsu Jorudan map centre; its pole list is empty"
+  },
+  "platforms": [
+    {
+      "node_id": 9229774649,
+      "version": 1,
+      "timestamp": "2021-11-06T10:41:30Z",
+      "latitude": 34.8132627,
+      "longitude": 135.5391488,
+      "tags": {
+        "highway": "bus_stop",
+        "name": "日本庭園前",
+        "public_transport": "platform"
+      }
+    },
+    {
+      "node_id": 9229774657,
+      "version": 1,
+      "timestamp": "2021-11-06T10:41:30Z",
+      "latitude": 34.8118946,
+      "longitude": 135.539472,
+      "tags": {
+        "highway": "bus_stop",
+        "name": "日本庭園前",
+        "public_transport": "platform"
+      }
+    }
+  ],
+  "direction_reasoning": [
+    {
+      "node_id": 9229774649,
+      "boarding": "JR Ibaraki / Hankyu Ibaraki-shi",
+      "road_way": 82615461,
+      "road": "府道129 南千里茨木停車場線, one-way, bearing 67°",
+      "side": "left of travel (left-hand traffic)",
+      "distance_m": 8
+    },
+    {
+      "node_id": 9229774657,
+      "boarding": "Handai hospital direction",
+      "road_way": 257621573,
+      "road": "茨木摂津線 (1;129), one-way, bearing 163°",
+      "side": "left of travel (left-hand traffic)",
+      "distance_m": 13
+    }
+  ],
+  "owner_corroboration": "On 2 October 2026 the owner photographed the [12][22] JR茨木駅・阪急茨木市駅ゆき pole timetable at this stop and reported a map pin about 49 m from node 9229774649.",
+  "status": "community_mapped_corroborated; not an operator or government pole record"
+}

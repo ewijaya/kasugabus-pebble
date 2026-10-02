@@ -176,7 +176,9 @@ def compile_dataset(doc):
         if coordinate is not None:
             if not isinstance(coordinate, dict):
                 raise ValueError(f"boarding point {pid}: coordinate must be object or null")
-            if point.get("coordinate_status") not in ("verified", "verified_pole", "official_pole", "shared_verified_pole"):
+            # community_mapped_corroborated: owner-approved (2026-10-02) for points
+            # whose operator publishes no pole location; see data_validate.py.
+            if point.get("coordinate_status") not in ("verified", "verified_pole", "official_pole", "shared_verified_pole", "community_mapped_corroborated"):
                 raise ValueError(f"boarding point {pid}: coordinate is not explicitly verified")
             if "latitude_e6" in coordinate:
                 lat = integer(coordinate.get("latitude_e6"), "latitude_e6", -90000000, 90000000)

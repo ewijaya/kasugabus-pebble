@@ -96,7 +96,9 @@ def main(argv=None):
     parser.add_argument("--report", type=Path, required=True, help="Markdown report path")
     parser.add_argument("--json", type=Path, help="optional machine-readable results")
     args = parser.parse_args(argv)
-    catalog = json.loads((ROOT / "data/sources/catalog.json").read_text())
+    # The reviewed baseline catalogue plus feed-only extensions (catalog_*.json).
+    catalog = [entry for path in sorted((ROOT / "data/sources").glob("catalog*.json"))
+               for entry in json.loads(path.read_text())]
     with ThreadPoolExecutor(max_workers=4) as executor:
         results = list(executor.map(fetch, catalog))
     text, files = report(results, max(s.get("retrieved_at", "") for s in catalog))

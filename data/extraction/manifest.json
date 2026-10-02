@@ -96,5 +96,19 @@
     "source_path": "data/sources/kintetsu_stop_6_direction_2.pdf",
     "source_sha256": "91dee04e353b26817b0ae633c9254d3dee9b0a5f81aeb852e0ddee0b534c5ed5",
     "extractor": "pdfplumber0.11.10 extract_tables default line strategy"
+  },
+  {
+    "path": "data/extraction/kintetsu_stop_7_direction_1_table.json",
+    "sha256": "f8c67d5fe14c055ada8181df9bfadadcfe0ad7adab80dcb1c39d8d3ffa73cc25",
+    "source_path": "data/sources/kintetsu_stop_7_direction_1.pdf",
+    "source_sha256": "a07802b6f821342815ec16c3b74f2d3a945eaf1b1679d0173de609d6916d4ec7",
+    "extractor": "pdfplumber0.11.10 extract_tables default line strategy"
+  },
+  {
+    "path": "data/extraction/kintetsu_stop_7_direction_2_table.json",
+    "sha256": "30b633ccdeee8c9cff052ddea4153e7ad3e6cf33a19287d5303aba6093038045",
+    "source_path": "data/sources/kintetsu_stop_7_direction_2.pdf",
+    "source_sha256": "f7d8ca637e20df45861432d7a231310b5f18b6efb58e87846308617e700c3e8b",
+    "extractor": "pdfplumber0.11.10 extract_tables default line strategy"
   }
 ]

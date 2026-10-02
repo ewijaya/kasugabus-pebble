@@ -56,7 +56,7 @@
           "type": "font",
           "name": "JP_16",
           "file": "fonts/NotoSansJP-Regular.ttf",
-          "characterRegex": "[ 春日丘公園峠緑ヶ阪大東口医学部病院前]"
+          "characterRegex": "[ 春日丘公園峠緑ヶ阪大東口医学部病院前本庭]"
         },
         {
           "type": "bitmap",
@@ -70,13 +70,13 @@
           "type": "font",
           "name": "JP_24",
           "file": "fonts/NotoSansJP-Regular.ttf",
-          "characterRegex": "[ 春日丘公園峠緑ヶ阪大東口医学部病院前]"
+          "characterRegex": "[ 春日丘公園峠緑ヶ阪大東口医学部病院前本庭]"
         },
         {
           "type": "font",
           "name": "JP_28",
           "file": "fonts/NotoSansJP-Regular.ttf",
-          "characterRegex": "[ 春日丘公園峠緑ヶ阪大東口医学部病院前]"
+          "characterRegex": "[ 春日丘公園峠緑ヶ阪大東口医学部病院前本庭]"
         },
         {
           "type": "font",
