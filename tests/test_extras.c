@@ -39,7 +39,7 @@ int main(void) {
   assert(!kb_extras_parse(&out,b,sizeof(b)-1,exists,NULL));
   uint8_t bad[KB_EXTRAS_WIRE_BYTES];
   unsigned offsets[]={0,1,5,6,7,10,11,14,15,20,21,27};
-  uint8_t values[]={2,KB_ACTION_COUNT,4,3,31,24,1,24,1,128,1,1};
+  uint8_t values[]={2,KB_ACTION_COUNT,8,3,31,24,1,24,1,128,1,1};
   for(unsigned i=0;i<sizeof(offsets)/sizeof(offsets[0]);i++) {
     memcpy(bad,b,sizeof(b));bad[offsets[i]]=values[i];
     assert(!kb_extras_parse(&out,bad,sizeof(bad),exists,NULL));
@@ -53,6 +53,9 @@ int main(void) {
   assert(!kb_extras_parse(&out,bad,sizeof(bad),exists,NULL));
   memcpy(bad,b,sizeof(b));bad[20]=0; /* commute without days */
   assert(!kb_extras_parse(&out,bad,sizeof(bad),exists,NULL));
+  /* The Back-to-app-list flag is a valid setting on its own. */
+  memcpy(bad,b,sizeof(b));bad[5]|=KB_EXTRAS_BACK_LAUNCHER;
+  assert(kb_extras_parse(&out,bad,sizeof(bad),exists,NULL)&&(out.flags&KB_EXTRAS_BACK_LAUNCHER));
   /* Disabled features ignore their unused points. */
   memcpy(bad,b,sizeof(b));bad[5]=0;bad[8]=0;bad[16]=0;bad[20]=0;
   assert(kb_extras_parse(&out,bad,sizeof(bad),exists,NULL));

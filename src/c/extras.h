@@ -16,9 +16,12 @@
 #define KB_ACTION_NEARBY 5
 #define KB_ACTION_ALL 6
 #define KB_ACTION_BOARD 7
-#define KB_ACTION_COUNT 8
+#define KB_ACTION_WATCHFACE 8
+#define KB_ACTION_COUNT 9
 #define KB_EXTRAS_PROFILES 1
 #define KB_EXTRAS_COMMUTE 2
+/* Back on home returns to the app list instead of the watchface. */
+#define KB_EXTRAS_BACK_LAUNCHER 4
 #define KB_BUTTON_UP 0
 #define KB_BUTTON_DOWN 1
 #define KB_BUTTON_HOLD_UP 2

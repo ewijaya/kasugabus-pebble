@@ -29,6 +29,7 @@ module.exports=function(catalog,snapshot,hasHome,homeStatus){
     {type:'section',items:[{type:'heading',defaultValue:'Watch buttons'},
       {type:'text',defaultValue:'What Up and Down do on the home screen. Back returns to the soonest bus after browsing later departures.'}].concat(
       ['Up','Down','Hold Up','Hold Down'].map(function(label,i){return {type:'select',messageKey:extras.BUTTON_KEYS[i],label:label,defaultValue:String(extras.defaults().buttons[i]),options:actions};})).concat([
+      {type:'toggle',messageKey:'BackToAppList',label:'Back on home closes to the app list',defaultValue:false,description:'Off: Back on the home screen goes straight to the watchface.'},
       {type:'select',messageKey:'HomeMore',label:'Later departures on home',defaultValue:'2',description:'Shown under the destination when there is room.',options:[{label:'None',value:'0'},{label:'1',value:'1'},{label:'2',value:'2'}]}])},
     {type:'section',items:[{type:'heading',defaultValue:'Reminders'},
       {type:'text',defaultValue:'On the watch, hold Select on a departure\'s details to get one leave-now buzz for that bus. Leave time uses your walking time and buffer for that stop.'},

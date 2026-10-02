@@ -35,7 +35,7 @@ void kb_extras_default(kb_extras_t *e) {
 bool kb_extras_parse(kb_extras_t *out,const uint8_t *b,unsigned n,kb_id_exists_fn exists,void *ctx) {
   if(n!=KB_EXTRAS_WIRE_BYTES||b[0]!=1)return false;
   for(unsigned i=1;i<=4;i++)if(b[i]>=KB_ACTION_COUNT)return false;
-  if(b[5]&~(KB_EXTRAS_PROFILES|KB_EXTRAS_COMMUTE)||b[6]>2||b[7]>30)return false;
+  if(b[5]&~(KB_EXTRAS_PROFILES|KB_EXTRAS_COMMUTE|KB_EXTRAS_BACK_LAUNCHER)||b[6]>2||b[7]>30)return false;
   if(b[10]>23||b[11]||b[14]>23||b[15]||b[20]>127)return false;
   for(unsigned i=21;i<KB_EXTRAS_WIRE_BYTES;i++)if(b[i])return false;
   kb_extras_t e;

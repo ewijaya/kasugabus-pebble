@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.2.0
+
+- Lists wrap around: Down on the last item returns to the top and Up on the
+  first item goes to the bottom. Holding a button still stops at the end.
+- Back on the home screen goes straight to the watchface instead of the app
+  list. "Back on home closes to the app list" (phone settings, or Settings →
+  Home buttons → Back on the watch) keeps the previous behaviour.
+- New home button action: Exit to watchface.
+- The Japanese stop-name screen can show 日本庭園前 (adds 本 and 庭 to the font).
+- Frees about 1 KB of app memory by right-sizing the bus-number filter buffer.
+
 ## 2.1.1
 
 - Nearby works on phones whose companion app reports location times in an

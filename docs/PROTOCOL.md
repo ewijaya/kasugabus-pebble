@@ -106,3 +106,10 @@ validated unchanged. A STATUS5 NEARBY reply may carry FLAGS with a diagnostic
 reason (1 latitude, 2 longitude, 4 accuracy, 8 time, 16 phone clock, 32 no
 coordinates, 64 no location API, 128 request threw, 256+code other error);
 the watch only logs it.
+
+## Version 2.2 extras additions
+
+Home button action 8 means exit to the watchface. Extras flags bit 4 (value 4)
+means Back on the home screen closes to the app list; when clear (default),
+Back on home exits straight to the watchface. Both reuse the existing 28-byte
+record and validation.

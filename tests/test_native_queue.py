@@ -179,6 +179,7 @@ static uint16_t kb_pref_favourite(const void *preferences,unsigned index) {(void
 static void app_redraw(void) {}
 /* Home actions are outside this board-navigation boundary. */
 static void home_action(unsigned action) {(void)action;(void)kb_pref_favourite(NULL,0);}
+static bool held(ClickRecognizerRef r) {(void)r;return false;}
 static void ui_remember_all_point(void) {}
 static unsigned all_point_ids(uint16_t *ids) {(void)ids;return 0;}
 static int choices(void) {return 4;}

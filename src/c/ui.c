@@ -8,7 +8,7 @@ static palette_t colors;
 static int scroll_limit;
 static char document_buffer[2200];
 static const char *size_names[]={"Standard","Large","Extra Large"};
-static const char *action_names[]={"Nothing","Next departure","Previous departure","Switch favourite stop","Flip direction","Open Nearby","Open All departures","Open departure board"};
+static const char *action_names[]={"Nothing","Next departure","Previous departure","Switch favourite stop","Flip direction","Open Nearby","Open All departures","Open departure board","Exit to watchface"};
 static const char *theme_names[]={"Neon Dark","Neon Light","High Contrast Dark","High Contrast Light"};
 static palette_t palette(unsigned theme) {
   if(theme==KB_THEME_NEON_LIGHT)return (palette_t){GColorWhite,GColorBlack,GColorDukeBlue,GColorDarkGreen,GColorDarkCandyAppleRed,GColorPurple,GColorWhite};
@@ -397,7 +397,7 @@ static int choices(void) {
     case KB_SCREEN_NEARBY:return app.nearby_count+1;
     case KB_SCREEN_CONTEXT:return 3;
     case KB_SCREEN_SETTINGS:return 9;
-    case KB_SCREEN_BUTTONS:return 4;
+    case KB_SCREEN_BUTTONS:return 5;
     case KB_SCREEN_TEXT_SIZE:return 3;
     case KB_SCREEN_THEME:return 4;
     case KB_SCREEN_ALL_REFERENCE:return 4;
@@ -577,9 +577,10 @@ static void choice(int n,choice_t *c) {
       break;
     }
     case KB_SCREEN_BUTTONS: {
-      const char *names[]={"Up","Down","Hold Up","Hold Down"};
+      const char *names[]={"Up","Down","Hold Up","Hold Down","Back"};
       snprintf(c->title,sizeof(c->title),"%s",names[n]);
-      snprintf(c->sub,sizeof(c->sub),"%s",action_names[app.extras.buttons[n]%KB_ACTION_COUNT]);
+      if(n==4)snprintf(c->sub,sizeof(c->sub),"%s",app.extras.flags&KB_EXTRAS_BACK_LAUNCHER?"Close to app list":"Exit to watchface");
+      else snprintf(c->sub,sizeof(c->sub),"%s",action_names[app.extras.buttons[n]%KB_ACTION_COUNT]);
       break;
     }
     case KB_SCREEN_SETTINGS: {
@@ -988,9 +989,10 @@ static void help(GContext *c) {
   document(c,
     "HOME\nNext scheduled bus from your stop, with its route, time, countdown and later buses.\n"
     "DOWN: next bus  UP: switch favourite stop\nHold UP: other direction  Hold DOWN: Nearby\n"
-    "BACK: soonest bus again\nSELECT: departure board\nHold SELECT: menu\n"
+    "BACK: soonest bus again, then the watchface\nSELECT: departure board\nHold SELECT: menu\n"
     "Other direction applies where a stop has more than one boarding direction. Change these in Settings > Home buttons.\n\n"
     "BOARD\nUP/DOWN: choose a bus\nSELECT: full details\nHold SELECT: refresh\n\n"
+    "LISTS\nPress DOWN on the last item to return to the top (UP wraps too). Holding a button stops at the end.\n\n"
     "DETAILS\nHold SELECT: buzz once when it is time to leave (walking time + buffer). Hold again to cancel.\n\n"
     "FAVOURITES\nIn a stop list, hold SELECT to add or remove a favourite.\n\n"
     "MENU\nStops: favourites, Nearby, stop list, bus numbers and All departures\n"
@@ -1188,6 +1190,12 @@ static void flip_direction(void) {
       return;
     }
 }
+/* Pebble returns to the watchface, not the app list, after an app that
+ * reports it performed its action. */
+static void exit_to_watchface(void) {
+  exit_reason_set(APP_EXIT_ACTION_PERFORMED_SUCCESSFULLY);
+  window_stack_pop_all(false);
+}
 static void home_action(unsigned action) {
   unsigned n=app.prefs.bytes[5];
   switch(action) {
@@ -1205,6 +1213,7 @@ static void home_action(unsigned action) {
     case KB_ACTION_NEARBY:ui_open(KB_SCREEN_NEARBY);app_request_location();break;
     case KB_ACTION_ALL:ui_open(KB_SCREEN_ALL_REFERENCE);break;
     case KB_ACTION_BOARD:ui_open(KB_SCREEN_BOARD);break;
+    case KB_ACTION_WATCHFACE:exit_to_watchface();break;
     default:break;
   }
 }
@@ -1218,8 +1227,11 @@ static void long_down(ClickRecognizerRef r,void *ctx) {
   if(app.screen==KB_SCREEN_HOME)home_action(app.extras.buttons[KB_BUTTON_HOLD_DOWN]);
   app_redraw();
 }
+/* True while a button is held: repeating clicks count past one. */
+static bool held(ClickRecognizerRef r) {
+  return r&&click_number_of_clicks_counted(r)>1;
+}
 static void up(ClickRecognizerRef r,void *ctx) {
-  (void)r;
   (void)ctx;
   if(app.screen==KB_SCREEN_ALL_BOARD||app.screen==KB_SCREEN_ALL_POINTS)ui_refresh();
   if(app.screen==KB_SCREEN_HOME)home_action(app.extras.buttons[KB_BUTTON_UP]);
@@ -1235,14 +1247,14 @@ static void up(ClickRecognizerRef r,void *ctx) {
       app.scroll=0;
     }
   }
-  else if(app.selected>0) {
-    app.selected--;app.scroll=0;app.all_point_focus=0;
+  else if(app.selected>0||(!held(r)&&choices()>1)) {
+    /* A fresh press on the first item wraps to the last; holding stops. */
+    app.selected=app.selected>0?app.selected-1:choices()-1;app.scroll=0;app.all_point_focus=0;
     ui_remember_all_point();
   }
   app_redraw();
 }
 static void down(ClickRecognizerRef r,void *ctx) {
-  (void)r;
   (void)ctx;
   if(app.screen==KB_SCREEN_ALL_BOARD||app.screen==KB_SCREEN_ALL_POINTS)ui_refresh();
   if(app.screen==KB_SCREEN_HOME)home_action(app.extras.buttons[KB_BUTTON_DOWN]);
@@ -1269,8 +1281,9 @@ static void down(ClickRecognizerRef r,void *ctx) {
       app.scroll=0;
     }
   }
-  else if(app.selected+1<choices()) {
-    app.selected++;app.scroll=0;app.all_point_focus=0;
+  else if(app.selected+1<choices()||(!held(r)&&choices()>1)) {
+    /* A fresh press on the last item wraps to the first; holding stops. */
+    app.selected=app.selected+1<choices()?app.selected+1:0;app.scroll=0;app.all_point_focus=0;
     ui_remember_all_point();
   }
   app_redraw();
@@ -1354,7 +1367,7 @@ static void select(ClickRecognizerRef r,void *ctx) {
   }
   else if(app.screen==KB_SCREEN_ROUTES) {
     const kb_dataset_t *d=app_dataset();kb_route_t route;
-    if(app.selected<0||!d||!kb_route_at(d,(unsigned)app.selected,&route))return;
+    if(app.selected<0||!d||!kb_route_at(d,(unsigned)app.selected,&route)||strlen(route.number)>=sizeof(app.route_number))return;
     app.route_operator=route.operator_id;
     snprintf(app.route_number,sizeof(app.route_number),"%s",route.number);
     app.route_filter=true;
@@ -1405,7 +1418,8 @@ static void select(ClickRecognizerRef r,void *ctx) {
   }
   else if(app.screen==KB_SCREEN_BUTTONS) {
     kb_extras_t e=app.extras;
-    e.buttons[app.selected]=(uint8_t)((e.buttons[app.selected]+1)%KB_ACTION_COUNT);
+    if(app.selected==4)e.flags^=KB_EXTRAS_BACK_LAUNCHER;
+    else e.buttons[app.selected]=(uint8_t)((e.buttons[app.selected]+1)%KB_ACTION_COUNT);
     if(app_save_extras(&e))app_send_state();
   }
   else if(app.screen==KB_SCREEN_TEXT_SIZE||app.screen==KB_SCREEN_THEME) {
@@ -1444,7 +1458,8 @@ static void back(ClickRecognizerRef r,void *ctx) {
       app_redraw();
       return;
     }
-    window_stack_pop(false);
+    if(app.extras.flags&KB_EXTRAS_BACK_LAUNCHER)window_stack_pop(false);
+    else exit_to_watchface();
     return;
     case KB_SCREEN_DETAILS:app.screen=app.detail_origin==KB_SCREEN_ALL_BOARD?KB_SCREEN_ALL_BOARD:KB_SCREEN_BOARD;
     app.selected=app.return_screen;

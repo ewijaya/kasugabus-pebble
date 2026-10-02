@@ -1,9 +1,9 @@
 'use strict';
 // Mirrors src/c/extras.c: 28 wire bytes sent after the 80 preference bytes.
 var settings = require('./settings'), integer = settings.integer, u16 = settings.u16, put16 = settings.put16;
-var BYTES = 28, ACTIONS = 8, PROFILES = 1, COMMUTE = 2;
+var BYTES = 28, ACTIONS = 9, PROFILES = 1, COMMUTE = 2, BACK_LAUNCHER = 4;
 var ACTION_LABELS = ['Nothing', 'Next departure', 'Previous departure', 'Switch favourite stop',
-  'Flip direction', 'Open Nearby', 'Open All departures', 'Open departure board'];
+  'Flip direction', 'Open Nearby', 'Open All departures', 'Open departure board', 'Exit to watchface'];
 var BUTTON_KEYS = ['ButtonUp', 'ButtonDown', 'ButtonHoldUp', 'ButtonHoldDown'];
 var DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 function defaults() {
@@ -14,7 +14,7 @@ function validate(e, catalog) {
   var known = {};
   catalog.forEach(function(p) { known[p.id] = true; });
   if (!Array.isArray(e.buttons) || e.buttons.length !== 4 || !e.buttons.every(function(a) { return integer(a, 0, ACTIONS - 1); }) ||
-      !integer(e.flags, 0, PROFILES | COMMUTE) || !integer(e.more, 0, 2) || !integer(e.headsUp, 0, 30) ||
+      !integer(e.flags, 0, PROFILES | COMMUTE | BACK_LAUNCHER) || !integer(e.more, 0, 2) || !integer(e.headsUp, 0, 30) ||
       !integer(e.profileA, 0, 65535) || !integer(e.profileB, 0, 65535) ||
       !integer(e.profileAHour, 0, 23) || !integer(e.profileBHour, 0, 23) ||
       !integer(e.commutePoint, 0, 65535) || !integer(e.commuteMinute, 0, 1439) || !integer(e.commuteDays, 0, 127)) {
@@ -86,7 +86,8 @@ function fromClay(values, catalog, base) {
   e.commuteMinute = Number(match[1]) * 60 + Number(match[2]);
   if (!Array.isArray(days) || days.length !== 7) throw new Error('Invalid commute days');
   e.commuteDays = days.reduce(function(mask, on, i) { return mask | (toggle(on) ? 1 << i : 0); }, 0);
-  e.flags = (toggle(values.ProfilesEnabled) ? PROFILES : 0) | (toggle(values.CommuteEnabled) ? COMMUTE : 0);
+  e.flags = (toggle(values.ProfilesEnabled) ? PROFILES : 0) | (toggle(values.CommuteEnabled) ? COMMUTE : 0) |
+    (toggle(values.BackToAppList) ? BACK_LAUNCHER : 0);
   return validate(e, catalog);
 }
 function pad(n) { return (n < 10 ? '0' : '') + n; }
@@ -95,7 +96,8 @@ function toClay(e) {
     ProfileA: String(e.profileA), ProfileAHour: String(e.profileAHour), ProfileB: String(e.profileB),
     ProfileBHour: String(e.profileBHour), CommuteEnabled: !!(e.flags & COMMUTE), CommutePoint: String(e.commutePoint),
     CommuteTime: pad(Math.floor(e.commuteMinute / 60)) + ':' + pad(e.commuteMinute % 60),
-    CommuteDays: DAY_NAMES.map(function(name, i) { return !!(e.commuteDays & (1 << i)); }) };
+    CommuteDays: DAY_NAMES.map(function(name, i) { return !!(e.commuteDays & (1 << i)); }),
+    BackToAppList: !!(e.flags & BACK_LAUNCHER) };
   BUTTON_KEYS.forEach(function(key, i) { v[key] = String(e.buttons[i]); });
   return v;
 }

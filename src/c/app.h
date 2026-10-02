@@ -55,7 +55,9 @@ typedef struct  {
   uint16_t point;
   uint8_t group;
   uint8_t route_operator;
-  char route_number[1024];
+  /* Boarded route numbers are short (longest today: 3 bytes); longer ones
+   * are refused rather than truncated into a wrong exact-match filter. */
+  char route_number[32];
   bool route_filter;
   int screen,selected,scroll,return_screen,trip_context,detail_origin,all_info_return,all_info_selected;
   kb_override_t override;
