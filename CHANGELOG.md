@@ -4,10 +4,11 @@
 
 - Bigger bus information on the home screen in bundled Noto Sans Condensed
   Bold (SIL Open Font License), which continues past the system font's
-  28 pt limit. Each line uses the largest size that fits on one line; the
-  departure time grows with each text size. A compact clock with the date
-  beside it frees height for the bus information and is the same at every
-  text size. Spare height is spread between rows.
+  28 pt limit. Stop, direction and destination use the largest size that
+  fits on one line. The departure time and countdown grow with each text
+  size: Standard 32 pt beside a compact clock row; Large 36 pt and Extra
+  Large 42 pt, with the countdown on its own line and the clock moved into
+  the footer.
 - Countdowns of 60 minutes or more show hours, such as `1 h 10 m` or `2 h`,
   on the home screen and departure boards.
 - When the phone refuses location, Nearby's Refresh row explains that the

@@ -192,20 +192,23 @@ static void home(GContext *c) {
     }
   }
   else snprintf(destination,sizeof(destination),"%s",found==KB_QUERY_UNCONFIRMED?"Schedule unconfirmed":"No upcoming service");
-  /* The compact clock block is identical for every text size; the bus block
-   * uses bundled Noto Sans Bold, which continues past the system font's
-   * 28 pt ceiling. Pick the largest tier at or below the chosen size that
-   * fits, stepping down secondary lines before the stop name. */
-  static const uint8_t tiers[][5]={ /* stop, direction, time/route, countdown, destination */
-    {36,32,42,32,32},{36,28,42,28,28},{32,28,36,28,28},{32,24,36,24,24},
-    {28,24,32,24,24},{28,20,28,20,20},{24,20,24,20,20},{20,20,20,20,20}};
+  /* The bus block uses bundled Noto Sans Condensed Bold, which continues
+   * past the system font's 28 pt ceiling. Names always stay on one line, so
+   * the screen width caps long ones; the departure time and countdown grow
+   * with each text size. Large and Extra Large move the clock into the
+   * footer and give the countdown its own line. Pick the
+   * largest tier at or below the chosen size that fits. */
+  static const uint8_t tiers[][6]={ /* stop, direction, time/route, countdown, destination, own countdown line */
+    {36,32,42,42,32,1},{32,28,42,36,28,1},{32,28,36,36,28,1},{32,28,36,28,28,0},
+    {28,24,32,24,24,0},{28,20,28,20,20,0},{24,20,24,20,20,0},{20,20,20,20,20,0}};
   const unsigned tier_count=sizeof(tiers)/sizeof(tiers[0]);
   unsigned size=kb_pref_text_size(&app.prefs);
+  bool compact=size!=KB_TEXT_STANDARD;
   unsigned tier=size==KB_TEXT_EXTRA_LARGE?0:size==KB_TEXT_LARGE?2:4;
   const unsigned header=18;
   int clock_h=height(clock,104,34),side_h=2*((int)header+3);
   if(side_h>clock_h)clock_h=side_h;
-  int top=2+clock_h+2+3,bottom=footer_top()-2;
+  int top=compact?4:2+clock_h+2+3,bottom=footer_top()-2;
   int stop_h,direction_h,destination_h,departure_h,count_h,badge_w,time_w,count_x;
   unsigned count_size;
   bool count_below;
@@ -227,8 +230,8 @@ static void home(GContext *c) {
       departure_h=height_font(tm,184,noto(time_size));
       /* Keep the countdown beside the time when it fits at a readable size;
        * otherwise give it its own right-aligned row at the tier size. */
-      while(count_size>20&&width_font(cd,noto(count_size))>192-count_x)count_size-=4;
-      if(width_font(cd,noto(count_size))>192-count_x) {
+      while(!s[5]&&count_size>20&&width_font(cd,noto(count_size))>192-count_x)count_size-=4;
+      if(s[5]||width_font(cd,noto(count_size))>192-count_x) {
         count_below=true;count_size=fit_size(cd,s[3]);count_x=8;
       }
       count_h=height_font(cd,184,noto(count_size));
@@ -244,17 +247,19 @@ static void home(GContext *c) {
    * below the destination. */
   int gap=top+used<bottom?(bottom-top-used)/4:0;
   if(gap>8)gap=8;
-  int y=2;
-  text(c,clock,8,y,104,clock_h,34,colors.foreground);
-  strftime(b,sizeof(b),"%a %d %b",&local);
-  graphics_context_set_text_color(c,colors.navigation);
-  graphics_draw_text(c,b,font(header),GRect(104,y,80,(int)header+3),GTextOverflowModeTrailingEllipsis,GTextAlignmentRight,NULL);
-  snprintf(b,sizeof(b),"%s%s",clock_is_24h_style()?"":local.tm_hour<12?"AM ":"PM ",local.tm_gmtoff==32400?"JST":"LOCAL");
-  graphics_context_set_text_color(c,colors.foreground);
-  graphics_draw_text(c,b,font(header),GRect(104,y+(int)header+3,80,(int)header+3),GTextOverflowModeTrailingEllipsis,GTextAlignmentRight,NULL);
-  graphics_context_set_fill_color(c,colors.magenta);
-  graphics_fill_rect(c,GRect(188,y+7,4,12),0,GCornerNone);
-  y+=clock_h+2;line(c,y,colors.navigation);y+=3+gap;
+  int y=compact?top+gap:2;
+  if(!compact) {
+    text(c,clock,8,y,104,clock_h,34,colors.foreground);
+    strftime(b,sizeof(b),"%a %d %b",&local);
+    graphics_context_set_text_color(c,colors.navigation);
+    graphics_draw_text(c,b,font(header),GRect(104,y,80,(int)header+3),GTextOverflowModeTrailingEllipsis,GTextAlignmentRight,NULL);
+    snprintf(b,sizeof(b),"%s%s",clock_is_24h_style()?"":local.tm_hour<12?"AM ":"PM ",local.tm_gmtoff==32400?"JST":"LOCAL");
+    graphics_context_set_text_color(c,colors.foreground);
+    graphics_draw_text(c,b,font(header),GRect(104,y+(int)header+3,80,(int)header+3),GTextOverflowModeTrailingEllipsis,GTextAlignmentRight,NULL);
+    graphics_context_set_fill_color(c,colors.magenta);
+    graphics_fill_rect(c,GRect(188,y+7,4,12),0,GCornerNone);
+    y+=clock_h+2;line(c,y,colors.navigation);y+=3+gap;
+  }
   text_font(c,stop,8,y,184,stop_h,noto(stop_size),colors.foreground);y+=stop_h+1+gap;
   text_font(c,direction,8,y,184,direction_h,noto(direction_size),colors.navigation);y+=direction_h+3+gap;
   if(route[0]) {
@@ -282,6 +287,17 @@ static void home(GContext *c) {
   else if(state.today_no_service)snprintf(b,sizeof(b),"No service today | JST");
   else if(app.changed)snprintf(b,sizeof(b),"New data | Scheduled JST");
   else snprintf(b,sizeof(b),"Scheduled JST | %s",short_day_name(found==KB_QUERY_FOUND?t.day_type:state.today_type));
+  if(compact) {
+    /* The clock row is hidden: show local time first, then the status with
+     * its redundant "Scheduled" dropped to keep one footer line. */
+    char status[112];
+    const char *rest=strncmp(b,"Scheduled JST | ",16)==0?b+10:b;
+    snprintf(status,sizeof(status),"%s",rest);
+    char *sched=strstr(status," | Scheduled JST");
+    if(sched)memmove(sched+3,sched+13,strlen(sched+13)+1);
+    snprintf(b,sizeof(b),"%s%s%s | %s",local.tm_gmtoff==32400?"":"Local ",clock,
+             clock_is_24h_style()?"":local.tm_hour<12?"AM":"PM",status);
+  }
   footer(c,b);
 }
 typedef struct  {
