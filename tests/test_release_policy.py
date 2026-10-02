@@ -20,6 +20,10 @@ class PolicyTests(unittest.TestCase):
         self.assertIn('schedule/calendar/provenance', classify(['src/c/engine.c'])['targeted_checks'])
         self.assertIn('settings/location/persistence', classify(['src/pkjs/settings.js'])['targeted_checks'])
 
+    def test_skill_docs_need_no_runtime_checks(self):
+        result = classify(['.agents/skills/kasugabus-release/SKILL.md', '.claude/skills/kasugabus-release/SKILL.md'])
+        self.assertEqual((result['required_scenarios'], result['targeted_checks']), (SMOKE, []))
+
     def test_git_bound_scope_and_version_only(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)

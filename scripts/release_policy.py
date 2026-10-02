@@ -16,7 +16,7 @@ def classify(paths, full=False):
     reasons = []
     targeted = set()
     for path in paths:
-        if path.startswith(("docs/", ".agents/", "artifacts/")) or path in {"README.md", "CHANGELOG.md", "PRD.md", "PLAN.md", ".gitignore"}:
+        if path.startswith(("docs/", ".agents/", ".claude/", "artifacts/")) or path in {"README.md", "CHANGELOG.md", "PRD.md", "PLAN.md", ".gitignore"}:
             continue
         if path.startswith(("data/", "resources/timetable", "src/c/engine")) or path == "src/pkjs/catalog.json":
             targeted.add("schedule/calendar/provenance")
