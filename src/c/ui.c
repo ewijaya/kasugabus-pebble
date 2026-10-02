@@ -173,35 +173,39 @@ static void home(GContext *c) {
     }
   }
   else snprintf(destination,sizeof(destination),"%s",found==KB_QUERY_UNCONFIRMED?"Schedule unconfirmed":"No upcoming service");
-  /* The clock block is identical for every text size; only the bus block
-   * scales. Pick the largest tier at or below the chosen size that fits,
-   * stepping down secondary lines before the stop name. */
-  static const uint8_t tiers[][5]={ /* stop, direction, route, countdown, destination */
-    {28,24,28,24,24},{28,18,28,24,18},{24,18,24,24,18},{24,14,24,18,14},{18,14,18,18,14}};
+  /* The compact clock block is identical for every text size; the bus block
+   * gets the remaining height. Pick the largest tier at or below the chosen
+   * size that fits, stepping down secondary lines before the stop name. */
+  static const uint8_t tiers[][6]={ /* stop, direction, route, countdown, destination, time */
+    {28,28,28,28,28,32},{28,24,28,28,24,32},{28,24,28,24,24,28},{28,18,28,24,18,28},
+    {24,18,24,24,18,28},{24,14,24,18,14,28},{18,14,18,18,14,28}};
   const unsigned tier_count=sizeof(tiers)/sizeof(tiers[0]);
   unsigned size=kb_pref_text_size(&app.prefs);
   unsigned tier=size==KB_TEXT_EXTRA_LARGE?0:size==KB_TEXT_LARGE?2:4;
   const unsigned header=18;
-  int date_h=(int)header+5,clock_h=height(clock,184,42);
-  int top=2+date_h+clock_h+2+3,bottom=footer_top()-2;
+  int clock_h=height(clock,104,34),side_h=2*((int)header+3);
+  if(side_h>clock_h)clock_h=side_h;
+  int top=2+clock_h+2+3,bottom=footer_top()-2;
   int stop_h,direction_h,destination_h,departure_h,count_h,route_h,badge_w,time_w,count_x;
   unsigned count_size;
+  GFont time_font;
   for(;;) {
     const uint8_t *s=tiers[tier];
+    time_font=fonts_get_system_font(s[5]==36?FONT_KEY_LECO_36_BOLD_NUMBERS:s[5]==32?FONT_KEY_LECO_32_BOLD_NUMBERS:FONT_KEY_GOTHIC_28_BOLD);
     stop_h=height_font(stop,184,bold_font(s[0]));
     direction_h=height(direction,184,s[1]);
     destination_h=height(destination,184,s[4]);
-    departure_h=0;count_h=0;route_h=0;badge_w=48;time_w=0;count_x=192;count_size=s[3];
+    departure_h=0;count_h=0;route_h=0;badge_w=30;time_w=0;count_x=192;count_size=s[3];
     if(route[0]) {
       int route_w=width_font(route,bold_font(s[2]))+8;
       if(route_w>badge_w)badge_w=route_w;
-      time_w=width_font(tm,bold_font(28))+2;
+      time_w=width_font(tm,time_font)+2;
       count_x=8+badge_w+6+time_w+6;
       /* Shrink only the countdown when a long value such as "23 h 59 m"
        * would otherwise wrap beside the departure time. */
-      while(count_size>14&&width_font(cd,font(count_size))>192-count_x)count_size=count_size==24?18:14;
+      while(count_size>14&&width_font(cd,font(count_size))>192-count_x)count_size=count_size==28?24:count_size==24?18:14;
       count_h=height(cd,192-count_x,count_size);
-      departure_h=height_font(tm,time_w,bold_font(28));
+      departure_h=height_font(tm,time_w,time_font);
       route_h=height_font(route,badge_w,bold_font(s[2]));
       if(route_h>departure_h)departure_h=route_h;
       if(count_h>departure_h)departure_h=count_h;
@@ -217,12 +221,13 @@ static void home(GContext *c) {
   int gap=top+used<bottom?(bottom-top-used)/4:0;
   if(gap>8)gap=8;
   int y=2;
+  text(c,clock,8,y,104,clock_h,34,colors.foreground);
   strftime(b,sizeof(b),"%a %d %b",&local);
-  text(c,b,8,y,134,date_h,header,colors.navigation);
-  text(c,local.tm_gmtoff==32400?"JST":"LOCAL",150,y,46,date_h,header,colors.foreground);
-  y+=date_h;
-  text(c,clock,8,y,184,clock_h,42,colors.foreground);
-  if(!clock_is_24h_style())text(c,local.tm_hour<12?"AM":"PM",163,y+clock_h-23,32,23,header,colors.navigation);
+  graphics_context_set_text_color(c,colors.navigation);
+  graphics_draw_text(c,b,font(header),GRect(104,y,80,(int)header+3),GTextOverflowModeTrailingEllipsis,GTextAlignmentRight,NULL);
+  snprintf(b,sizeof(b),"%s%s",clock_is_24h_style()?"":local.tm_hour<12?"AM ":"PM ",local.tm_gmtoff==32400?"JST":"LOCAL");
+  graphics_context_set_text_color(c,colors.foreground);
+  graphics_draw_text(c,b,font(header),GRect(104,y+(int)header+3,80,(int)header+3),GTextOverflowModeTrailingEllipsis,GTextAlignmentRight,NULL);
   graphics_context_set_fill_color(c,colors.magenta);
   graphics_fill_rect(c,GRect(188,y+7,4,12),0,GCornerNone);
   y+=clock_h+2;line(c,y,colors.navigation);y+=3+gap;
@@ -231,8 +236,10 @@ static void home(GContext *c) {
   if(route[0]) {
     graphics_context_set_fill_color(c,colors.departure);
     graphics_fill_rect(c,GRect(8,y+2,badge_w,departure_h-2),3,GCornersAll);
-    strong(c,route,10,y+(departure_h-route_h)/2,badge_w-4,route_h,s[2],colors.badge_text);
-    strong(c,tm,8+badge_w+6,y,time_w,departure_h,28,colors.departure);
+    graphics_context_set_text_color(c,colors.badge_text);
+    graphics_draw_text(c,route,bold_font(s[2]),GRect(8,y+(departure_h-route_h)/2,badge_w,route_h),
+                       GTextOverflowModeWordWrap,GTextAlignmentCenter,NULL);
+    text_font(c,tm,8+badge_w+6,y+departure_h-height_font(tm,time_w,time_font),time_w,departure_h,time_font,colors.departure);
     graphics_context_set_text_color(c,colors.departure);
     graphics_draw_text(c,cd,font(count_size),GRect(count_x,y+departure_h-count_h,192-count_x,count_h),
                        GTextOverflowModeWordWrap,GTextAlignmentRight,NULL);

@@ -2,10 +2,12 @@
 
 ## 2.0.1
 
-- Text size now visibly scales the home screen's bus information (stop,
-  direction, route badge, countdown and destination). The clock and date
-  stay the same size for every text size, and spare height is spread between
-  rows instead of left empty below the destination.
+- Bigger bus information on the home screen. Standard now uses the former
+  Large sizes, Large the former Extra Large sizes, and Extra Large enlarges
+  the direction, destination and countdown further with a larger departure
+  time. A compact clock with the date beside it frees height for the bus
+  information; it is the same at every text size. Spare height is spread
+  between rows instead of left empty below the destination.
 - Countdowns of 60 minutes or more show hours, such as `1 h 10 m` or `2 h`,
   on the home screen and departure boards.
 - When the phone refuses location, Nearby's Refresh row explains that the
