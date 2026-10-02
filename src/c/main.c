@@ -572,6 +572,9 @@ static void inbox(DictionaryIterator *it,void *ctx) {
       s_startup_handled=true;
       if((app.prefs.bytes[1]&(KB_PREF_LOCATION|KB_PREF_NEARBY_START))==(KB_PREF_LOCATION|KB_PREF_NEARBY_START)&&app.screen==KB_SCREEN_NEARBY)app_request_location();
     }
+    /* Nearby opened before the phone was ready: ask again now it is. A
+     * startup request above is already waiting and is not repeated. */
+    if(app.screen==KB_SCREEN_NEARBY&&app.nearby_status==5&&!app.nearby_waiting&&(app.prefs.bytes[1]&KB_PREF_LOCATION))app_request_location();
   }
   else if(type==4) {
     if(request!=app.request||!app.checking)return;
@@ -638,7 +641,7 @@ static void inbox(DictionaryIterator *it,void *ctx) {
   }
   else if(type==10) {
     const kb_dataset_t *d=app_dataset();
-    if(!(app.prefs.bytes[1]&KB_PREF_LOCATION)||request!=app.location_request||!app.nearby_waiting||!d||version!=d->release_version||version!=app.location_version||status>8)return;
+    if(!(app.prefs.bytes[1]&KB_PREF_LOCATION)||request!=app.location_request||!app.nearby_waiting||!d||version!=d->release_version||version!=app.location_version||status>9)return;
     if(stamp>(uint32_t)now+30)return;
     unsigned count=payload?data->length/6:0;
     if((payload&&data->length%6)||count>KB_MAX_POINTS)return;
@@ -654,6 +657,7 @@ static void inbox(DictionaryIterator *it,void *ctx) {
     memcpy(app.nearby,temp,count*sizeof(*temp));
     app.nearby_count=count;
     app.nearby_status=status;
+    APP_LOG(APP_LOG_LEVEL_INFO,"Nearby status%lu count%u accuracy%lu reason%lu",(unsigned long)status,count,(unsigned long)accuracy,(unsigned long)flags);
     if(status==0&&(!stamp||now-stamp>120))app.nearby_status=2;
     else if(status==0&&accuracy>100)app.nearby_status=1;
     app.location_stamp=stamp;

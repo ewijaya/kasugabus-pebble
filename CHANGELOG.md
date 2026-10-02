@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.1.1
+
+- Nearby works on phones whose companion app reports location times in an
+  unexpected format (observed on a Poco F4 running HyperOS); such fixes were
+  rejected as "Phone unavailable". The same fix applies to All departures and
+  saving a home location.
+- If a precise GPS fix is not available, Nearby tries one network location
+  (up to a minute old) before giving up.
+- "No location fix - try outdoors" now separates a connected phone without a
+  position from a genuinely unavailable phone.
+- Nearby asks again automatically when the phone connects after the screen
+  opened.
+
 ## 2.1.0
 
 - Favourites on the watch: in a stop list, hold Select to add or remove a

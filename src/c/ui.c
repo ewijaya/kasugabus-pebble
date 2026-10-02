@@ -132,7 +132,7 @@ static void countdown(const kb_trip_t *t,char *b,size_t n) {
 }
 static unsigned nearby_status_now(void) {
   unsigned status=app.nearby_status;
-  if(status>8)return 5;
+  if(status>9)return 5;
   if((status==0||status==1||status==2)&&app.location_stamp&&time(NULL)-app.location_stamp>120)return 2;
   return status;
 }
@@ -647,7 +647,7 @@ static void nearby_label(char *s,size_t n) {
     return;
   }
   const char *a[]= {
-    "Approx. - similar within accuracy","Low accuracy - choose direction","Previous location - refresh","Permission denied","Location timed out","Phone unavailable","Outside saved area","No verified poles to rank","Location is off"
+    "Approx. - similar within accuracy","Low accuracy - choose direction","Previous location - refresh","Permission denied","Location timed out","Phone unavailable","Outside saved area","No verified poles to rank","Location is off","No location fix - try outdoors"
   };
   unsigned status=nearby_status_now();
   if((status==0||status==1||status==2)&&app.location_stamp) {

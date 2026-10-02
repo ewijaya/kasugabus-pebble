@@ -112,7 +112,7 @@ module.exports=function(options){
           var checked=nearby.rank(result.position,[],options.now());
           if(checked.status!==7)result=checked;
           else {
-            var record=homeRecord({schema:1,coords:result.position.coords,savedAt:Math.floor(result.position.timestamp)});
+            var record=homeRecord({schema:1,coords:result.position.coords,savedAt:Math.floor(nearby.fixTime(result.position.timestamp,options.now()))});
             result={status:record&&changed(record,0)?0:5};
           }
         }

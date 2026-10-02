@@ -17,13 +17,29 @@ function distance(a, b) {
   var h = Math.sin(dlat / 2) * Math.sin(dlat / 2) + Math.cos(a.latitude * rad) * Math.cos(b.lat * rad) * Math.sin(dlon / 2) * Math.sin(dlon / 2);
   return 6371000 * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(Math.max(0, 1 - h)));
 }
+// Fix time in milliseconds. Some companion apps report the timestamp as a
+// Date, a string, or in seconds/micro/nanoseconds, or omit it. Requests are
+// for fresh fixes (at most 60 s old), so an unusable time becomes "now".
+function fixTime(value, now) {
+  var t = value instanceof Date ? value.getTime() : typeof value === 'string' ?
+    (/^\s*\d+(\.\d+)?\s*$/.test(value) ? Number(value) : Date.parse(value)) : value;
+  if (typeof now !== 'number' || !isFinite(now)) return t;
+  if (typeof t !== 'number' || !isFinite(t) || t <= 0) return now;
+  var best = t;
+  [1000, 0.001, 0.000001].forEach(function(scale) { if (Math.abs(t * scale - now) < Math.abs(best - now)) best = t * scale; });
+  return Math.abs(best - now) <= 7 * 86400000 ? best : now;
+}
 function rank(position, points, now) {
-  var c = position && position.coords, stamp = position && position.timestamp;
-  if (!c || typeof c.latitude !== 'number' || !isFinite(c.latitude) || c.latitude < -90 || c.latitude > 90 ||
-      typeof c.longitude !== 'number' || !isFinite(c.longitude) || c.longitude < -180 || c.longitude > 180 ||
-      typeof c.accuracy !== 'number' || !isFinite(c.accuracy) || c.accuracy < 0 || c.accuracy > 4294967295 ||
-      typeof stamp !== 'number' || !isFinite(stamp) || stamp < 0 || !integer(Math.floor(stamp / 1000),0,4294967295) ||
-      typeof now !== 'number' || !isFinite(now) || now < 0) return { status: 5 };
+  var c = position && position.coords, stamp = position && fixTime(position.timestamp, now);
+  // Diagnostic reason bits for an unusable fix: 1 latitude, 2 longitude,
+  // 4 accuracy, 8 timestamp, 16 phone clock, 32 no coords object.
+  var reason = !c ? 32 : 0;
+  if (c && (typeof c.latitude !== 'number' || !isFinite(c.latitude) || c.latitude < -90 || c.latitude > 90)) reason |= 1;
+  if (c && (typeof c.longitude !== 'number' || !isFinite(c.longitude) || c.longitude < -180 || c.longitude > 180)) reason |= 2;
+  if (c && (typeof c.accuracy !== 'number' || !isFinite(c.accuracy) || c.accuracy < 0 || c.accuracy > 4294967295)) reason |= 4;
+  if (typeof stamp !== 'number' || !isFinite(stamp) || stamp < 0 || !integer(Math.floor(stamp / 1000),0,4294967295)) reason |= 8;
+  if (typeof now !== 'number' || !isFinite(now) || now < 0) reason |= 16;
+  if (reason) return { status: 5, reason: reason };
   // A future clock mismatch is not qualified fix metadata. Keep its stale
   // state, without passing an implausible timestamp to the watch.
   if (stamp > now + 5000) return { status: 2 };
@@ -62,21 +78,36 @@ module.exports = function(options) {
         msg.STAMP=result.stamp;msg.ACCURACY=result.accuracy;
       }
       if (result.status === 0) msg.DATA = result.data;
+      // Unavailable results carry why, so watch logs can tell a missing API
+      // (64), a thrown call (128) or a malformed fix (bits above) apart.
+      if (result.status === 5 && result.reason) msg.FLAGS = result.reason;
       options.send(msg);
     }
     if (!integer(request, 1, 4294967295) || !integer(version, 1, 4294967295)) return;
     if (!enabled) return finish({status: 8});
     try { points = parse(bytes); } catch (e) { return finish({status: 5}); }
     if (!points.length) return finish({status: 7});
-    if (!options.geolocation || !options.geolocation.getCurrentPosition) return finish({status: 5});
+    if (!options.geolocation || !options.geolocation.getCurrentPosition) return finish({status: 5, reason: 64});
     timer = options.schedule(function() { finish({status: 4}); }, 15000);
-    try {
-      options.geolocation.getCurrentPosition(function(position) { finish(rank(position, points, options.now())); },
-        function(error) { finish({status: error && error.code === 1 ? 3 : error && error.code === 3 ? 4 : 5}); },
-        {enableHighAccuracy: true, timeout: 15000, maximumAge: 0});
-    } catch (e) { finish({status: 5}); }
+    // A precise GPS fix first; when the phone cannot produce one (common
+    // indoors and on some Android builds), one coarser network fix up to a
+    // minute old. Both fit inside the watch's 16-second wait.
+    function attempt(precise) {
+      try {
+        options.geolocation.getCurrentPosition(function(position) { finish(rank(position, points, options.now())); },
+          function(error) {
+            var code = error && error.code;
+            console.log('KasugaBus Nearby location error ' + code + (precise ? ' (precise)' : ' (network)'));
+            if (precise && (code === 2 || code === 3) && token === generation) return attempt(false);
+            finish({status: code === 1 ? 3 : code === 3 ? 4 : code === 2 ? 9 : 5, reason: 256 + (typeof code === 'number' && code >= 0 && code < 256 ? code : 255)});
+          },
+          precise ? {enableHighAccuracy: true, timeout: 8000, maximumAge: 0} : {enableHighAccuracy: false, timeout: 6000, maximumAge: 60000});
+      } catch (e) { finish({status: 5, reason: 128}); }
+    }
+    attempt(true);
   }, invalidate: function() { generation += 1; if (timer !== null) options.cancel(timer); timer = null; } };
 };
 module.exports.parse = parse;
 module.exports.rank = rank;
+module.exports.fixTime = fixTime;
 module.exports.distance = distance;

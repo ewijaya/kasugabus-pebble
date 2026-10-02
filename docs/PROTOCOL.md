@@ -87,3 +87,22 @@ different hours; an enabled commute needs a known point and at least one day.
 The watch stores the record as KBX1 with a generation and CRC32 in two banks
 (keys 14/15). Reminder state is a separate local record (key 16) that never
 leaves the watch.
+
+## Version 2.1.1 Nearby fix fallback
+
+The phone first requests a precise fix (8 s, no cached position). When the phone
+reports no position (code 2) or that request times out (code 3), it makes one
+coarser network request (6 s, accepting a fix up to 60 s old). NEARBY STATUS9
+means the phone is connected but no position was available after both
+attempts; STATUS5 remains phone/API unavailable or a failed send. The watch
+repeats a Nearby request once the phone says HELLO if the Nearby screen was
+opened before the phone was ready.
+
+Fix times from the companion are normalised: a Date, numeric or ISO string, or a
+number in seconds, milliseconds, microseconds or nanoseconds is converted to
+milliseconds; a missing or unusable time is treated as the moment the fix
+arrived, because only fresh fixes are requested. Coordinates and accuracy are
+validated unchanged. A STATUS5 NEARBY reply may carry FLAGS with a diagnostic
+reason (1 latitude, 2 longitude, 4 accuracy, 8 time, 16 phone clock, 32 no
+coordinates, 64 no location API, 128 request threw, 256+code other error);
+the watch only logs it.
