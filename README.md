@@ -11,9 +11,11 @@ Version **2.0.1** enlarges the home screen's bus information with a bundled bold
 
 Version **2.1.0** adds favourites on the watch (hold Select in a stop list), configurable Up/Down home buttons, later buses on home, an App Glance in the launcher, leave-now reminders and a daily commute alarm, time-based home stops, and a weekly official-source watch. See [the 2.1.0 notes](docs/releases/2.1.0.md).
 
-A large clock and one scheduled departure form the Neon Transit home screen. The departure board, full details, favourites, all-stop picker, Nearby, trip context and data status work through the watch buttons. Timetables run offline; phone location, Clay settings and timetable downloads add optional connected functions.
+The Neon Transit home screen leads with the next scheduled bus: route, departure time, countdown and later buses, with a compact clock at Standard text size or the time in the footer at Large and Extra Large. Up and Down browse later buses and switch stops; hold Select on a departure for a leave-now buzz, or in a stop list to add a favourite. The departure board, full details, all-stop picker, Nearby, trip context and data status work through the watch buttons. Timetables run offline; phone location, Clay settings and timetable downloads add optional connected functions.
 
-![KasugaBus 1.0.0 — native Emery emulator capture](artifacts/screenshots/release-1.0.0-home.png)
+![KasugaBus 2.1.0 home at Large text](docs/releases/assets/2.1.0/1-home-large.png) ![Leave-now reminder](docs/releases/assets/2.1.0/3-leave-now.png) ![Adding a favourite on the watch](docs/releases/assets/2.1.0/4-favourites.png)
+
+*Native Emery emulator captures of KasugaBus 2.1.0.*
 
 [GitHub release](https://github.com/ewijaya/kasugabus-pebble/releases/tag/v1.0.0) · [RePebble App Store](https://apps.repebble.com/f63e6ed24301414a95909564) · [Release verification and exact digest](docs/releases/1.0.0-verification.md) · [Native screenshots](artifacts/screenshots/README.md) · [Ten launcher-icon concepts](artifacts/icon-options/index.html)
 

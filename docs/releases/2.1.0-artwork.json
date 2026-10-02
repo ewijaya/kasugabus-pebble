@@ -1,0 +1,78 @@
+{
+  "version": "2.1.0",
+  "capturedFrom": {
+    "sourceCommit": "0eeb707",
+    "pbwSha256": "0650508b3197ec47b61628bfc4f04a3d51e0c5f9ddae6a6804121db91e442434",
+    "note": "Native Emery emulator captures from a build of the same app source as the release commit; they do not substitute for the final PBW's runtime audit."
+  },
+  "replace": "All five Emery screenshots, in this order",
+  "preserve": "Existing banner, icons, unrelated metadata, companion fields and previous releases",
+  "status": "proposed; awaiting owner approval with the exact PBW",
+  "assets": [
+    {
+      "role": "screenshot",
+      "platform": "emery",
+      "order": 0,
+      "caption": "Home, Large text (default)",
+      "source": "docs/releases/assets/2.1.0/1-home-large.png",
+      "dimensions": [
+        200,
+        228
+      ],
+      "bytes": 3327,
+      "sha256": "39cdec4ac08894a432cf67d30c53382926c91e8266bb769132b68567e1f1f695"
+    },
+    {
+      "role": "screenshot",
+      "platform": "emery",
+      "order": 1,
+      "caption": "Home, Extra Large text",
+      "source": "docs/releases/assets/2.1.0/2-home-extra-large.png",
+      "dimensions": [
+        200,
+        228
+      ],
+      "bytes": 3419,
+      "sha256": "ccca0460897582ccd822467ac05cd78421d40e709f21e1cff183bebd0cc5802b"
+    },
+    {
+      "role": "screenshot",
+      "platform": "emery",
+      "order": 2,
+      "caption": "Leave-now reminder after a wakeup",
+      "source": "docs/releases/assets/2.1.0/3-leave-now.png",
+      "dimensions": [
+        200,
+        228
+      ],
+      "bytes": 2739,
+      "sha256": "caceb377271dc48ab9558ab1cd7833817156389cebaeb8339f89e1995bd10313"
+    },
+    {
+      "role": "screenshot",
+      "platform": "emery",
+      "order": 3,
+      "caption": "Adding a favourite on the watch",
+      "source": "docs/releases/assets/2.1.0/4-favourites.png",
+      "dimensions": [
+        200,
+        228
+      ],
+      "bytes": 2940,
+      "sha256": "3f7ceead9001f44a013679e1e4b142b66fb573638c1d1b99b1df8c375379f66e"
+    },
+    {
+      "role": "screenshot",
+      "platform": "emery",
+      "order": 4,
+      "caption": "Settings > Home buttons",
+      "source": "docs/releases/assets/2.1.0/5-home-buttons.png",
+      "dimensions": [
+        200,
+        228
+      ],
+      "bytes": 2034,
+      "sha256": "22b0a452f3ee7569b3a77476a3cc41872f3985295e742714248510178af51065"
+    }
+  ]
+}
