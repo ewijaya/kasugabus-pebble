@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.2.1
+
+- Maintenance release with no change in behaviour. The app image (code plus
+  static data) shrinks from 64,904 to 59,248 bytes, leaving 6,287 bytes below
+  the Pebble SDK's hard 65,535-byte limit (previously 631). The two largest
+  static buffers are now allocated at startup, and the Help text is stored as
+  a resource.
+- The release audit now measures the app image against the SDK limit and
+  requires at least 4 KiB of headroom.
+
 ## 2.2.0
 
 - Lists wrap around: Down on the last item returns to the top and Up on the

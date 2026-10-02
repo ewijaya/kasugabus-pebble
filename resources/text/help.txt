@@ -1,0 +1,33 @@
+HOME
+Next scheduled bus from your stop, with its route, time, countdown and later buses.
+DOWN: next bus  UP: switch favourite stop
+Hold UP: other direction  Hold DOWN: Nearby
+BACK: soonest bus again, then the watchface
+SELECT: departure board
+Hold SELECT: menu
+Other direction applies where a stop has more than one boarding direction. Change these in Settings > Home buttons.
+
+BOARD
+UP/DOWN: choose a bus
+SELECT: full details
+Hold SELECT: refresh
+
+LISTS
+Press DOWN on the last item to return to the top (UP wraps too). Holding a button stops at the end.
+
+DETAILS
+Hold SELECT: buzz once when it is time to leave (walking time + buffer). Hold again to cancel.
+
+FAVOURITES
+In a stop list, hold SELECT to add or remove a favourite.
+
+MENU
+Stops: favourites, Nearby, stop list, bus numbers and All departures
+Trip context: walking time from your saved origin
+Data status: timetable dates and update check
+Settings: text size, colour theme and more
+
+PHONE
+In the Pebble app, open KasugaBus settings for favourites, buttons, commute alarm, time profiles, walking times, location and display.
+
+Times are scheduled (JST), not live arrivals.

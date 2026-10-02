@@ -6,10 +6,12 @@
   "resource_limit_bytes": 262144,
   "max_native_binary_bytes": 104857,
   "max_static_ram_bytes": 104857,
+  "sdk_image_limit_bytes": 65535,
+  "max_image_bytes": 61440,
   "max_resources_bytes": 209715,
   "minimum_measured_free_heap_bytes": 26215,
   "max_payload_bytes": 24576,
   "max_pbw_bytes": 2097152,
   "required_runtime_scenarios": ["launch", "navigation", "update-transfer"],
-  "notes": "PBW zip size is an engineering guard, not an SDK memory ceiling. Runtime free heap must be measured from the exact artifact after exercising these scenarios; linker free RAM is only static evidence."
+  "notes": "Image bytes are text+data+bss of the app ELF (the build report's Total footprint in RAM). The SDK refuses an app image above sdk_image_limit_bytes (uint16 virtual_size); max_image_bytes keeps at least 4 KiB of headroom below it. PBW zip size is an engineering guard, not an SDK memory ceiling. Runtime free heap must be measured from the exact artifact after exercising these scenarios; linker free RAM is only static evidence."
 }

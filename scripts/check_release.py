@@ -20,12 +20,18 @@ def parse_metrics(output):
         matches = re.findall(pattern, output)
         require(len(matches) == 1, "Missing/ambiguous Emery build metric: " + key)
         metrics[key] = int(matches[0])
+    # The footprint is text+data+bss, which the SDK caps at 65,535 bytes (uint16 virtual_size).
+    metrics["image_bytes"] = metrics["static_ram"]
     return metrics
 
 
 def check_budgets(metrics, budgets, runtime=False):
     for metric, limit in (("native_binary", "max_native_binary_bytes"), ("static_ram", "max_static_ram_bytes"), ("resources", "max_resources_bytes"), ("pbw", "max_pbw_bytes"), ("timetable", "max_payload_bytes")):
         require(0 <= metrics[metric] <= budgets[limit], metric + " exceeds its release budget")
+    image = metrics.get("image_bytes")
+    require(isinstance(image, int) and image >= 0, "App image size (text+data+bss) was not measured")
+    require(image <= budgets["sdk_image_limit_bytes"], "App image exceeds the SDK hard limit of {} bytes".format(budgets["sdk_image_limit_bytes"]))
+    require(image <= budgets["max_image_bytes"], "App image exceeds its release budget; at least 4 KiB headroom below the SDK limit is required")
     if runtime:
         require(metrics["measured_free_heap"] >= budgets["minimum_measured_free_heap_bytes"], "Measured runtime heap has less than 20 percent headroom")
 

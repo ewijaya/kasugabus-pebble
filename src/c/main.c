@@ -176,7 +176,8 @@ static void load_all_preferences(void) {
   uint8_t retries;
 }
 message_t;
-static message_t s_queue[8];
+/* Heap-allocated in init() so the 2.5 KB queue stays out of the 64 KB app image. */
+static message_t *s_queue;
 static unsigned s_head,s_count;
 static bool s_sending;
 static AppTimer *s_send_retry;
@@ -188,7 +189,7 @@ static void send_retry(void *ctx) {
   send_next();
 }
 static message_t *enqueue(unsigned type) {
-  if(s_count==8)return NULL;
+  if(!s_queue||s_count==8)return NULL;
   message_t *m=&s_queue[(s_head+s_count)%8];
   memset(m,0,sizeof(*m));
   m->present=1;
@@ -820,6 +821,8 @@ static void wakeup(WakeupId id,int32_t cookie) {
 static void init(void) {
   APP_LOG(APP_LOG_LEVEL_DEBUG,"INIT entered");
   memset(&app,0,sizeof(app));
+  /* On failure enqueue() returns NULL, like a full queue: messages are dropped, never dereferenced. */
+  s_queue=malloc(8*sizeof(*s_queue));
   app.nearby_status=5;
   app.all_status=5;
   app.update_status=9;
@@ -889,5 +892,7 @@ int main(void) {
   if(app.japanese)fonts_unload_custom_font(app.japanese);
   layer_destroy(app.layer);
   window_destroy(app.window);
+  ui_deinit();
   free(app.cache);
+  free(s_queue);
 }

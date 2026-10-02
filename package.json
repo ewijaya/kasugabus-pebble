@@ -1,7 +1,7 @@
 {
   "name": "kasugabus",
   "author": "KasugaBus contributors",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "private": true,
   "keywords": [
     "pebble-app"
@@ -51,6 +51,11 @@
           "type": "raw",
           "name": "TIMETABLE",
           "file": "timetable.bin"
+        },
+        {
+          "type": "raw",
+          "name": "HELP_TEXT",
+          "file": "text/help.txt"
         },
         {
           "type": "font",

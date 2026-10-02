@@ -148,7 +148,7 @@ class ReleaseTests(unittest.TestCase):
         synthetic_pbw(self.folder / common.ARTIFACT)
         self.artifact = common.inspect_pbw(self.folder / common.ARTIFACT, "1.0.0")
         (self.folder / "runtime.log").write_text("SYNTHETIC TEST ONLY INIT entered\nREADY storage=1048576 heap=40000 message=0\nUI screen1 heap39000\nUpdate commit session1 status3 heap38000\n")
-        self.metrics = {"resources": 30000, "static_ram": 35000, "native_binary": 32000, "linker_free_ram": 96000, "pbw": self.artifact["bytes"], "timetable": 24000, "measured_free_heap": 38000}
+        self.metrics = {"resources": 30000, "static_ram": 35000, "image_bytes": 35000, "native_binary": 32000, "linker_free_ram": 96000, "pbw": self.artifact["bytes"], "timetable": 24000, "measured_free_heap": 38000}
         self.audit = {"schema": 1, "version": "1.0.0", "clean_build": True, "tests_passed": True, "artifact": self.artifact, "metrics": self.metrics,
             "created_at": (datetime.datetime.now(datetime.timezone.utc)-datetime.timedelta(seconds=1)).isoformat(),
             "runtime": {"environment": "emulator", "scenarios": ["launch", "navigation", "update-transfer"], "evidence_path": str(self.folder / "runtime.log"), "evidence_sha256": common.digest((self.folder / "runtime.log").read_bytes())}}
@@ -658,12 +658,25 @@ print("PASS actual installed SDK adapter: all redirects refused, token sent only
     def test_budget_and_tool_output_failures_are_meaningful(self):
         output = "Total size of resources: 30000\nTotal footprint in RAM: 35000\nFree RAM available (heap): 96000\n"
         self.assertEqual(audit.parse_metrics(output)["static_ram"], 35000)
+        self.assertEqual(audit.parse_metrics(output)["image_bytes"], 35000)
         with self.assertRaisesRegex(RuntimeError, "Missing/ambiguous"):
             audit.parse_metrics("build succeeded, no metric")
         budgets = json.loads((self.root / "tests/build-budgets.json").read_text())
         for field, value in (("native_binary", 104858), ("static_ram", 104858), ("resources", 209716), ("timetable", 24577)):
             with self.subTest(field=field), self.assertRaises(RuntimeError):
                 audit.check_budgets(dict(self.metrics, **{field: value}), budgets)
+
+    def test_image_size_budget_keeps_sdk_headroom(self):
+        budgets = json.loads((self.root / "tests/build-budgets.json").read_text())
+        self.assertEqual(budgets["sdk_image_limit_bytes"], 65535)
+        self.assertLessEqual(budgets["max_image_bytes"], budgets["sdk_image_limit_bytes"] + 1 - 4096)
+        audit.check_budgets(dict(self.metrics, image_bytes=budgets["max_image_bytes"]), budgets)
+        for value, message in ((budgets["max_image_bytes"] + 1, "4 KiB headroom"), (65535, "4 KiB headroom"), (65536, "SDK hard limit")):
+            with self.subTest(image_bytes=value), self.assertRaisesRegex(RuntimeError, message):
+                audit.check_budgets(dict(self.metrics, image_bytes=value), budgets)
+        for metrics in ({k: v for k, v in self.metrics.items() if k != "image_bytes"}, dict(self.metrics, image_bytes=None)):
+            with self.assertRaisesRegex(RuntimeError, "not measured"):
+                audit.check_budgets(metrics, budgets)
 
     def test_source_change_between_build_and_freeze_is_rejected(self):
         args = self.preparation()

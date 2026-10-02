@@ -6,7 +6,12 @@ typedef struct {
 } palette_t;
 static palette_t colors;
 static int scroll_limit;
-static char document_buffer[2200];
+#define DOCUMENT_BYTES 2200
+/* Allocated once at startup (heap, not static) so it stays out of the app image.
+ * If that fails, screens fall back to a tiny static buffer and show truncated text. */
+static char *document_buffer;
+static char document_fallback[64];
+static size_t document_size;
 static const char *size_names[]={"Standard","Large","Extra Large"};
 static const char *action_names[]={"Nothing","Next departure","Previous departure","Switch favourite stop","Flip direction","Open Nearby","Open All departures","Open departure board","Exit to watchface"};
 static const char *theme_names[]={"Neon Dark","Neon Light","High Contrast Dark","High Contrast Light"};
@@ -702,7 +707,7 @@ static void all_info(GContext *c) {
   char override[80]="";
   if(app.override.day_type!=KB_DAY_UNKNOWN&&app.override.jst_day==kb_jst_day(time(NULL)))snprintf(override,sizeof(override),"\nOverride: %s, until JST midnight.",day_name(app.override.day_type));
   const char *selection=app.all_prefs.count?"":"\n\nNo points are selected. Back to the point selector, then choose boarding points or Use favourites. Show departures opens the merged board.";
-  snprintf(document_buffer,sizeof(document_buffer),"%s%s\n\nReference: %s\nSelected points: %u\n\nScheduled times in JST.\n%s%s\n\nDistances are approximate straight-line distances, not walking times or roadside guidance. No walking allowance is applied.\n\nUse manual selection or favourites without location. Hold SELECT on the list or board for this information.",message,selection,reference,app.all_prefs.count,calendar,override);
+  snprintf(document_buffer,document_size,"%s%s\n\nReference: %s\nSelected points: %u\n\nScheduled times in JST.\n%s%s\n\nDistances are approximate straight-line distances, not walking times or roadside guidance. No walking allowance is applied.\n\nUse manual selection or favourites without location. Hold SELECT on the list or board for this information.",message,selection,reference,app.all_prefs.count,calendar,override);
   int top=heading(c,status==8?"Location is off":"All departures",NULL);
   document(c,document_buffer,top+4,"UP/DOWN | BACK");
   graphics_context_set_fill_color(c,colors.background);graphics_fill_rect(c,GRect(0,0,200,top),0,GCornerNone);
@@ -954,7 +959,7 @@ static void details(GContext *c) {
     snprintf(reminder,sizeof(reminder),"%.60s%sReminder: leave %s JST\nHold SELECT: cancel",app.notice,app.notice[0]?"\n":"",lt);
   }
   else snprintf(reminder,sizeof(reminder),"%.60s%sHold SELECT: leave-now reminder",app.notice,app.notice[0]?"\n":"");
-  snprintf(s,sizeof(document_buffer),"%s\n%s\n%s\n\nRoute %s\nTo %s\n%s  %s JST%s\n%s%s | Scheduled\n%s\n%s\n%s\nSource verified %s\nData v%lu\n\n%s\nSELECT: Japanese name",p.name,p.direction,o.name,pattern.route,pattern.destination,date,tm,origin,day_name(app.detail.day_type),app.detail.overridden?" (Override)":"",walk,p.guidance,pattern.route_transitions,source,(unsigned long)d->release_version,reminder);
+  snprintf(s,document_size,"%s\n%s\n%s\n\nRoute %s\nTo %s\n%s  %s JST%s\n%s%s | Scheduled\n%s\n%s\n%s\nSource verified %s\nData v%lu\n\n%s\nSELECT: Japanese name",p.name,p.direction,o.name,pattern.route,pattern.destination,date,tm,origin,day_name(app.detail.day_type),app.detail.overridden?" (Override)":"",walk,p.guidance,pattern.route_transitions,source,(unsigned long)d->release_version,reminder);
   document(c,s,4,"UP/DOWN | BACK");
 }
 static void reminder_screen(GContext *c) {
@@ -976,32 +981,20 @@ static void reminder_screen(GContext *c) {
   time_string(departure,tm,sizeof(tm));countdown(&trip,cd,sizeof(cd));
   bool known=d&&kb_boarding_point_get(d,point_id,&p)&&kb_pattern_get(d,pattern_id,&pattern);
   int top=heading(c,title,commute?"Commute alarm":"Reminder");
-  if(known)snprintf(document_buffer,sizeof(document_buffer),"Bus %s at %s JST\n%s\n%s\n%s\nTo %s\n\nSELECT: departure board\nBACK: home",
+  if(known)snprintf(document_buffer,document_size,"Bus %s at %s JST\n%s\n%s\n%s\nTo %s\n\nSELECT: departure board\nBACK: home",
     pattern.route,tm,cd,p.short_name,p.direction,pattern.destination);
-  else snprintf(document_buffer,sizeof(document_buffer),"Bus at %s JST\n%s\n\nThe timetable changed; check the departure board.",tm,cd);
+  else snprintf(document_buffer,document_size,"Bus at %s JST\n%s\n\nThe timetable changed; check the departure board.",tm,cd);
   document(c,document_buffer,top+4,"SELECT: board | BACK");
   graphics_context_set_fill_color(c,colors.background);
   graphics_fill_rect(c,GRect(0,0,200,top+2),0,GCornerNone);
   heading(c,title,commute?"Commute alarm":"Reminder");
 }
 static void help(GContext *c) {
+  /* The help text lives in a raw resource, not in the 64 KB app image. */
+  size_t n=resource_load(resource_get_handle(RESOURCE_ID_HELP_TEXT),(uint8_t *)document_buffer,document_size-1);
+  document_buffer[n]=0;
   int top=heading(c,"Help",NULL);
-  document(c,
-    "HOME\nNext scheduled bus from your stop, with its route, time, countdown and later buses.\n"
-    "DOWN: next bus  UP: switch favourite stop\nHold UP: other direction  Hold DOWN: Nearby\n"
-    "BACK: soonest bus again, then the watchface\nSELECT: departure board\nHold SELECT: menu\n"
-    "Other direction applies where a stop has more than one boarding direction. Change these in Settings > Home buttons.\n\n"
-    "BOARD\nUP/DOWN: choose a bus\nSELECT: full details\nHold SELECT: refresh\n\n"
-    "LISTS\nPress DOWN on the last item to return to the top (UP wraps too). Holding a button stops at the end.\n\n"
-    "DETAILS\nHold SELECT: buzz once when it is time to leave (walking time + buffer). Hold again to cancel.\n\n"
-    "FAVOURITES\nIn a stop list, hold SELECT to add or remove a favourite.\n\n"
-    "MENU\nStops: favourites, Nearby, stop list, bus numbers and All departures\n"
-    "Trip context: walking time from your saved origin\n"
-    "Data status: timetable dates and update check\n"
-    "Settings: text size, colour theme and more\n\n"
-    "PHONE\nIn the Pebble app, open KasugaBus settings for favourites, buttons, commute alarm, time profiles, walking times, location and display.\n\n"
-    "Times are scheduled (JST), not live arrivals.",
-    top+4,"UP/DOWN | BACK");
+  document(c,document_buffer,top+4,"UP/DOWN | BACK");
   /* Scrolled text passes under the title; repaint the title over it. */
   graphics_context_set_fill_color(c,colors.background);
   graphics_fill_rect(c,GRect(0,0,200,top+2),0,GCornerNone);
@@ -1038,7 +1031,7 @@ static void status(GContext *c) {
   };
   unsigned st=app.update_status<0||app.update_status>10?5:app.update_status;
   unsigned missing=kb_pref_missing(&app.prefs,app_point_exists,NULL);
-  snprintf(s,sizeof(document_buffer),"Data status\nSELECT: Check updates\n\n%s\n\nActive dataset: v%lu\nSource verified: %s\nReview due: %s\n%s\nFeed success:\n%s\nAutomatic attempt:\n%s\n\nCalendar coverage\n%s to %s\nPending v%lu: %s\n\n%s\nMissing saved IDs: %u\n\nScheduled departures.\nFeed checks do not verify operator freshness.\n\nUpdates: %s\nPhone: %s\n%s",states[st],(unsigned long)(d?d->release_version:0),vf,rv,d&&d->review_by!=KB_DATE_UNKNOWN&&kb_jst_day(time(NULL))>d->review_by?"Needs timetable review":"",feed,attempt,from,until,(unsigned long)pending,future,kb_store_has_staging(&app.store,kb_jst_day(time(NULL)))?"Safe staging available":app.store.capacity_ok?"Storage full: pending data kept":"Insufficient firmware storage",missing,app.prefs.bytes[1]&KB_PREF_AUTO?"Daily on launch":"Manual only",app.phone_ready?"Ready":"Not connected",app.notice);
+  snprintf(s,document_size,"Data status\nSELECT: Check updates\n\n%s\n\nActive dataset: v%lu\nSource verified: %s\nReview due: %s\n%s\nFeed success:\n%s\nAutomatic attempt:\n%s\n\nCalendar coverage\n%s to %s\nPending v%lu: %s\n\n%s\nMissing saved IDs: %u\n\nScheduled departures.\nFeed checks do not verify operator freshness.\n\nUpdates: %s\nPhone: %s\n%s",states[st],(unsigned long)(d?d->release_version:0),vf,rv,d&&d->review_by!=KB_DATE_UNKNOWN&&kb_jst_day(time(NULL))>d->review_by?"Needs timetable review":"",feed,attempt,from,until,(unsigned long)pending,future,kb_store_has_staging(&app.store,kb_jst_day(time(NULL)))?"Safe staging available":app.store.capacity_ok?"Storage full: pending data kept":"Insufficient firmware storage",missing,app.prefs.bytes[1]&KB_PREF_AUTO?"Daily on launch":"Manual only",app.phone_ready?"Ready":"Not connected",app.notice);
   document(c,s,4,"SELECT: check");
 }
 static void japanese(GContext *c) {
@@ -1559,6 +1552,12 @@ static void clicks(void *ctx) {
   window_single_click_subscribe(BUTTON_ID_BACK,back);
 }
 void ui_init(void) {
+  document_buffer=malloc(DOCUMENT_BYTES);
+  document_size=DOCUMENT_BYTES;
+  if(!document_buffer) {
+    document_buffer=document_fallback;
+    document_size=sizeof(document_fallback);
+  }
   app.window=window_create();
   ui_apply_appearance();
   window_set_click_config_provider(app.window,clicks);
@@ -1566,4 +1565,8 @@ void ui_init(void) {
   layer_set_update_proc(app.layer,draw);
   layer_add_child(window_get_root_layer(app.window),app.layer);
   window_stack_push(app.window,false);
+}
+void ui_deinit(void) {
+  if(document_buffer!=document_fallback)free(document_buffer);
+  document_buffer=NULL;
 }

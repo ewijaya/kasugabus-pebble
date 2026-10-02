@@ -122,6 +122,7 @@ void app_load_reminders(void);
 void app_show_wakeup(int32_t cookie);
 void app_reload_glance(void);
 void ui_init(void);
+void ui_deinit(void);
 void ui_open(int);
 void ui_refresh(void);
 void ui_apply_appearance(void);
