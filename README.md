@@ -21,6 +21,8 @@ Timetable **v4** (feed-only) adds **Handai Honbu-mae** (阪大本部前), Ibarak
 
 Version **2.2.1** is a maintenance release that frees about 5.7 KB of app space with no change in behaviour. See [the 2.2.1 notes](docs/releases/2.2.1.md).
 
+Version **2.2.2** fixes phone settings so stops added by timetable updates appear in the stop lists and saving is never blocked by a slow connection. See [the 2.2.2 notes](docs/releases/2.2.2.md).
+
 The Neon Transit home screen leads with the next scheduled bus: route, departure time, countdown and later buses, with a compact clock at Standard text size or the time in the footer at Large and Extra Large. Up and Down browse later buses and switch stops; hold Select on a departure for a leave-now buzz, or in a stop list to add a favourite. The departure board, full details, all-stop picker, Nearby, trip context and data status work through the watch buttons. Timetables run offline; phone location, Clay settings and timetable downloads add optional connected functions.
 
 ![KasugaBus 2.1.0 home at Large text](docs/releases/assets/2.1.0/1-home-large.png) ![Leave-now reminder](docs/releases/assets/2.1.0/3-leave-now.png) ![Adding a favourite on the watch](docs/releases/assets/2.1.0/4-favourites.png)

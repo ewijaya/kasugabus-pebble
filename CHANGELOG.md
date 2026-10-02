@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.2.2
+
+- Phone settings now list stops added by timetable updates (Nihon Teien-mae,
+  Handai Honbu-mae). Settings waited only 2 seconds for the watch's stop list
+  and otherwise used the list bundled with the app; they now wait up to 8
+  seconds and fall back to the last complete list remembered on the phone.
+- If no list is available, stops the watch already uses stay selectable as
+  "Stop #N (name not loaded)" and settings can still be saved, instead of
+  asking for them to be removed.
+
 ## 2.2.1
 
 - Maintenance release with no change in behaviour. The app image (code plus
