@@ -1,7 +1,7 @@
 # KasugaBus
 
 <!-- kasugabus-release-status -->
-KasugaBus **v2.2.0** for Emery is available from [GitHub Releases](https://github.com/ewijaya/kasugabus-pebble/releases/tag/v2.2.0) and [Pebble App Store](https://apps.repebble.com/f63e6ed24301414a95909564).
+KasugaBus **v2.2.1** for Emery is available from [GitHub Releases](https://github.com/ewijaya/kasugabus-pebble/releases/tag/v2.2.1) and [Pebble App Store](https://apps.repebble.com/f63e6ed24301414a95909564).
 
 This initial release retains the stated physical and seven-day validation limitations.
 
