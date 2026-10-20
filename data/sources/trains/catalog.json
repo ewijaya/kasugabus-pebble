@@ -1,0 +1,112 @@
+[
+ {
+  "bytes": 149808,
+  "day": "weekday",
+  "direction": "Osaka",
+  "id": "jr_osaka_weekday",
+  "network": "JR",
+  "path": "jr_osaka_weekday.html",
+  "sha256": "9b6d15b538cc002e0ba1b3ccd10492d422f021de27adea3eee7963e48e8a58c7",
+  "url": "https://timetable.jr-odekake.net/station-timetable/2791011002?date=20261020",
+  "verified_on": "2026-10-20"
+ },
+ {
+  "bytes": 143414,
+  "day": "saturday",
+  "direction": "Osaka",
+  "id": "jr_osaka_saturday",
+  "network": "JR",
+  "path": "jr_osaka_saturday.html",
+  "sha256": "8ebc861f12e75f8983aaa6d5935fb0d857650a463127609455857a020fdd9468",
+  "url": "https://timetable.jr-odekake.net/station-timetable/2791011002?date=20261024",
+  "verified_on": "2026-10-20"
+ },
+ {
+  "bytes": 143414,
+  "day": "weekend",
+  "direction": "Osaka",
+  "id": "jr_osaka_weekend",
+  "network": "JR",
+  "path": "jr_osaka_weekend.html",
+  "sha256": "21605b7838998b1e7c619e215cb83c73d8c89a2f7557b8e0e31ddd5e573efec1",
+  "url": "https://timetable.jr-odekake.net/station-timetable/2791011002?date=20261025",
+  "verified_on": "2026-10-20"
+ },
+ {
+  "bytes": 146133,
+  "day": "weekday",
+  "direction": "Kyoto",
+  "id": "jr_kyoto_weekday",
+  "network": "JR",
+  "path": "jr_kyoto_weekday.html",
+  "sha256": "49d22d2653fc1a85328dc3388f04117e47e685c12cf0d7248c5be63fdd53f821",
+  "url": "https://timetable.jr-odekake.net/station-timetable/2791011001?date=20261020",
+  "verified_on": "2026-10-20"
+ },
+ {
+  "bytes": 141825,
+  "day": "saturday",
+  "direction": "Kyoto",
+  "id": "jr_kyoto_saturday",
+  "network": "JR",
+  "path": "jr_kyoto_saturday.html",
+  "sha256": "940d9c07e824b7fa97ad3fefbc2e8a3774077416be068b7b0027d525d849ba0e",
+  "url": "https://timetable.jr-odekake.net/station-timetable/2791011001?date=20261024",
+  "verified_on": "2026-10-20"
+ },
+ {
+  "bytes": 141825,
+  "day": "weekend",
+  "direction": "Kyoto",
+  "id": "jr_kyoto_weekend",
+  "network": "JR",
+  "path": "jr_kyoto_weekend.html",
+  "sha256": "0d31dd6e12d3b40c44ae8c35938c8e9e02fb386c305438ec7693ea158307cd9a",
+  "url": "https://timetable.jr-odekake.net/station-timetable/2791011001?date=20261025",
+  "verified_on": "2026-10-20"
+ },
+ {
+  "bytes": 301756,
+  "day": "weekday",
+  "direction": "Osaka",
+  "id": "hankyu_osaka_weekday",
+  "network": "Hankyu",
+  "path": "hankyu_osaka_weekday.html",
+  "sha256": "e6bb64231c050ffffab452d82b6fa829832d3e9bd504ca03671ae4851e3936c5",
+  "url": "https://www.hankyu.co.jp/en/station/html/HK-69_ky_1_w.html",
+  "verified_on": "2026-10-20"
+ },
+ {
+  "bytes": 287603,
+  "day": "weekend",
+  "direction": "Osaka",
+  "id": "hankyu_osaka_weekend",
+  "network": "Hankyu",
+  "path": "hankyu_osaka_weekend.html",
+  "sha256": "258a046ed53a2496ecc299f592e6900f7df2b341153c4a425b462c5803676600",
+  "url": "https://www.hankyu.co.jp/en/station/html/HK-69_ky_1_h.html",
+  "verified_on": "2026-10-20"
+ },
+ {
+  "bytes": 298962,
+  "day": "weekday",
+  "direction": "Kyoto",
+  "id": "hankyu_kyoto_weekday",
+  "network": "Hankyu",
+  "path": "hankyu_kyoto_weekday.html",
+  "sha256": "2f887239071722f272b150ca916ae29492669e0b588a616e5730cc01b91b9ae0",
+  "url": "https://www.hankyu.co.jp/en/station/html/HK-69_ky_2_w.html",
+  "verified_on": "2026-10-20"
+ },
+ {
+  "bytes": 290824,
+  "day": "weekend",
+  "direction": "Kyoto",
+  "id": "hankyu_kyoto_weekend",
+  "network": "Hankyu",
+  "path": "hankyu_kyoto_weekend.html",
+  "sha256": "0d4dbce9706a5734d24bfe29329c1cde8ae3c1637c39366857af2b8c62c6b8fc",
+  "url": "https://www.hankyu.co.jp/en/station/html/HK-69_ky_2_h.html",
+  "verified_on": "2026-10-20"
+ }
+]
