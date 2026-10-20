@@ -157,6 +157,44 @@ def compare(buses, trains, osaka, transfer, names):
     return tally, margins
 
 
+KYOTO_STOPS = {"Kyoto": {"JR": "京都", "Hankyu": "京都河原町"}, "Takatsuki": {"JR": "高槻", "Hankyu": "高槻市"}}
+
+
+def load_kyoto(path):
+    """{(station, day): {departure minute: {stop name: earliest arrival}}}."""
+    out = {}
+    for key, rows in json.loads(path.read_text()).items():
+        station, _, day = key.split("|")
+        table = out.setdefault((station, int(day)), {})
+        for dep, stops in rows:
+            for name, arrive in stops.items():
+                slot = table.setdefault(dep, {})
+                slot[name] = min(arrive, slot.get(name, arrive))
+    return out
+
+
+def compare_kyoto(buses, trains, kyoto, transfer, names, label):
+    tally = defaultdict(Counter)
+    margins = defaultdict(list)
+    for b in buses:
+        if SERVICE_DAY[b["service_id"]] != 1 or set(b["arrive"]) != {"JR", "Hankyu"}:
+            continue
+        got = {}
+        for station in ("JR", "Hankyu"):
+            stop = KYOTO_STOPS[label][station]
+            table = kyoto[(station, 1)]
+            for t in trains[(station, "Kyoto", 1)]:
+                if t[0] >= b["arrive"][station] + transfer and stop in table.get(t[0], {}):
+                    got[station] = table[t[0]][stop]
+                    break
+        if len(got) < 2:
+            continue
+        gap = got["JR"] - got["Hankyu"]
+        tally[names[b["boarding_point_id"]]]["Hankyu" if gap > 0 else "JR" if gap < 0 else "tie"] += 1
+        margins[names[b["boarding_point_id"]]].append(abs(gap))
+    return tally, margins
+
+
 def hm(minute):
     return f"{minute // 60}:{minute % 60:02}"
 
@@ -168,6 +206,7 @@ def main():
     parser.add_argument("--transfer", type=int, default=4, help="minutes from bus stop to platform")
     parser.add_argument("--point", type=int, action="append", help="boarding point(s) for sample connections")
     parser.add_argument("--arrivals", type=Path, help="Osaka arrival times fetched per train (JSON)")
+    parser.add_argument("--kyoto", type=Path, help="Kyoto/Takatsuki arrival times fetched per train (JSON)")
     parser.add_argument("--out", type=Path)
     args = parser.parse_args()
 
@@ -236,6 +275,17 @@ def main():
         for name, c in sorted(tally.items()):
             n = sum(c.values())
             print(f"  {name:48} n={n:3}  Hankyu first {c['Hankyu']:3}  JR first {c['JR']:3}  tie {c['tie']:3}  median gap {sorted(margins[name])[len(margins[name]) // 2]} min")
+
+    if args.kyoto:
+        kyoto = load_kyoto(args.kyoto)
+        point_names = {p["id"]: next(g["name_en"] for g in dataset["stop_groups"] if g["id"] == p["stop_group_id"]) + f" ({p['direction_en']})"
+                       for p in dataset["boarding_points"]}
+        for label in KYOTO_STOPS:
+            tally, margins = compare_kyoto(buses, trains, kyoto, args.transfer, point_names, label)
+            print(f"\nWeekday Kyoto-bound to {label}: JR vs Hankyu ({args.transfer} min transfer)")
+            for name, c in sorted(tally.items()):
+                gaps = sorted(margins[name])
+                print(f"  {name:48} n={sum(c.values()):3}  Hankyu first {c['Hankyu']:3}  JR first {c['JR']:3}  tie {c['tie']:3}  median gap {gaps[len(gaps) // 2]} min")
 
     if args.out:
         args.out.mkdir(parents=True, exist_ok=True)
