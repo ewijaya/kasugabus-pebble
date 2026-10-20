@@ -1,0 +1,18 @@
+Distances use one explicit phone fix. Refresh when your position changes.
+The phone fix has low accuracy. Distances are unknown; choose boarding points manually.
+The current phone fix is older than two minutes, or the reference/data changed. Distance unknown. Refresh explicitly.
+Android location permission was denied. Allow location for the Pebble phone app in Android settings, then refresh. The KasugaBus location switch does not grant Android permission.
+The location request timed out. Refresh to retry, or choose boarding points manually.
+The phone is unavailable. Manual selection and favourites still work offline. Refresh after reconnecting.
+The reference is outside the saved area. Choose boarding points manually.
+There are no verified pole distances. Choose boarding points manually. Unverified coordinates are never guessed.
+Enable 'Use phone location for Nearby' in KasugaBus phone settings.
+No home reference is saved. Save current home in KasugaBus phone settings, then refresh. Home coordinates stay on the phone.
+Manual selection works offline. Distance unknown. Favourites can replace the selection; an empty selection remains empty.
+Requesting distances once. Manual selection remains available.
+Distances use the fixed saved home reference. They do not expire after two minutes. Home coordinates stay on the phone.
+Saved home or timetable data changed. Old distances were cleared. Refresh explicitly; no automatic location request was made.
+No points are selected. Back to the point selector, then choose boarding points or Use favourites. Show departures opens the merged board.
+Verified trips only. Each operator uses its own service calendar.
+Distances are approximate straight-line distances, not walking times or roadside guidance. No walking allowance is applied.
+Use manual selection or favourites without location. Hold SELECT on the list or board for this information.

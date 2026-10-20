@@ -58,6 +58,11 @@
           "file": "text/help.txt"
         },
         {
+          "type": "raw",
+          "name": "ALL_INFO_TEXT",
+          "file": "text/all-info.txt"
+        },
+        {
           "type": "font",
           "name": "JP_16",
           "file": "fonts/NotoSansJP-Regular.ttf",

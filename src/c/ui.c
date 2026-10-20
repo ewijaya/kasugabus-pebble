@@ -679,35 +679,55 @@ static kb_query_result_t all_summary(kb_trip_t *trip,kb_query_state_t *state) {
   memset(state,0,sizeof(*state));state->first_unconfirmed_day=KB_DATE_UNKNOWN;
   return kb_query_merged_next(&q,app.all_prefs.ids,metres,app.all_prefs.count,NULL,trip,state);
 }
+/* Fixed All-departures text lives in a raw resource, one paragraph per line,
+ * to keep it out of the 64 KB app image (resources/text/all-info.txt). */
+enum { INFO_WAITING=11,INFO_HOME_FIX,INFO_HOME_CHANGED,INFO_NO_POINTS,INFO_CALENDAR,INFO_DISTANCES,INFO_MANUAL };
+/* Copies line n of the resource into document_buffer at used, reading small
+ * pieces so nothing holds the whole file. Returns the new used length. */
+static size_t info_line(unsigned n,size_t used) {
+  ResHandle h=resource_get_handle(RESOURCE_ID_ALL_INFO_TEXT);
+  size_t total=resource_size(h);
+  uint8_t chunk[32];
+  for(size_t at=0;at<total;at+=sizeof(chunk)) {
+    size_t got=resource_load_byte_range(h,at,chunk,total-at<sizeof(chunk)?total-at:sizeof(chunk));
+    for(size_t i=0;i<got;i++) {
+      if(chunk[i]=='\n') {
+        if(!n--)goto done;
+      }
+      else if(!n&&used+1<document_size)document_buffer[used++]=(char)chunk[i];
+    }
+  }
+done:
+  document_buffer[used]=0;
+  return used;
+}
+static size_t info_text(size_t used,const char *s) {
+  int n=snprintf(document_buffer+used,document_size-used,"%s",s);
+  return n<0?used:used+(size_t)n<document_size?used+(size_t)n:document_size-1;
+}
 static void all_info(GContext *c) {
   unsigned status=all_status_now();
-  const char *messages[]={
-    "Distances use one explicit phone fix. Refresh when your position changes.",
-    "The phone fix has low accuracy. Distances are unknown; choose boarding points manually.",
-    "The current phone fix is older than two minutes, or the reference/data changed. Distance unknown. Refresh explicitly.",
-    "Android location permission was denied. Allow location for the Pebble phone app in Android settings, then refresh. The KasugaBus location switch does not grant Android permission.",
-    "The location request timed out. Refresh to retry, or choose boarding points manually.",
-    "The phone is unavailable. Manual selection and favourites still work offline. Refresh after reconnecting.",
-    "The reference is outside the saved area. Choose boarding points manually.",
-    "There are no verified pole distances. Choose boarding points manually. Unverified coordinates are never guessed.",
-    "Enable 'Use phone location for Nearby' in KasugaBus phone settings.",
-    "No home reference is saved. Save current home in KasugaBus phone settings, then refresh. Home coordinates stay on the phone.",
-    "Manual selection works offline. Distance unknown. Favourites can replace the selection; an empty selection remains empty."
-  };
-  const char *reference=app.all_prefs.reference==KB_ALL_REFERENCE_HOME?"Saved home location":app.all_prefs.reference==KB_ALL_REFERENCE_CURRENT?"Current phone location":"Manual";
-  const char *message=app.all_waiting?"Requesting distances once. Manual selection remains available.":messages[status];
-  if(app.all_prefs.reference==KB_ALL_REFERENCE_HOME&&status==0)message="Distances use the fixed saved home reference. They do not expire after two minutes. Home coordinates stay on the phone.";
-  else if(app.all_prefs.reference==KB_ALL_REFERENCE_HOME&&status==2)message="Saved home or timetable data changed. Old distances were cleared. Refresh explicitly; no automatic location request was made.";
+  bool home=app.all_prefs.reference==KB_ALL_REFERENCE_HOME;
+  const char *reference=home?"Saved home location":app.all_prefs.reference==KB_ALL_REFERENCE_CURRENT?"Current phone location":"Manual";
+  unsigned message=app.all_waiting?INFO_WAITING:home&&status==0?INFO_HOME_FIX:home&&status==2?INFO_HOME_CHANGED:status;
   kb_trip_t trip;kb_query_state_t state;all_summary(&trip,&state);
-  char calendar[180]="Verified trips only. Each operator uses its own service calendar.";
+  char line[180];
+  size_t used=info_line(message,0);
+  if(!app.all_prefs.count)used=info_line(INFO_NO_POINTS,info_text(used,"\n\n"));
+  snprintf(line,sizeof(line),"\n\nReference: %s\nSelected points: %u\n\nScheduled times in JST.\n",reference,app.all_prefs.count);
+  used=info_text(used,line);
   if(state.coverage_limited) {
     char date[20];date_string(state.first_unconfirmed_day,date,sizeof(date));
-    snprintf(calendar,sizeof(calendar),"Partial coverage: a selected point has an unconfirmed calendar from %s. Other verified trips are still shown.",date);
+    snprintf(line,sizeof(line),"Partial coverage: a selected point has an unconfirmed calendar from %s. Other verified trips are still shown.",date);
+    used=info_text(used,line);
   }
-  char override[80]="";
-  if(app.override.day_type!=KB_DAY_UNKNOWN&&app.override.jst_day==kb_jst_day(time(NULL)))snprintf(override,sizeof(override),"\nOverride: %s, until JST midnight.",day_name(app.override.day_type));
-  const char *selection=app.all_prefs.count?"":"\n\nNo points are selected. Back to the point selector, then choose boarding points or Use favourites. Show departures opens the merged board.";
-  snprintf(document_buffer,document_size,"%s%s\n\nReference: %s\nSelected points: %u\n\nScheduled times in JST.\n%s%s\n\nDistances are approximate straight-line distances, not walking times or roadside guidance. No walking allowance is applied.\n\nUse manual selection or favourites without location. Hold SELECT on the list or board for this information.",message,selection,reference,app.all_prefs.count,calendar,override);
+  else used=info_line(INFO_CALENDAR,used);
+  if(app.override.day_type!=KB_DAY_UNKNOWN&&app.override.jst_day==kb_jst_day(time(NULL))) {
+    snprintf(line,sizeof(line),"\nOverride: %s, until JST midnight.",day_name(app.override.day_type));
+    used=info_text(used,line);
+  }
+  used=info_line(INFO_DISTANCES,info_text(used,"\n\n"));
+  info_line(INFO_MANUAL,info_text(used,"\n\n"));
   int top=heading(c,status==8?"Location is off":"All departures",NULL);
   document(c,document_buffer,top+4,"UP/DOWN | BACK");
   graphics_context_set_fill_color(c,colors.background);graphics_fill_rect(c,GRect(0,0,200,top),0,GCornerNone);
@@ -715,7 +735,8 @@ static void all_info(GContext *c) {
 }
 static void nearby_disabled(GContext *c) {
   int top=heading(c,"Location is off",NULL);
-  document(c,"Enable 'Use phone location for Nearby' in KasugaBus phone settings.",top+5,"UP/DOWN | BACK");
+  info_line(8,0);
+  document(c,document_buffer,top+5,"UP/DOWN | BACK");
   graphics_context_set_fill_color(c,colors.background);
   graphics_fill_rect(c,GRect(0,0,200,top),0,GCornerNone);
   heading(c,"Location is off",NULL);
