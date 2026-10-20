@@ -115,6 +115,48 @@ def next_train(trains, ready):
     return next((t for t in trains if t[0] >= ready), None)
 
 
+def load_osaka(path):
+    """{(station, day): {departure minute: earliest Osaka arrival}} from fetch output.
+    Trains that never reach Osaka (e.g. Hankyu trains for Tengachaya) are absent."""
+    raw = json.loads(path.read_text())
+    out = {}
+    for key, rows in raw.items():
+        station, _, day = key.split("|")
+        table = out.setdefault((station, int(day)), {})
+        for dep, arrive in rows:
+            if isinstance(arrive, int):
+                table[dep] = min(arrive, table.get(dep, arrive))
+    return out
+
+
+def next_to_osaka(trains, osaka, ready):
+    for t in trains:
+        if t[0] >= ready and t[0] in osaka:
+            return t, osaka[t[0]]
+    return None, None
+
+
+def compare(buses, trains, osaka, transfer, names):
+    """Per bus trip: which station gets you to Osaka first."""
+    tally = defaultdict(Counter)
+    margins = defaultdict(list)
+    for b in buses:
+        if SERVICE_DAY[b["service_id"]] != 1 or set(b["arrive"]) != {"JR", "Hankyu"}:
+            continue
+        got = {}
+        for station in ("JR", "Hankyu"):
+            _, arrival = next_to_osaka(trains[(station, "Osaka", 1)], osaka[(station, 1)], b["arrive"][station] + transfer)
+            if arrival is not None:
+                got[station] = arrival
+        if len(got) < 2:
+            continue
+        gap = got["JR"] - got["Hankyu"]
+        winner = "Hankyu" if gap > 0 else "JR" if gap < 0 else "tie"
+        tally[names[b["boarding_point_id"]]][winner] += 1
+        margins[names[b["boarding_point_id"]]].append(abs(gap))
+    return tally, margins
+
+
 def hm(minute):
     return f"{minute // 60}:{minute % 60:02}"
 
@@ -125,6 +167,7 @@ def main():
     parser.add_argument("--dataset", type=Path, default=DATA / "timetable_v4.json")
     parser.add_argument("--transfer", type=int, default=4, help="minutes from bus stop to platform")
     parser.add_argument("--point", type=int, action="append", help="boarding point(s) for sample connections")
+    parser.add_argument("--arrivals", type=Path, help="Osaka arrival times fetched per train (JSON)")
     parser.add_argument("--out", type=Path)
     args = parser.parse_args()
 
@@ -173,6 +216,26 @@ def main():
                 t = next_train(trains[(station, "Osaka", 1)], b["arrive"][station] + args.transfer)
                 legs.append(f"{station} {hm(b['arrive'][station])} -> {hm(t[0])} {t[1]} for {t[2]}" if t else f"{station}: none")
         print(f"  bus {b['route']:>2} {hm(b['minute'])} | " + " | ".join(legs))
+
+    if args.arrivals:
+        osaka = load_osaka(args.arrivals)
+        print(f"\nWeekday Osaka-bound: who arrives first ({args.transfer} min transfer, next train that reaches Osaka)")
+        for point in args.point or [3]:
+            print(f"  point {point}:")
+            for b in [b for b in with_arrival if b["boarding_point_id"] == point and SERVICE_DAY[b["service_id"]] == 1 and 420 <= b["minute"] <= 510]:
+                legs = []
+                for station in ("JR", "Hankyu"):
+                    if station in b["arrive"]:
+                        t, arrival = next_to_osaka(trains[(station, "Osaka", 1)], osaka[(station, 1)], b["arrive"][station] + args.transfer)
+                        legs.append(f"{station} {hm(t[0])} {t[1]} -> Osaka {hm(arrival)}" if t else f"{station}: none")
+                print(f"    bus {hm(b['minute'])} | " + " | ".join(legs))
+        point_names = {p["id"]: next(g["name_en"] for g in dataset["stop_groups"] if g["id"] == p["stop_group_id"]) + f" ({p['direction_en']})"
+                       for p in dataset["boarding_points"]}
+        tally, margins = compare(buses, trains, osaka, args.transfer, point_names)
+        print("\nAll weekday Ibaraki-bound trips, by boarding point (Osaka arrival, JR vs Hankyu)")
+        for name, c in sorted(tally.items()):
+            n = sum(c.values())
+            print(f"  {name:48} n={n:3}  Hankyu first {c['Hankyu']:3}  JR first {c['JR']:3}  tie {c['tie']:3}  median gap {sorted(margins[name])[len(margins[name]) // 2]} min")
 
     if args.out:
         args.out.mkdir(parents=True, exist_ok=True)
