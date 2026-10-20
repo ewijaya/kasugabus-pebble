@@ -96,7 +96,7 @@ class AllHarnessTests(unittest.TestCase):
 
 
 class RelayLifecycleTests(unittest.TestCase):
-    @unittest.skipUnless(SDK_PYTHON.is_file() and sys.platform=="darwin","Installed macOS SDK unavailable")
+    @unittest.skipUnless(SDK_PYTHON.is_file() and (sys.platform=="darwin" or sys.platform.startswith("linux")),"Installed macOS/Linux SDK unavailable")
     def test_real_sdk_kernel_argv_roundtrip_retains_spaces_empty_args_and_packages(self):
         # Benign child interpreter only: no emulator/socket/account access.
         script=r'''

@@ -50,7 +50,8 @@ static void test_lazy_init_and_bounded_step(void){
 }
 static void test_sole_good_future_survives_unchecked_corrupt_corrections(void){
  kb_store_t s;empty_storage();seed(0,2,0,400);seed(1,3,1,401);seed(2,4,1,402);seed(3,5,1,403);
- for(unsigned i=4;i<KB_STORE_SLOTS;i++)seed(i,i+2,(int)i-2,400+i);corrupt_payload(2);corrupt_payload(3);
+ for(unsigned i=4;i<KB_STORE_SLOTS;i++)seed(i,i+2,(int)i-2,400+i);
+ corrupt_payload(2);corrupt_payload(3);
  assert(kb_store_init(&s,io,base,length,cache));assert(checked_count(&s)==0);
  revision(10,6);begin(&s,410,10);assert(s.recovery_notice&&(s.transfer.slot==2||s.transfer.slot==3));
  assert(s.slots[1].valid&&s.slots[1].checked);

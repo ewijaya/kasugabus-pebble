@@ -4,7 +4,7 @@
 var fs=require('fs'),http=require('http'),child=require('child_process'),readline=require('readline'),assert=require('assert'),updater=require('../src/pkjs/updater'),createSender=require('../src/pkjs/sender'),p=require('../src/pkjs/protocol');
 var base=process.argv[2],current=Number(process.argv[3]||2),pending=current+1,root=require('path').resolve(__dirname,'..');
 if(!/^http:\/\/127\.0\.0\.1:\d+$/.test(base))throw new Error('Controlled loopback feed URL required');
-var python=process.env.KASUGABUS_PEBBLE_PYTHON||'/Users/e_wijaya_ap/.local/share/uv/tools/pebble-tool/bin/python';
+var python=process.env.KASUGABUS_PEBBLE_PYTHON||require('path').join(require('os').homedir(),'.local/share/uv/tools/pebble-tool/bin/python');
 var bridge=child.spawn(python,[root+'/tools/emu_update_bridge.py'],{stdio:['pipe','pipe','inherit']}),listeners=[],watchState=null,activePhone=null,savedPrefs=null,originalPreferences=null,interrupted=false,chunkCount=0,closing=false,bridgeFailed=false;
 var tracing=process.env.KASUGABUS_EMU_TRACE==='1';
 var activeTransport=null;

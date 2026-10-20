@@ -98,10 +98,17 @@ def error_text(error):
 
 
 def process_running(pid):
+    # Linux: /proc/<pid>/stat state follows the parenthesised comm; Z=zombie.
+    if sys.platform.startswith("linux"):
+        try:raw=Path("/proc/%d/stat"%pid).read_bytes()
+        except FileNotFoundError:return False
+        end=raw.rfind(b")")
+        if end<0 or len(raw)<end+3:raise RuntimeError("Unexpected kernel process identity shape")
+        return raw[end+2:end+3]!=b"Z"
     # Actual installed macOS headers: PROC_PIDT_SHORTBSDINFO=13, status at12,
     # 64-byte proc_bsdshortinfo; SZOMB=5. No process arguments are exposed.
     if sys.platform!="darwin":
-        raise RuntimeError("Scoped fixture relay requires the inspected macOS process API")
+        raise RuntimeError("Scoped fixture relay requires the inspected macOS or Linux process API")
     library=ctypes.CDLL("/usr/lib/libproc.dylib",use_errno=True)
     function=library.proc_pidinfo
     function.argtypes=[ctypes.c_int,ctypes.c_int,ctypes.c_uint64,ctypes.c_void_p,ctypes.c_int]
@@ -120,6 +127,14 @@ def process_arguments(pid):
     # KERN_PROCARGS2 is argc, executable NUL/padding, then exactly argc NUL-
     # terminated arguments. Deliberately stop before environment variables.
     if not process_running(pid):raise ProcessLookupError("SDK relay is no longer running")
+    if sys.platform.startswith("linux"):
+        # /proc/<pid>/cmdline is exactly argv, each NUL-terminated; no environment.
+        try:raw=Path("/proc/%d/cmdline"%pid).read_bytes()
+        except FileNotFoundError:raise ProcessLookupError("SDK relay is no longer running")
+        if not raw.endswith(b"\0"):raise RuntimeError("Truncated kernel SDK argument record")
+        arguments=[os.fsdecode(part) for part in raw[:-1].split(b"\0")]
+        if not 1<=len(arguments)<=4096:raise RuntimeError("Invalid kernel SDK argument count")
+        return arguments
     library=ctypes.CDLL(None,use_errno=True)
     function=library.sysctl
     function.argtypes=[ctypes.POINTER(ctypes.c_int),ctypes.c_uint,ctypes.c_void_p,ctypes.POINTER(ctypes.c_size_t),ctypes.c_void_p,ctypes.c_size_t]

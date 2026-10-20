@@ -53,10 +53,10 @@ Bus calculations and service dates always use JST. The large clock follows the w
 
 ## Build and install
 
-The implementation was built on this Mac with Pebble Tool **5.0.40**, SDK **4.33.1**, its bundled ARM GCC **14.2.1**, Python **3.13.5**, Node **26.8.1**, npm **11.19.0**, and `@rebble/clay` **1.1.0**. The existing installed Clay package was reused; the lockfile pins the registry package integrity. Do not install another SDK or replace the compiler to build this project.
+The implementation was originally built on an Apple Silicon Mac with Pebble Tool **5.0.40**, SDK **4.33.1**, its bundled ARM GCC **14.2.1**, Python **3.13.5**, Node **26.8.1**, npm **11.19.0**, and `@rebble/clay` **1.1.0**. The existing installed Clay package was reused; the lockfile pins the registry package integrity. It also builds and tests on Ubuntu 22.04 (Pebble Tool 5.0.40, SDK 4.33.1, Python 3.10.12, Node 24.21.0, system GCC 11.4 for the host C tests). Do not install another SDK or replace the compiler to build this project.
 
 ```sh
-cd /Users/e_wijaya_ap/Desktop/kasugabus-pebble
+cd kasugabus-pebble
 npm ci --ignore-scripts
 npm run generate
 python3 scripts/test.py
@@ -64,7 +64,7 @@ pebble build
 pebble install --emulator emery build/kasugabus-pebble.pbw
 ```
 
-The SDK lives under `~/Library/Application Support/Pebble SDK/SDKs/4.33.1/`. Its `pebble` wrapper selects the bundled compiler; a separate `arm-none-eabi-gcc` on PATH is unnecessary. The SDK's known RWX linker warning is not a build failure.
+The SDK lives under `~/Library/Application Support/Pebble SDK/SDKs/4.33.1/` on macOS and `~/.local/share/pebble-sdk/SDKs/4.33.1/` on Linux. Its `pebble` wrapper selects the bundled compiler; a separate `arm-none-eabi-gcc` on PATH is unnecessary. The SDK's known RWX linker warning is not a build failure.
 
 Download the [published PBW](https://github.com/ewijaya/kasugabus-pebble/releases/download/v1.0.0/kasugabus-pebble.pbw) to install it through the companion's developer connection:
 

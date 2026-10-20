@@ -145,5 +145,6 @@ int main(int argc,char **argv) {
   assert(argc==5); fixtures_t f; memset(&f,0,sizeof(f));
   load(argv[1],&f.baseline,&f.buffers[0]); load(argv[2],&f.future,&f.buffers[1]); load(argv[3],&f.unknown,&f.buffers[2]); load(argv[4],&f.no_service,&f.buffers[3]);
   f.effective=date_day(2026,10,3); test_dates(); test_minutes(); test_crc(); test_metadata(&f); test_schedule(&f); test_home_query(&f);
-  for(unsigned i=0;i<4;i++) free(f.buffers[i]); puts("engine fixture tests passed"); return 0;
+  for(unsigned i=0;i<4;i++) free(f.buffers[i]);
+  puts("engine fixture tests passed"); return 0;
 }
