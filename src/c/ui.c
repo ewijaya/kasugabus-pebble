@@ -1073,8 +1073,8 @@ static SCREEN void trains_screen(GContext *c) {
     const kb_leg_t *l=&legs[i];
     kb_train_t later;
     clock_text(x,sizeof(x),l->at);clock_text(a,sizeof(a),l->train.departure);clock_text(b,sizeof(b),l->train.arrival);
-    used+=(size_t)snprintf(s+used,document_size-used,"\n%s %s%s\n%s %s\nfor %s\n%s %s\n",
-      l->network?"Hankyu":"JR Ibaraki",x,l->network?" (stay on)":"",a,l->train.type,l->train.destination,arrive_name(l->network,kyoto),b);
+    used+=(size_t)snprintf(s+used,document_size-used,"%s%s %s%s\n%s %s\nfor %s\n%s %s\n",
+      i?"\n":"",l->network?"Hankyu":"JR Ibaraki",x,l->network?" (stay on)":"",a,l->train.type,l->train.destination,arrive_name(l->network,kyoto),b);
     if(kb_trains_next(train_read,NULL,l->network,kyoto,app.detail.day_type==KB_DAY_WEEKDAY?KB_TRAIN_WEEKDAY:KB_TRAIN_WEEKEND,
         l->train.departure,kyoto&&(app.extras.train_flags&KB_TRAIN_FLAG_TAKATSUKI)?1:0,1,&later)&&used<document_size) {
       clock_text(a,sizeof(a),later.departure);clock_text(b,sizeof(b),later.arrival);
