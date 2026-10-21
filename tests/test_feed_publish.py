@@ -53,6 +53,23 @@ class PublishingTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "upcoming"):
             self.prepare(upcoming=False)
 
+    def test_diff_reports_station_minutes_that_move_no_departure(self):
+        # Schema 2 adds minutes to existing departures; the diff must not call that "no change".
+        before = json.loads((ROOT / "data/timetable_v4.json").read_text())
+        after = json.loads((ROOT / "data/timetable_v5.json").read_text())
+        diff = publish.departure_diff(before, after)
+        self.assertEqual((diff["departuresAdded"], diff["departuresRemoved"], diff["changedSections"]), ([], [], []))
+        self.assertEqual(diff["stationMinutes"], {"previous": 0, "current": 1199, "added": 1199, "removed": 0, "changed": 0})
+        later = copy.deepcopy(after)
+        later["release_version"] = 6
+        timed = [d for d in later["departures"] if d.get("station_minutes")]
+        timed[0]["station_minutes"] = dict(timed[0]["station_minutes"], jr=timed[0]["station_minutes"]["jr"] + 1)
+        del timed[1]["station_minutes"]
+        self.assertEqual(publish.departure_diff(after, later)["stationMinutes"],
+                         {"previous": 1199, "current": 1198, "added": 0, "removed": 1, "changed": 1})
+        # Datasets without station minutes keep the exact diff shape older reports have.
+        self.assertNotIn("stationMinutes", publish.departure_diff(before, before))
+
     def test_exact_review_hash_required(self):
         self.current.write_text(self.current.read_text()+"\n")
         with self.assertRaisesRegex(ValueError, "exact source"):

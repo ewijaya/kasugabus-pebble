@@ -1,8 +1,9 @@
 # Timetable v5 (schema 2) — bus minutes to JR Ibaraki and Hankyu Ibaraki-shi
 
-Prepared 21 October 2026. **Not published.** It needs the app release that
-carries schema 2 support (data level 2) to be on the RePebble store first;
-installed 2.2.x apps ignore it by design. The bundled baseline is unchanged.
+Prepared 21 October 2026. The feed files are prepared and validated locally
+but **not deployed**: the live Pages feed still serves v4. KasugaBus 2.3.0,
+which reads schema 2 (data level 2), is published, so v5 can now be deployed.
+Installed 2.2.x apps ignore it by design. The bundled baseline is unchanged.
 
 v5 is v4 plus, for each Kintetsu bus that ends at JR Ibaraki or Hankyu
 Ibaraki-shi, the minutes from boarding to each station. Everything else is
@@ -43,12 +44,40 @@ packs each row into one byte (JR minutes 1-31, Hankyu gap 4-10 minutes); a
 two-byte-per-row layout would have left only 1,265 bytes, less than the 1,267
 bytes that adding a single stop (v4) cost.
 
-## Publication checklist (not yet done)
+## Feed preparation (done 21 October 2026)
 
-1. Release the app version that supports schema 2 and confirm it on the store.
-2. Run `tools/publish_feed.py` for v5 with the usual review report and hosting
-   validation. Do not publish v5 before step 1: an installed 2.2.x app would
-   report the update as incompatible on every check and stay on v4.
-3. Decide whether apps that cannot read schema 2 should keep receiving
-   timetable corrections. The feed has one `current` release, so after v5 they
-   would not.
+- `hosting/sources/5.json` is the exact reviewed input (a copy of
+  `data/timetable_v5.json`); `hosting/reviews/5-review.json` is the review
+  report tied to its SHA-256 `1b5e1f935e5b…`. The report states plainly that the
+  station minutes were checked only against the Kintetsu line matrix and each
+  pattern's own call list, and that no human has compared them with the
+  printed timetable.
+- `tools/publish_feed.py` wrote `hosting/public/releases/5-1bbd5a87fca4d66c.bin`
+  (29,678 bytes), the review and diff reports, and a manifest whose `current` is
+  v5 with `minAppVersion` 2 and no `upcoming`. The production phone validators
+  accept it at data level 2 and refuse it at level 1 ("App update required").
+  The diff report lists the 1,199 added station minutes under `stationMinutes`
+  (it used to ignore them and would have said "no change").
+- `tools/validate_hosting.py` passes offline and with `--check-live`: all five
+  payloads match their exact reviewed sources and every file already live is
+  preserved unchanged.
+- Not done: the Pages deployment, and a check of the deployed feed from a phone.
+
+## Effect on older apps
+
+The feed has one `current` release, so once v5 is deployed an installed 2.2.x
+app reports every check as "App update required" and stays on v4; it will not
+receive later timetable corrections until updated. v4 and earlier files stay
+on the host. Apps on 2.3.0 download v5 on their next daily check or from Data
+status → Select; the host caches responses for up to ten minutes.
+
+## Deployment (needs the owner's explicit approval)
+
+1. Commit and push the prepared files to `main`.
+2. Optional dry run: dispatch `timetables.yml` with `publish=false`. It
+   validates and uploads a seven-day inspection artifact and deploys nothing.
+3. Deploy: dispatch `timetables.yml` with `publish=true` (and
+   `initialize_dedicated_site=false`). Then check the live manifest and
+   payload, and on a phone with 2.3.0 run Data status → Select and open
+   Train connection.
+4. Rollback: publish a higher release version; never rewrite a payload.

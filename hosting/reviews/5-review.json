@@ -1,0 +1,229 @@
+{
+  "releaseVersion": 5,
+  "sourceSha256": "1b5e1f935e5b58a1b3c3ad07c15eaa0d3a1af610e13d0730c4380220e6bf3036",
+  "departureCount": 1939,
+  "reconciled": true,
+  "reviewer": "Claude, owner-requested station minutes for the Train connection feature: v4 unchanged by time, route and stops; the added minutes to JR Ibaraki and Hankyu Ibaraki-shi come from the same printed Kintetsu line-matrix column as each departure and are checked only against that matrix and each pattern's own call list; no human has compared them with the operator's printed timetable",
+  "reviewedAt": "2026-10-21",
+  "counts": [
+    {
+      "boarding_point_id": 1,
+      "service_id": 1,
+      "count": 46
+    },
+    {
+      "boarding_point_id": 1,
+      "service_id": 2,
+      "count": 37
+    },
+    {
+      "boarding_point_id": 2,
+      "service_id": 1,
+      "count": 46
+    },
+    {
+      "boarding_point_id": 2,
+      "service_id": 2,
+      "count": 37
+    },
+    {
+      "boarding_point_id": 3,
+      "service_id": 1,
+      "count": 46
+    },
+    {
+      "boarding_point_id": 3,
+      "service_id": 2,
+      "count": 37
+    },
+    {
+      "boarding_point_id": 4,
+      "service_id": 3,
+      "count": 81
+    },
+    {
+      "boarding_point_id": 4,
+      "service_id": 4,
+      "count": 50
+    },
+    {
+      "boarding_point_id": 4,
+      "service_id": 5,
+      "count": 43
+    },
+    {
+      "boarding_point_id": 5,
+      "service_id": 3,
+      "count": 83
+    },
+    {
+      "boarding_point_id": 5,
+      "service_id": 4,
+      "count": 52
+    },
+    {
+      "boarding_point_id": 5,
+      "service_id": 5,
+      "count": 45
+    },
+    {
+      "boarding_point_id": 6,
+      "service_id": 3,
+      "count": 81
+    },
+    {
+      "boarding_point_id": 6,
+      "service_id": 4,
+      "count": 50
+    },
+    {
+      "boarding_point_id": 6,
+      "service_id": 5,
+      "count": 43
+    },
+    {
+      "boarding_point_id": 7,
+      "service_id": 3,
+      "count": 80
+    },
+    {
+      "boarding_point_id": 7,
+      "service_id": 4,
+      "count": 50
+    },
+    {
+      "boarding_point_id": 7,
+      "service_id": 5,
+      "count": 43
+    },
+    {
+      "boarding_point_id": 8,
+      "service_id": 3,
+      "count": 81
+    },
+    {
+      "boarding_point_id": 8,
+      "service_id": 4,
+      "count": 50
+    },
+    {
+      "boarding_point_id": 8,
+      "service_id": 5,
+      "count": 43
+    },
+    {
+      "boarding_point_id": 9,
+      "service_id": 3,
+      "count": 80
+    },
+    {
+      "boarding_point_id": 9,
+      "service_id": 4,
+      "count": 50
+    },
+    {
+      "boarding_point_id": 9,
+      "service_id": 5,
+      "count": 43
+    },
+    {
+      "boarding_point_id": 10,
+      "service_id": 3,
+      "count": 81
+    },
+    {
+      "boarding_point_id": 10,
+      "service_id": 4,
+      "count": 50
+    },
+    {
+      "boarding_point_id": 10,
+      "service_id": 5,
+      "count": 43
+    },
+    {
+      "boarding_point_id": 11,
+      "service_id": 3,
+      "count": 84
+    },
+    {
+      "boarding_point_id": 11,
+      "service_id": 4,
+      "count": 52
+    },
+    {
+      "boarding_point_id": 11,
+      "service_id": 5,
+      "count": 45
+    },
+    {
+      "boarding_point_id": 12,
+      "service_id": 3,
+      "count": 80
+    },
+    {
+      "boarding_point_id": 12,
+      "service_id": 4,
+      "count": 50
+    },
+    {
+      "boarding_point_id": 12,
+      "service_id": 5,
+      "count": 43
+    },
+    {
+      "boarding_point_id": 101,
+      "service_id": 6,
+      "count": 19
+    },
+    {
+      "boarding_point_id": 102,
+      "service_id": 6,
+      "count": 19
+    },
+    {
+      "boarding_point_id": 103,
+      "service_id": 6,
+      "count": 19
+    },
+    {
+      "boarding_point_id": 104,
+      "service_id": 6,
+      "count": 19
+    },
+    {
+      "boarding_point_id": 105,
+      "service_id": 6,
+      "count": 19
+    },
+    {
+      "boarding_point_id": 106,
+      "service_id": 6,
+      "count": 19
+    }
+  ],
+  "matrixCellCount": 1825,
+  "independentPoleDayCount": 1936,
+  "hankyuTripCount": 114,
+  "sourceCount": 86,
+  "verifiedCoordinateCount": 9,
+  "checks": [
+    "all source checksums",
+    "all extraction checksums",
+    "every numeric matrix cell",
+    "every independent pole minute and marker",
+    "every Hankyu trip and boarded route",
+    "full ordered patterns and loop transitions",
+    "all Hankyu downstream calls",
+    "actual pole IDs and coordinates",
+    "complete official holiday CSV coverage",
+    "operator and calendar coverage",
+    "no weekday fallback on Hankyu weekends",
+    "v5 departures identical to v4 by boarding point, minute, route, service and stops (1,939)",
+    "station minutes (1,199 departures): each read from the departure's own printed matrix column, the stations with a time equal the stations in the pattern's call list, 0 < minutes <= 60, Hankyu after JR, compiled as schema 2 with data level 2",
+    "NOT independently reconciled: the minutes to each station appear only in the line matrix, not in the per-pole sheets"
+  ],
+  "releasePurpose": "add_station_minutes_schema_2",
+  "baseReleaseVersion": 4,
+  "baseSourceSha256": "60f9c24c7bd899a0b17c6783c6d18ded977c684ec76d8264dc9623988dcd9f02"
+}

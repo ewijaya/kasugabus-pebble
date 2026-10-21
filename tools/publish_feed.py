@@ -85,10 +85,21 @@ def departure_diff(previous, current):
         return {(v["boarding_point_id"], v["minute"], v["pattern_id"], v["service_id"]) for v in doc.get("departures", [])}
     old, new = entries(previous or {}), entries(current)
     fields = ("operators", "stop_groups", "boarding_points", "patterns", "services", "calendar", "sources")
-    return {"previousVersion": previous.get("release_version") if previous else None,
+    diff = {"previousVersion": previous.get("release_version") if previous else None,
             "version": current["release_version"], "departuresAdded": sorted(new-old),
             "departuresRemoved": sorted(old-new),
             "changedSections": [name for name in fields if (previous or {}).get(name) != current.get(name)]}
+
+    def minutes(doc):
+        return {(v["boarding_point_id"], v["minute"], v["pattern_id"], v["service_id"]): v.get("station_minutes")
+                for v in doc.get("departures", []) if v.get("station_minutes")}
+    before, after = minutes(previous or {}), minutes(current)
+    if before or after:
+        # Schema 2 station minutes are part of a release even when no departure moves.
+        diff["stationMinutes"] = {"previous": len(before), "current": len(after),
+                                  "added": len(after.keys()-before.keys()), "removed": len(before.keys()-after.keys()),
+                                  "changed": sum(1 for key in before.keys() & after.keys() if before[key] != after[key])}
+    return diff
 
 
 def immutable_write(path, payload):
