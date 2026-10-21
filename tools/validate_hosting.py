@@ -145,7 +145,7 @@ def phone_validate(feed, releases, base, validation_date, historical_date=False)
     script = r"""
 const fs=require('fs'),m=require(process.argv[1]+'/src/pkjs/manifest'),b=require(process.argv[1]+'/src/pkjs/binary');
 const input=JSON.parse(fs.readFileSync(0,'utf8'));
-const config={manifestUrl:input.base+'/manifest.json',coverage:input.coverage,appVersion:1,maxPayload:32768};
+const config={manifestUrl:input.base+'/manifest.json',coverage:input.coverage,appVersion:require(process.argv[1]+'/src/pkjs/feed-config').appVersion,maxPayload:32768};
 if(input.feed)m.validate(input.feed,config,Date.parse(input.date+'T03:00:00Z'));
 input.releases.forEach(item=>b.validate(Array.from(fs.readFileSync(item.file)),config,item.metadata));
 """

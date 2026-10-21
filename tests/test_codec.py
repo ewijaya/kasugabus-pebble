@@ -58,6 +58,26 @@ def fix_crc(payload):
     return bytes(payload)
 
 
+def fixture_v2():
+    """The fixture with station minutes: JR+Hankyu, JR only, and the largest values."""
+    doc = fixture()
+    doc["minimum_app_version"] = 2
+    times = {(1, 633, 1, 1): {"jr": 12, "hankyu": 18}, (1, 634, 2, 1): {"jr": 9}, (1, 700, 1, 2): {"jr": 31, "hankyu": 41}}
+    for departure in doc["departures"]:
+        key = (departure["boarding_point_id"], departure["minute"], departure["pattern_id"], departure["service_id"])
+        if key in times:
+            departure["station_minutes"] = times[key]
+    return doc
+
+
+NODE_CHECK = r"""
+const fs=require('fs'),binary=require(process.argv[1]+'/src/pkjs/binary');
+const bytes=Array.from(fs.readFileSync(process.argv[2]));
+const config={manifestUrl:'https://x.example/manifest.json',coverage:process.argv[3],appVersion:Number(process.argv[4]),maxPayload:32768};
+try{binary.validate(bytes,config);console.log('ok');}catch(e){console.log(e.incompatible?'incompatible':'invalid');}
+"""
+
+
 class CodecTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -224,6 +244,119 @@ class CodecTests(unittest.TestCase):
         payload = bytearray(original)
         payload[departure:departure+5], payload[departure+5:departure+10] = payload[departure+5:departure+10], payload[departure:departure+5]
         self.assertNotEqual(self.accepts(fix_crc(payload)), 0)
+
+    def phone_verdict(self, payload, app_version=2, coverage="synthetic-fixture-only"):
+        path = self.directory / "phone-check.bin"
+        path.write_bytes(bytes(payload))
+        result = subprocess.run(["node", "-e", NODE_CHECK, str(ROOT), str(path), coverage, str(app_version)],
+                                capture_output=True, text=True, check=True)
+        return result.stdout.strip()
+
+    def test_schema_1_output_is_unchanged_without_station_minutes(self):
+        payload = COMPILER.compile_dataset(fixture())
+        self.assertEqual(struct.unpack_from("<HHH", payload, 4)[0:2], (1, 128))
+        self.assertEqual(struct.unpack_from("<H", payload, 62)[0], 10)
+        self.assertEqual(self.phone_verdict(payload, 1), "ok")
+
+    def test_schema_2_layout_and_both_parsers_accept_it(self):
+        payload = COMPILER.compile_dataset(fixture_v2())
+        schema, header_size = struct.unpack_from("<HH", payload, 4)
+        self.assertEqual((payload[:4], schema, header_size, struct.unpack_from("<H", payload, 62)[0]), (b"KBT1", 2, 136, 11))
+        self.assertEqual(struct.unpack_from("<H", payload, 134)[0], 0)
+        offset, count = struct.unpack_from("<IH", payload, 128)
+        departures_offset, departures_count = struct.unpack_from("<IH", payload, 64 + 7 * 6)
+        self.assertEqual((count, departures_count), (3, 6))
+        # Table 10 follows the call table; the string pool follows table 10.
+        self.assertEqual(payload[offset:offset + count], bytes([12 | (3 << 5), 9, 31 | (7 << 5)]))
+        self.assertEqual(struct.unpack_from("<I", payload, 52)[0], offset + count)
+        self.assertEqual(self.accepts(payload), 0)
+        self.assertEqual(self.phone_verdict(payload), "ok")
+
+    def test_station_minutes_lookup_in_c(self):
+        v2 = self.directory / "v2.bin"
+        v1 = self.directory / "v1.bin"
+        v2.write_bytes(COMPILER.compile_dataset(fixture_v2()))
+        v1.write_bytes(COMPILER.compile_dataset(fixture()))
+        executable = self.directory / "test-station-minutes"
+        subprocess.run(["cc", "-std=c99", "-Wall", "-Wextra", "-Werror", "-pedantic", str(ROOT / "src/c/engine.c"),
+                        str(ROOT / "tests/test_station_minutes.c"), "-o", str(executable)], check=True)
+        result = subprocess.run([str(executable), str(v2), str(v1)], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("station minutes tests passed", result.stdout)
+
+    def test_older_app_data_level_refuses_schema_2(self):
+        payload = COMPILER.compile_dataset(fixture_v2())
+        self.assertEqual(self.phone_verdict(payload, 1), "incompatible")
+        self.assertEqual(struct.unpack_from("<I", payload, 20)[0], 2)
+
+    def test_station_minutes_are_deterministic_and_ignore_dict_order(self):
+        doc = fixture_v2()
+        initial = COMPILER.compile_dataset(doc)
+        doc["departures"][0]["station_minutes"] = dict(reversed(list(doc["departures"][0].get("station_minutes", {}).items())))
+        random.Random(7).shuffle(doc["departures"])
+        self.assertEqual(initial, COMPILER.compile_dataset(doc))
+
+    def test_compiler_rejects_invalid_station_minutes(self):
+        def with_times(change):
+            doc = fixture_v2()
+            change(doc)
+            return doc
+        bad = {
+            "minimum app version too low": lambda d: d.update(minimum_app_version=1),
+            "JR above 31": lambda d: d["departures"][0].update(station_minutes={"jr": 32}),
+            "JR zero": lambda d: d["departures"][0].update(station_minutes={"hankyu": 20}),
+            "empty": lambda d: d["departures"][0].update(station_minutes={}),
+            "unknown key": lambda d: d["departures"][0].update(station_minutes={"jr": 10, "kyoto": 5}),
+            "Hankyu gap 3": lambda d: d["departures"][0].update(station_minutes={"jr": 10, "hankyu": 13}),
+            "Hankyu gap 11": lambda d: d["departures"][0].update(station_minutes={"jr": 10, "hankyu": 21}),
+            "Hankyu before JR": lambda d: d["departures"][0].update(station_minutes={"jr": 10, "hankyu": 8}),
+            "not an object": lambda d: d["departures"][0].update(station_minutes=[10, 15]),
+            "Hankyu Bus departure": lambda d: d["departures"][-1].update(station_minutes={"jr": 10}),
+        }
+        for name, change in bad.items():
+            with self.subTest(name), self.assertRaises(ValueError):
+                COMPILER.compile_dataset(with_times(change))
+
+    def test_binary_rejects_schema_2_corruption_in_both_parsers(self):
+        good = COMPILER.compile_dataset(fixture_v2())
+        table = struct.unpack_from("<I", good, 128)[0]
+
+        def mutate(function):
+            payload = bytearray(good)
+            function(payload)
+            return fix_crc(payload)
+        cases = {
+            "reserved header bytes": lambda p: p.__setitem__(134, 1),
+            "header size 128": lambda p: struct.pack_into("<H", p, 6, 128),
+            "ten tables": lambda p: struct.pack_into("<H", p, 62, 10),
+            "level 1 data": lambda p: struct.pack_into("<I", p, 20, 1),
+            "more rows than departures": lambda p: struct.pack_into("<H", p, 132, 7),
+            "table offset": lambda p: struct.pack_into("<I", p, 128, table + 1),
+            "Hankyu code without JR": lambda p: p.__setitem__(table + 1, 1 << 5),
+        }
+        for name, function in cases.items():
+            payload = mutate(function)
+            with self.subTest(name):
+                self.assertNotEqual(self.accepts(payload), 0)
+                self.assertEqual(self.phone_verdict(payload), "invalid")
+        future = mutate(lambda p: struct.pack_into("<H", p, 4, 3))
+        self.assertNotEqual(self.accepts(future), 0)
+        self.assertEqual(self.phone_verdict(future), "incompatible")
+        short = good[:130]
+        self.assertNotEqual(self.accepts(short), 0)
+
+    def test_production_v5_is_schema_2_within_budget_and_matches_v4(self):
+        v5 = json.loads((ROOT / "data/timetable_v5.json").read_text())
+        v4 = json.loads((ROOT / "data/timetable_v4.json").read_text())
+        payload = COMPILER.compile_dataset(v5)
+        self.assertEqual(self.accepts(payload), 0)
+        self.assertEqual(self.phone_verdict(payload, 2, "minami-kasugaoka-v1"), "ok")
+        self.assertEqual(self.phone_verdict(payload, 1, "minami-kasugaoka-v1"), "incompatible")
+        self.assertLess(len(payload), 30720, "v5 should keep at least 2 KiB under the 32 KiB cap")
+        stripped = [{k: v for k, v in d.items() if k != "station_minutes"} for d in v5["departures"]]
+        self.assertEqual(stripped, v4["departures"])
+        self.assertEqual(sum(1 for d in v5["departures"] if "station_minutes" in d), 1199)
+        self.assertEqual((v5["release_version"], v5["minimum_app_version"]), (5, 2))
 
     def test_catalog_missing_coordinate_is_not_invented(self):
         catalog = COMPILER.make_catalog(fixture())

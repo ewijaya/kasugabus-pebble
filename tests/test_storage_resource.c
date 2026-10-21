@@ -175,8 +175,12 @@ static void invalid_or_partial_initial_resource(void) {
   resolved(&store,1,2);resolved(&store,2,3);
   assert(kb_store_resolve(&store,day)==NULL);
   /* Structural validity does not waive minimum app/coverage policy. */
-  empty();revision(1,0);put32(candidate+20,2);put32(candidate+12,kb_crc32(candidate+16,length-16));
+  empty();revision(1,0);put32(candidate+20,KB_DATA_LEVEL+1);put32(candidate+12,kb_crc32(candidate+16,length-16));
   resource.bytes=candidate;assert(!init(&store)&&!store.baseline_valid);
+  memcpy(candidate,bundle,length);
+  /* The supported level itself is accepted. */
+  empty();revision(1,0);put32(candidate+20,KB_DATA_LEVEL);put32(candidate+12,kb_crc32(candidate+16,length-16));
+  resource.bytes=candidate;assert(init(&store)&&store.baseline_valid);
   memcpy(candidate,bundle,length);
   size_t coverage=get32(candidate+52)+(uint32_t)candidate[48]+((uint32_t)candidate[49]<<8);
   candidate[coverage]='x';put32(candidate+12,kb_crc32(candidate+16,length-16));

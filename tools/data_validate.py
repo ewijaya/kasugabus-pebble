@@ -22,6 +22,8 @@ def validate(path=None, extended=None):
     extended = any(p["id"] in (10, 11) for p in data["boarding_points"]) if extended is None else extended
     # v4 additionally has 阪大本部前 (group 8, point 12, Ibaraki-bound only).
     honbu = any(p["id"] == 12 for p in data["boarding_points"])
+    # v5 is v4 plus schema 2 station minutes on Kintetsu departures.
+    stations = any("station_minutes" in d for d in data["departures"])
     errors = []
 
     def check(condition, description):
@@ -225,7 +227,7 @@ def validate(path=None, extended=None):
     # Reconstruct the full ordered patterns from their original matrix rows and
     # trip sections. This includes names, route transitions, loop revisits,
     # calendar/service associations and every evidence locator, not only counts.
-    reference = build(write=False, extended=extended, honbu=honbu)
+    reference = build(write=False, extended=extended, honbu=honbu, stations=stations)
     for field in ["schema_version", "release_version", "coverage_id", "minimum_app_version", "timezone", "effective_from", "valid_from", "valid_until", "source_verified_at", "review_due", "operators", "stop_groups", "boarding_points", "patterns", "services", "calendar", "departures", "sources", "validation"]:
         check(data[field] == reference[field], f"canonical {field} differs from complete source reconstruction")
     if errors:

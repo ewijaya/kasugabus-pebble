@@ -14,12 +14,22 @@ import struct
 import sys
 import zlib
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 1  # the JSON dataset's own schema
+# Binary schema 1 is the original layout. Schema 2 adds table 10 (station
+# minutes, one byte per row), a 136-byte header and a minimum app/data level
+# of 2; a dataset is compiled as schema 2 only when a departure carries
+# `station_minutes`. A row packs JR Ibaraki minutes (1..31) in bits 0-4 and
+# the Hankyu Ibaraki-shi gap after JR (4..10 minutes, stored as gap-3) in bits
+# 5-7, 0 meaning no Hankyu call. Data outside those ranges is refused.
 HEADER_SIZE = 128
+HEADER_SIZE_V2 = 136
 MAX_BYTES = 32768
 MAX_MINUTE = 4319
+MAX_JR_MINUTES = 31
+HANKYU_GAP = (4, 10)
 UNKNOWN = -2147483648
 STRIDES = (28, 8, 24, 16, 12, 4, 6, 5, 16, 2)
+STRIDES_V2 = STRIDES + (1,)
 EPOCH = dt.date(1970, 1, 1)
 
 
@@ -46,6 +56,22 @@ def field(obj, *names, default=None):
         if name in obj:
             return obj[name]
     return default
+
+
+def station_minutes(value, where):
+    """Minutes from departure to JR Ibaraki and Hankyu Ibaraki-shi; 0 = no call."""
+    if not isinstance(value, dict) or not value or set(value) - {"jr", "hankyu"}:
+        raise ValueError(f"{where}: expected {{jr, hankyu}} minutes")
+    jr = integer(value.get("jr", 0), where + ".jr", 1, MAX_JR_MINUTES)
+    hankyu = integer(value.get("hankyu", 0), where + ".hankyu", 0, 255)
+    if hankyu and not HANKYU_GAP[0] <= hankyu - jr <= HANKYU_GAP[1]:
+        raise ValueError(f"{where}: Hankyu Ibaraki-shi must be {HANKYU_GAP[0]}..{HANKYU_GAP[1]} minutes after JR Ibaraki")
+    return jr, hankyu
+
+
+def pack_station_minutes(row):
+    jr, hankyu = row
+    return bytes([jr | ((hankyu - jr - 3) << 5 if hankyu else 0)])
 
 
 class Strings:
@@ -104,9 +130,13 @@ def compile_dataset(doc):
     points = indexed(doc, "boarding_points", True)
     patterns = indexed(doc, "patterns")
     services = indexed(doc, "services")
+    v2 = any("station_minutes" in item for item in doc.get("departures", []) if isinstance(item, dict))
+    if v2 and min_app < 2:
+        raise ValueError("station_minutes need minimum_app_version >= 2")
+    strides = STRIDES_V2 if v2 else STRIDES
     pool = Strings()
     coverage = pool.add(doc.get("coverage_id"), "coverage_id", True)
-    tables = [bytearray() for _ in STRIDES]
+    tables = [bytearray() for _ in strides]
     ranges = {}
 
     sources = doc.get("sources", [])
@@ -270,6 +300,7 @@ def compile_dataset(doc):
         exceptions.append((value, oid, dtype))
     tables[6] += b"".join(struct.pack("<iBB", *value) for value in sorted(exceptions))
     departures = []
+    stations = {}
     by_trip = {}
     for departure in doc.get("departures", []):
         bp = integer(departure.get("boarding_point_id"), "departure.boarding_point_id")
@@ -292,7 +323,18 @@ def compile_dataset(doc):
                 raise ValueError("overlapping service records duplicate the same trip")
         by_trip.setdefault(key, []).append(svc)
         departures.append(identity)
-    tables[7] += b"".join(struct.pack("<HBBB", minute, bp, pat, svc) for bp, minute, pat, svc in sorted(departures))
+        if "station_minutes" in departure:
+            if oid != 1:
+                raise ValueError("station_minutes apply only to Kintetsu departures")
+            stations[identity] = station_minutes(departure["station_minutes"], "departure.station_minutes")
+    ordered = sorted(departures)
+    tables[7] += b"".join(struct.pack("<HBBB", minute, bp, pat, svc) for bp, minute, pat, svc in ordered)
+    if v2:
+        # Parallel to the departures table, up to the last departure that has
+        # times; trailing departures (Hankyu Bus here) have no row.
+        rows = [stations.get(identity, (0, 0)) for identity in ordered]
+        used = max((index + 1 for index, row in enumerate(rows) if row != (0, 0)), default=0)
+        tables[10] += b"".join(pack_station_minutes(row) if row != (0, 0) else b"\0" for row in rows[:used])
     for source in ordered_sources:
         if not isinstance(source.get("url"), str) or not source["url"].startswith(("https://", "http://")):
             raise ValueError("source URL must use HTTP(S)")
@@ -301,20 +343,23 @@ def compile_dataset(doc):
             date(field(source, "revision_date", "revision_on", "effective_date", "timetable_effective_from"), "source revision", True),
             date(field(source, "verified_at", "verified_on", "source_verified_at", default=field(doc, "source_verified_at", "source_verified_on")), "source verified"),
             date(field(source, "review_due", "review_by", default=field(doc, "review_due", "review_by")), "source review", True))
-    header = bytearray(HEADER_SIZE)
+    header_size = HEADER_SIZE_V2 if v2 else HEADER_SIZE
+    header = bytearray(header_size)
     payload = b"".join(tables) + pool.data
-    total = HEADER_SIZE + len(payload)
+    total = header_size + len(payload)
     if total > MAX_BYTES:
         raise ValueError(f"payload {total} exceeds {MAX_BYTES}-byte maximum")
-    struct.pack_into("<4sHHIIIIiiiiiiHHIIHH", header, 0, b"KBT1", SCHEMA_VERSION, HEADER_SIZE,
+    struct.pack_into("<4sHHIIIIiiiiiiHHIIHH", header, 0, b"KBT1", 2 if v2 else 1, header_size,
         total, 0, release, min_app, valid_from, valid_until, calendar_from, calendar_until, verified, review,
-        coverage, 0, total-len(pool.data), len(pool.data), max((item[1] for item in departures), default=0), len(STRIDES))
-    offset = HEADER_SIZE
-    for index, (table, stride) in enumerate(zip(tables, STRIDES)):
+        coverage, 0, total-len(pool.data), len(pool.data), max((item[1] for item in departures), default=0), len(strides))
+    offset = header_size
+    for index, (table, stride) in enumerate(zip(tables, strides)):
         count = len(table) // stride
         if count > 65535:
             raise ValueError("table count exceeds u16")
-        struct.pack_into("<IH", header, 64 + index*6, offset, count)
+        # The eleventh descriptor sits after effective_from; schema 2 headers
+        # end with two reserved zero bytes.
+        struct.pack_into("<IH", header, 64 + index*6 if index < 10 else 128, offset, count)
         offset += len(table)
     struct.pack_into("<i", header, 124, effective)
     result = header + payload

@@ -105,17 +105,16 @@ arrival station and never claims they are equivalent.
 
 ## Data
 
-**Bus arrival offsets, in the timetable binary.** One new table, 2 bytes per
-Kintetsu departure that calls at a station: minutes from departure to JR
-Ibaraki and to Hankyu Ibaraki-shi (0 = does not call). Ride times are
-12-37 min, so a byte holds them. They differ by trip (route 22 spans 16-25 min
-to JR), so a per-route value is not enough.
+**Bus arrival offsets, in the timetable binary (built: schema 2).** One new
+table, one byte per Kintetsu departure up to the last that has times: JR
+Ibaraki minutes (1-31) plus a 3-bit code for the Hankyu Ibaraki-shi gap
+(4-10 min after JR). Ride times differ by trip (route 22 spans 12-29 min to
+JR), so a per-route value is not enough. Layout and compatibility:
+`docs/DATA_FORMAT.md`; the data release: `docs/DATA_RELEASE_5.md`.
 
-- Needs schema version 2 and a minimum app version, because the table count in
-  the header changes. Older apps keep using the previous feed revision.
-- Costs ~2.4 KB: 27,845 → ~30,200 bytes, leaving ~2.5 KB under the 32,768 cap.
-  That is little room for later stop additions. If it gets tight, the limit
-  can go to 48 KB (measure heap first; it was 32,400 free at best).
+- Needs a 136-byte header and data level 2. Apps that predate it keep using
+  the previous feed revision and report the update as incompatible.
+- Costs 1,833 bytes: 27,845 (v4) -> 29,678, leaving 3,090 under the 32,768 cap.
 - Stays in sync with bus changes because it travels in the same feed payload.
 
 **Train table, a bundled resource (`data/trains.bin`, 8,826 bytes; moves to

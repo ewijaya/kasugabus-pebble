@@ -146,7 +146,7 @@ def prepare(current_path, upcoming_path, reports, base_url, output_dir, publishe
             path = Path(temp) / f"{n}.bin"
             path.write_bytes(payload)
             payload_paths.append(str(path))
-        script = "const fs=require('fs'),m=require(process.argv[1]+'/src/pkjs/manifest'),b=require(process.argv[1]+'/src/pkjs/binary');const f=JSON.parse(fs.readFileSync(process.argv[2],'utf8')),c={manifestUrl:process.argv[3]+'/manifest.json',coverage:f.coverage,appVersion:1,maxPayload:32768};m.validate(f,c,Date.parse(f.published+'T03:00:00Z'));[f.current,f.upcoming].filter(Boolean).forEach((r,i)=>b.validate(Array.from(fs.readFileSync(process.argv[4+i])),c,r));"
+        script = "const fs=require('fs'),m=require(process.argv[1]+'/src/pkjs/manifest'),b=require(process.argv[1]+'/src/pkjs/binary');const f=JSON.parse(fs.readFileSync(process.argv[2],'utf8')),c={manifestUrl:process.argv[3]+'/manifest.json',coverage:f.coverage,appVersion:require(process.argv[1]+'/src/pkjs/feed-config').appVersion,maxPayload:32768};m.validate(f,c,Date.parse(f.published+'T03:00:00Z'));[f.current,f.upcoming].filter(Boolean).forEach((r,i)=>b.validate(Array.from(fs.readFileSync(process.argv[4+i])),c,r));"
         subprocess.run(["node", "-e", script, str(ROOT), str(feed_path), base, *payload_paths], check=True, capture_output=True, text=True)
     output = Path(output_dir)
     existing_manifest = output / "manifest.json"

@@ -2,8 +2,8 @@
 #include <string.h>
 
 enum { T_OPERATOR, T_GROUP, T_POINT, T_PATTERN, T_SERVICE, T_HOLIDAY,
-  T_EXCEPTION, T_DEPARTURE, T_SOURCE, T_CALL };
-static const uint8_t strides[KB_TABLE_COUNT] = {28,8,24,16,12,4,6,5,16,2};
+  T_EXCEPTION, T_DEPARTURE, T_SOURCE, T_CALL, T_STATION };
+static const uint8_t strides[KB_TABLE_COUNT] = {28,8,24,16,12,4,6,5,16,2,1};
 static uint16_t u16(const uint8_t *p) { return (uint16_t)(p[0] | (uint16_t)p[1]<<8); }
 static uint32_t u32(const uint8_t *p) { return (uint32_t)p[0] | (uint32_t)p[1]<<8 | (uint32_t)p[2]<<16 | (uint32_t)p[3]<<24; }
 static int32_t i32(const uint8_t *p) { uint32_t n=u32(p); return n<=INT32_MAX ? (int32_t)n : (int32_t)(-1-(int64_t)(UINT32_MAX-n)); }
@@ -95,22 +95,26 @@ static int departure_compare(const uint8_t *a,const uint8_t *b) {
   return 0;
 }
 kb_error_t kb_dataset_open(kb_dataset_t *out,const uint8_t *b,size_t n) {
-  kb_dataset_t d; uint32_t expected=KB_HEADER_SIZE; uint16_t maximum=0;
+  kb_dataset_t d; uint32_t expected; uint16_t maximum=0,schema,tables;
   if(!out) return KB_ERR_ARGUMENT;
   memset(out,0,sizeof(*out)); memset(&d,0,sizeof(d));
   if(!b) return KB_ERR_ARGUMENT;
   if(n<KB_HEADER_SIZE || n>KB_MAX_DATASET_BYTES) return KB_ERR_SIZE;
   if(memcmp(b,"KBT1",4)) return KB_ERR_MAGIC;
-  if(u16(b+4)!=KB_SCHEMA_VERSION) return KB_ERR_SCHEMA;
-  if(u16(b+6)!=KB_HEADER_SIZE||u32(b+8)!=n||u16(b+62)!=KB_TABLE_COUNT||u16(b+50)) return KB_ERR_LAYOUT;
+  schema=u16(b+4);
+  if(schema<1||schema>KB_SCHEMA_VERSION) return KB_ERR_SCHEMA;
+  tables=(uint16_t)(schema==1?10:KB_TABLE_COUNT); expected=schema==1?KB_HEADER_SIZE:KB_HEADER_SIZE_2;
+  if(n<expected) return KB_ERR_SIZE;
+  if(u16(b+6)!=expected||u32(b+8)!=n||u16(b+62)!=tables||u16(b+50)||(schema==2&&u16(b+134))) return KB_ERR_LAYOUT;
   if(kb_crc32(b+16,n-16)!=u32(b+12)) return KB_ERR_CHECKSUM;
-  d.bytes=b; d.size=n; d.release_version=u32(b+16); d.minimum_app_version=u32(b+20);
+  d.bytes=b; d.size=n; d.schema=schema; d.release_version=u32(b+16); d.minimum_app_version=u32(b+20);
   d.valid_from=i32(b+24); d.valid_until=i32(b+28); d.calendar_from=i32(b+32); d.calendar_until=i32(b+36);
   d.source_verified_on=i32(b+40); d.review_by=i32(b+44); d.coverage_string=u16(b+48);
   d.strings_offset=u32(b+52); d.strings_length=u32(b+56); d.max_minute=u16(b+60); d.effective_from=i32(b+124);
   if(!d.release_version||!d.minimum_app_version||!interval(d.valid_from,d.valid_until)||!interval(d.calendar_from,d.calendar_until)||!valid_date(d.source_verified_on,false)||!valid_date(d.review_by,true)||!valid_date(d.effective_from,false)||d.effective_from<d.valid_from||d.effective_from>d.valid_until||(d.review_by!=KB_DATE_UNKNOWN&&d.review_by<d.source_verified_on)||d.max_minute>KB_MAX_MINUTE) return KB_ERR_VALUE;
-  for(unsigned t=0;t<KB_TABLE_COUNT;t++) {
-    d.offsets[t]=u32(b+64+t*6); d.counts[t]=u16(b+68+t*6);
+  if(schema==2&&d.minimum_app_version<KB_DATA_LEVEL) return KB_ERR_VALUE;
+  for(unsigned t=0;t<tables;t++) {
+    d.offsets[t]=u32(b+(t<T_STATION?64+t*6:128)); d.counts[t]=u16(b+(t<T_STATION?68+t*6:132));
     if(d.offsets[t]!=expected) return KB_ERR_LAYOUT;
     expected+=(uint32_t)d.counts[t]*strides[t];
     if(expected>n) return KB_ERR_LAYOUT;
@@ -177,10 +181,28 @@ kb_error_t kb_dataset_open(kb_dataset_t *out,const uint8_t *b,size_t n) {
     }
   }
   if(maximum!=d.max_minute) return KB_ERR_VALUE;
+  if(d.counts[T_STATION]>d.counts[T_DEPARTURE]) return KB_ERR_VALUE;
+  for(size_t i=0;i<d.counts[T_STATION];i++) {
+    /* Bits 0-4: minutes to JR Ibaraki; bits 5-7: Hankyu gap code. A Hankyu
+     * call needs a JR call before it. */
+    uint8_t v=row(&d,T_STATION,i)[0];
+    if((v>>5)&&!(v&31)) return KB_ERR_VALUE;
+  }
   for(size_t i=0;i<d.counts[T_SOURCE];i++) { const uint8_t *p=row(&d,T_SOURCE,i); if(!refs(&d,p,0,2,3)||!valid_date(i32(p+4),true)||!valid_date(i32(p+8),false)||!valid_date(i32(p+12),true)||(i32(p+12)!=KB_DATE_UNKNOWN&&i32(p+12)<i32(p+8))) return KB_ERR_VALUE; const char *url=str(&d,u16(p+2)); if(strncmp(url,"https://",8)&&strncmp(url,"http://",7)) return KB_ERR_VALUE; }
   *out=d; return KB_OK;
 }
 
+bool kb_trip_station_minutes(const kb_dataset_t *d,const kb_trip_t *t,uint8_t out[2]) {
+  if(!d||!d->bytes||!t||!out) return false;
+  for(size_t i=0;i<d->counts[T_STATION];i++) {
+    const uint8_t *p=row(d,T_DEPARTURE,i);
+    if(p[2]!=t->boarding_point_id||u16(p)!=t->minute||p[3]!=t->pattern_id||p[4]!=t->service_id) continue;
+    uint8_t v=row(d,T_STATION,i)[0];
+    out[0]=v&31; out[1]=(v>>5)?(uint8_t)((v&31)+(v>>5)+3):0;
+    return out[0]!=0;
+  }
+  return false;
+}
 const char *kb_coverage_id(const kb_dataset_t *d) { return d&&d->bytes?str(d,d->coverage_string):NULL; }
 size_t kb_operator_count(const kb_dataset_t *d) { return d?d->counts[T_OPERATOR]:0; }
 size_t kb_stop_group_count(const kb_dataset_t *d) { return d?d->counts[T_GROUP]:0; }

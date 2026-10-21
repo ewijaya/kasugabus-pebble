@@ -10,15 +10,18 @@ function validate(bytes, config, release) {
   function i32(o) { return u32(o)|0; }
   function date(o, optional) { var n=i32(o);if(optional && n===-2147483648)return n;if(n<dates.date('1900-01-01')||n>dates.date('2200-12-31'))fail('date');return n; }
   if(String.fromCharCode.apply(null,bytes.slice(0,4))!=='KBT1')fail('magic');
-  if(u16(4)!==1){var schemaError=new Error('Timetable schema requires app update');schemaError.incompatible=true;throw schemaError;}
-  if(u16(6)!==128||u32(8)!==bytes.length||u16(50)!==0||u16(62)!==10)fail('header');
-  if(!u32(16)||!u32(20))fail('version');
+  var schema=u16(4);
+  if(schema<1||schema>2){var schemaError=new Error('Timetable schema requires app update');schemaError.incompatible=true;throw schemaError;}
+  // Schema 2 adds table 10 (minutes to JR Ibaraki / Hankyu Ibaraki-shi) behind a 136-byte header.
+  var headerSize=schema===2?136:128,tableCount=schema===2?11:10;
+  if(bytes.length<headerSize||u16(6)!==headerSize||u32(8)!==bytes.length||u16(50)!==0||u16(62)!==tableCount||(schema===2&&u16(134)!==0))fail('header');
+  if(!u32(16)||!u32(20)||(schema===2&&u32(20)<2))fail('version');
   if(u32(20)>config.appVersion){var e=new Error('Timetable requires app update');e.incompatible=true;throw e;}
   if(hash.crc32(bytes,16)!==u32(12))fail('CRC');
   var from=date(24),until=date(28),calFrom=date(32),calUntil=date(36),verified=date(40),review=date(44,true),effective=date(124);
   if(from>until||calFrom>calUntil||(review!==-2147483648&&review<verified)||effective<from||effective>until)fail('date ordering');
-  var strides=[28,8,24,16,12,4,6,5,16,2],tables=[],end=128;
-  for(var t=0;t<10;t+=1){var offset=u32(64+t*6),count=u16(68+t*6);if(offset!==end)fail('table layout');end+=count*strides[t];if(end>bytes.length)fail('table bounds');tables.push({offset:offset,count:count});}
+  var strides=[28,8,24,16,12,4,6,5,16,2,1],tables=[],end=headerSize;
+  for(var t=0;t<tableCount;t+=1){var offset=u32(t<10?64+t*6:128),count=u16(t<10?68+t*6:132);if(offset!==end)fail('table layout');end+=count*strides[t];if(end>bytes.length)fail('table bounds');tables.push({offset:offset,count:count});}
   var pool=u32(52),poolLength=u32(56),starts={0:''};
   if(pool!==end||poolLength<1||pool+poolLength!==bytes.length||bytes[pool]!==0||bytes[bytes.length-1]!==0)fail('string pool');
   var pos=1;
@@ -46,6 +49,7 @@ function validate(bytes, config, release) {
   var previousKey=null,maxMinute=0,tripServices={};
   for(i=0;i<tables[7].count;i+=1){o=record(7,i);var minute=u16(o),point=bytes[o+2],pattern=bytes[o+3],service=bytes[o+4],pointRecord=ref(2,point),patternRecord=ref(3,pattern),serviceRecord=ref(4,service);if(minute>4319||bytes[pointRecord+2]!==bytes[patternRecord+1]||bytes[pointRecord+2]!==bytes[serviceRecord+1])fail('departure reference');var key=[point,minute,pattern,service];if(previousKey){var ordered=false;for(j=0;j<4;j+=1){if(key[j]>previousKey[j]){ordered=true;break;}if(key[j]<previousKey[j])break;}if(!ordered)fail('departure ordering');}var tripKey=point+':'+minute+':'+pattern,prior=tripServices[tripKey]||[];prior.forEach(function(s){if((bytes[s+2]&bytes[serviceRecord+2])&&Math.max(i32(s+4),i32(serviceRecord+4))<=Math.min(i32(s+8),i32(serviceRecord+8)))fail('contradictory services');});prior.push(serviceRecord);tripServices[tripKey]=prior;previousKey=key;maxMinute=Math.max(maxMinute,minute);departures.push(key);}
   if(u16(60)!==maxMinute)fail('maximum minute');
+  if(schema===2){if(tables[10].count>tables[7].count)fail('station minutes');for(i=0;i<tables[10].count;i+=1){o=record(10,i);if((bytes[o]>>5)&&!(bytes[o]&31))fail('station minutes');}}
   for(i=0;i<tables[8].count;i+=1){o=record(8,i);string(o,true);var sourceUrl=string(o+2,true);if(!/^https?:\/\//.test(sourceUrl))fail('source URL');date(o+4,true);v=date(o+8);r=date(o+12,true);if(r!==-2147483648&&r<v)fail('source review date');}
   var priorPattern=0,callCoverage={};
   for(i=0;i<tables[9].count;i+=1){o=record(9,i);pattern=bytes[o];ref(3,pattern);ref(1,bytes[o+1]);if(pattern<priorPattern)fail('call ordering');var pr=maps[3][pattern];if(i<u16(pr+10)||i>=u16(pr+10)+u16(pr+12))fail('unreferenced call');priorPattern=pattern;callCoverage[pattern]=true;}

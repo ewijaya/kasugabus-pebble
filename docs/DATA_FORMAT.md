@@ -1,4 +1,7 @@
-# KasugaBus binary timetable, version 1
+# KasugaBus binary timetable, schemas 1 and 2
+
+Schema 1 below is the original layout and is still produced for every dataset
+without station times. [Schema 2](#schema-2-station-minutes) adds one table.
 
 `tools/compile_timetable.py` converts the editable, evidence-bearing JSON dataset
 to a compact runtime snapshot. Evidence remains in the JSON and reconciliation
@@ -115,3 +118,47 @@ change the binary. Holiday source evidence can cover a wider interval than the
 confirmed operator calendar; only holidays within that calendar are compiled.
 External calls without a covered stop-group ID remain in source JSON; repeated
 covered calls retain their order in the binary.
+
+## Schema 2: station minutes
+
+A dataset is compiled as schema 2 only when a departure carries
+`station_minutes`; all other datasets (the bundled baseline and timetables
+v1-v4) compile byte for byte as before. Schema 2 is for the train-connection
+feature: it records how long each Kintetsu bus takes to reach **JR Ibaraki**
+and **Hankyu Ibaraki-shi**, so the watch can pair a bus with a train.
+
+| Field | Schema 1 | Schema 2 |
+|---|---|---|
+| Schema version (byte 4) | 1 | 2 |
+| Header size (byte 6) | 128 | **136** |
+| Table count (byte 62) | 10 | **11** |
+| Table 10 descriptor | none | `{offset:u32,count:u16}` at **bytes 128-133** |
+| Bytes 134-135 | n/a | reserved, zero |
+| Minimum app/data level (byte 20) | at least 1 | **at least 2** |
+
+Tables begin at byte 136. Tables 0-9 are unchanged and their descriptors stay
+at 64-123; the string pool still follows the final table.
+
+**Table 10, station minutes** (stride 1): row *i* belongs to departure row *i*
+of table 7. The table covers departures up to the last one that has times;
+later departures (Hankyu Bus, which has no station) have no row, and a zero
+byte means that departure has no station times (for example a Kintetsu bus to
+the university). A byte holds:
+
+- bits 0-4: minutes from the departure to JR Ibaraki, 1-31, or 0 for none;
+- bits 5-7: Hankyu code `c`. `c = 0` means no Hankyu call; otherwise Hankyu
+  Ibaraki-shi is reached **JR minutes + c + 3** after departure, so Hankyu is
+  4-10 minutes after JR. A Hankyu call needs a JR call.
+
+Both parsers refuse more rows than departures, a Hankyu code without JR
+minutes, a nonzero reserved header word, a header size or table count that does
+not match the schema, and a schema 2 file below level 2. The compiler
+additionally refuses values outside those ranges instead of clipping them, and
+station minutes on any operator other than Kintetsu.
+
+**Compatibility.** Apps that predate schema 2 only accept data at level 1: the
+phone reports "App update required" for a feed release whose `minAppVersion` is
+2, before downloading it, and the watch refuses a stored snapshot above its
+level and falls back to the bundled timetable. `src/pkjs/feed-config.js`
+(`appVersion`) and `KB_DATA_LEVEL` in `src/c/engine.h` are the level the
+current app supports. The bundled baseline stays schema 1.

@@ -93,7 +93,7 @@ static bool load_slot(kb_store_t *s,int slot) {
     n+=len;
   }
   if(kb_crc32(s->cache,m->length)!=m->crc||kb_dataset_open(&s->cached,s->cache,m->length)!=KB_OK)return false;
-  if(s->cached.release_version!=m->version||s->cached.effective_from!=m->effective_from||s->cached.valid_until!=m->valid_until||s->cached.minimum_app_version>1||strcmp(kb_coverage_id(&s->cached),"minami-kasugaoka-v1"))return false;
+  if(s->cached.release_version!=m->version||s->cached.effective_from!=m->effective_from||s->cached.valid_until!=m->valid_until||s->cached.minimum_app_version>KB_DATA_LEVEL||strcmp(kb_coverage_id(&s->cached),"minami-kasugaoka-v1"))return false;
   m->checked=true;
   s->cache_slot=slot;
   return true;
@@ -127,7 +127,7 @@ static bool init_store(kb_store_t *s,kb_store_io_t io,const uint8_t *baseline,si
   s->baseline_context=context;
   s->directory_bank=-1;
   s->capacity_ok=io.capacity>=KB_STORAGE_REQUIRED;
-  s->baseline_valid=kb_dataset_open(&s->baseline,baseline,len)==KB_OK&&s->baseline.minimum_app_version<=1&&!strcmp(kb_coverage_id(&s->baseline),"minami-kasugaoka-v1");
+  s->baseline_valid=kb_dataset_open(&s->baseline,baseline,len)==KB_OK&&s->baseline.minimum_app_version<=KB_DATA_LEVEL&&!strcmp(kb_coverage_id(&s->baseline),"minami-kasugaoka-v1");
   if(read&&s->baseline_valid) {
     s->baseline_crc=kb_crc32(baseline,len);
     s->cache_slot=KB_STORE_CACHE_BASELINE;
@@ -397,7 +397,7 @@ int kb_store_commit(kb_store_t *s,uint32_t session,int64_t now) {
     kb_store_abort(s);
     return 2;
   }
-  if(s->cached.minimum_app_version>1||strcmp(kb_coverage_id(&s->cached),"minami-kasugaoka-v1")) {
+  if(s->cached.minimum_app_version>KB_DATA_LEVEL||strcmp(kb_coverage_id(&s->cached),"minami-kasugaoka-v1")) {
     kb_store_abort(s);
     return 6;
   }

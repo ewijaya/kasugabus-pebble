@@ -172,7 +172,41 @@ def source_route_of(rows, column):
     return rows[0][column]
 
 
-def build(write=True, extended=False, honbu=False):
+# v5 (schema 2) adds, for each Kintetsu bus that ends at JR Ibaraki or Hankyu
+# Ibaraki-shi, the minutes from boarding to each station, read from the same
+# printed table column as the departure. See docs/DATA_RELEASE_5.md.
+STATION_ROWS = {"jr": "ＪＲ茨木駅", "hankyu": "阪急茨木市駅"}
+
+
+def add_station_minutes(departures, patterns):
+    tables = {n: json.loads((DATA / "extraction" / f"kintetsu_{n}_tables.json").read_text()) for n in range(5)}
+    added = 0
+    for departure in departures:
+        evidence = departure["evidence"]
+        pattern = patterns[departure["pattern_id"]]
+        if not re.fullmatch(r"kintetsu_\d", evidence["source_id"]) or pattern["destination_ja"] not in STATION_ROWS.values():
+            continue
+        rows = tables[int(evidence["source_id"][-1])][evidence["page"] - 1]["rows"]
+        row, column = evidence["row"] - 1, evidence["column"]
+        assert clock_minute(rows[row][column]) == departure["minute"], (evidence, departure["minute"])
+        found = {}
+        for key, label in STATION_ROWS.items():
+            hits = [clock_minute(rows[i][column]) for i in range(row + 1, len(rows))
+                    if rows[i][0] == label and clock_minute(rows[i][column]) is not None]
+            if hits:
+                found[key] = hits[0] - departure["minute"]
+        calls = {c["name_ja"] for c in pattern["downstream_calls"]}
+        # The printed times and the pattern's own call list must agree.
+        for key, label in STATION_ROWS.items():
+            assert (label in calls) == (key in found), (evidence, key)
+        assert found and all(0 < v <= 60 for v in found.values()), (evidence, found)
+        assert len(found) < 2 or found["hankyu"] > found["jr"], (evidence, found)
+        departure["station_minutes"] = found
+        added += 1
+    return added
+
+
+def build(write=True, extended=False, honbu=False, stations=False):
     """Baseline dataset, or with extended=True the feed-only v3 snapshot that
     adds 日本庭園前 from its own reviewed sources (data/sources/catalog_nihon_teien.json)."""
     catalog = json.loads((DATA / "sources" / "catalog.json").read_text())
@@ -431,8 +465,10 @@ def build(write=True, extended=False, honbu=False):
     services = [{"id": i, "operator_id": op, "day_types": types, "valid_from": FROM, "valid_until": UNTIL}
                 for i, op, types in [(1, 1, [1]), (2, 1, [2, 3]), (3, 1, [1]),
                                      (4, 1, [2]), (5, 1, [3]), (6, 2, [1])]]
-    dataset = {"schema_version": 1, "release_version": 4 if honbu else 3 if extended else 1, "coverage_id": "minami-kasugaoka-v1",
-               "minimum_app_version": 1, "timezone": "Asia/Tokyo", "effective_from": FROM,
+    if stations:
+        add_station_minutes(departures, patterns)
+    dataset = {"schema_version": 1, "release_version": 5 if stations else 4 if honbu else 3 if extended else 1, "coverage_id": "minami-kasugaoka-v1",
+               "minimum_app_version": 2 if stations else 1, "timezone": "Asia/Tokyo", "effective_from": FROM,
                "valid_from": FROM, "valid_until": UNTIL, "source_verified_at": VERIFIED,
                "review_due": REVIEW,
                "operators": [{"id": 1, "name_en": "Kintetsu Bus", "name_ja": "近鉄バス",
@@ -458,7 +494,7 @@ def build(write=True, extended=False, honbu=False):
                               "verified_coordinate_count": sum(p["coordinate"] is not None for p in points)}}
     if write:
         dump(registry_path, registry)
-        dump(DATA / ("timetable_v4.json" if honbu else "timetable_v3.json" if extended else "timetable.json"), dataset)
+        dump(DATA / ("timetable_v5.json" if stations else "timetable_v4.json" if honbu else "timetable_v3.json" if extended else "timetable.json"), dataset)
     return dataset
 
 
@@ -468,8 +504,10 @@ if __name__ == "__main__":
     parser.add_argument("--extract", action="store_true", help="refresh preserved PDF grids with pdfplumber")
     parser.add_argument("--nihon-teien", action="store_true", help="write the feed-only v3 snapshot with 日本庭園前 to data/timetable_v3.json")
     parser.add_argument("--handai-honbu", action="store_true", help="write the feed-only v4 snapshot (v3 plus 阪大本部前) to data/timetable_v4.json")
+    parser.add_argument("--station-times", action="store_true", help="write the schema 2 snapshot (v4 plus bus minutes to JR Ibaraki and Hankyu Ibaraki-shi) to data/timetable_v5.json")
     args = parser.parse_args()
     if args.extract:
         extract()
-    result = build(extended=args.nihon_teien or args.handai_honbu, honbu=args.handai_honbu)
+    result = build(extended=args.nihon_teien or args.handai_honbu or args.station_times,
+                   honbu=args.handai_honbu or args.station_times, stations=args.station_times)
     print(json.dumps(result["validation"], indent=2))

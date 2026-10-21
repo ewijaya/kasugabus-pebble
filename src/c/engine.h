@@ -7,9 +7,15 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#define KB_SCHEMA_VERSION 1
+/* Schema 1 is the original layout (128-byte header, 10 tables). Schema 2 adds
+ * table 10, minutes from each Kintetsu departure to JR Ibaraki and Hankyu
+ * Ibaraki-shi, behind a 136-byte header. Apps that predate it reject any file
+ * whose minimum app/data level is above 1, so a schema 2 file marks level 2. */
+#define KB_SCHEMA_VERSION 2
 #define KB_HEADER_SIZE 128
-#define KB_TABLE_COUNT 10
+#define KB_HEADER_SIZE_2 136
+#define KB_TABLE_COUNT 11
+#define KB_DATA_LEVEL 2
 #define KB_MAX_DATASET_BYTES 32768
 #define KB_MAX_MINUTE 4319 /* service times through 71:59 */
 #define KB_DATE_UNKNOWN INT32_MIN
@@ -27,6 +33,7 @@ typedef struct {
   const uint8_t *bytes;
   size_t size;
   uint32_t release_version, minimum_app_version;
+  uint16_t schema;
   int32_t effective_from, valid_from, valid_until, calendar_from, calendar_until;
   int32_t source_verified_on, review_by;
   uint32_t strings_offset, strings_length, offsets[KB_TABLE_COUNT];
@@ -100,6 +107,10 @@ typedef struct {
   kb_day_type_t day_type;
   bool overridden;
 } kb_trip_t;
+/* Minutes from the trip's departure to JR Ibaraki [0] and Hankyu Ibaraki-shi
+ * [1]; 0 means the trip does not call there. False for schema 1 data and for
+ * trips without station times. */
+bool kb_trip_station_minutes(const kb_dataset_t *data, const kb_trip_t *trip, uint8_t out[2]);
 typedef struct {
   kb_day_type_t today_type;
   bool today_no_service, override_used, coverage_limited;
