@@ -1062,10 +1062,12 @@ static SCREEN void trains_screen(GContext *c) {
   unsigned n=app.train_ok?train_legs(&app.detail,kyoto,legs):0;
   char title[32];
   clock_text(x,sizeof(x),app.detail.minute);
-  snprintf(title,sizeof(title),"%s | bus %s",kyoto?"Kyoto":"Osaka",x);
+  /* With no bus found, app.detail is whatever trip was last viewed: name only the direction. */
+  if(app.train_ok)snprintf(title,sizeof(title),"%s | bus %s",kyoto?"Kyoto":"Osaka",x);
+  else snprintf(title,sizeof(title),"%s",kyoto?"Kyoto":"Osaka");
   int top=heading(c,"Train connection",title);
   if(!n) {
-    document(c,app.train_ok?"No later train today for this bus.":"No bus soon from this stop reaches JR Ibaraki or Hankyu Ibaraki-shi. Flip direction on home and try again.",top+4,"SELECT: direction | BACK");
+    document(c,app.train_ok?"No later train today for this bus.":"No bus soon from this stop reaches JR Ibaraki or Hankyu Ibaraki-shi, or the timetable has no station times yet. Data status > Select checks for updates.",top+4,"SELECT: direction | BACK");
     return;
   }
   size_t used=0;
