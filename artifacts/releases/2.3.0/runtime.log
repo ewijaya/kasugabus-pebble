@@ -1,0 +1,303 @@
+Installing app...
+App install succeeded.
+[10:44:55] main.c:822> INIT entered
+[10:44:55] main.c:167> All loaded generation0 reference2 count1
+[10:44:55] main.c:103> All ids0 1
+[10:44:55] main.c:876> READY storage=1048576 heap=29948 message=0
+[10:44:55] ui.c:1187> UI screen0 heap29648
+[10:44:55] ui.c:1188> UI selection0 scroll0 limit0
+[10:44:56] ui.c:1187> UI screen0 heap29728
+[10:44:56] ui.c:1188> UI selection0 scroll0 limit0
+[10:44:57] ui.c:1187> UI screen0 heap29728
+[10:44:57] ui.c:1188> UI selection0 scroll0 limit0
+[10:44:57] ui.c:1187> UI screen0 heap29728
+[10:44:57] ui.c:1188> UI selection0 scroll0 limit0
+[10:44:57] ui.c:1187> UI screen0 heap29728
+[10:44:57] ui.c:1188> UI selection0 scroll0 limit0
+[10:44:57] ui.c:1187> UI screen0 heap29728
+[10:44:57] ui.c:1188> UI selection0 scroll0 limit0
+[10:44:57] ui.c:1187> UI screen0 heap29728
+[10:44:57] ui.c:1188> UI selection0 scroll0 limit0
+[10:44:57] main.c:320> Update begin v4 bytes27845 status0
+[10:44:57] ui.c:1187> UI screen0 heap29728
+[10:44:57] ui.c:1188> UI selection0 scroll0 limit0
+[10:44:58] main.c:641> Update commit session1951563707 status3 heap29728
+[10:44:58] ui.c:1187> UI screen0 heap29728
+[10:44:58] ui.c:1188> UI selection0 scroll0 limit0
+[10:44:58] ui.c:1187> UI screen0 heap29728
+[10:44:58] ui.c:1188> UI selection0 scroll0 limit0
+[10:45:01] ui.c:1187> UI screen0 heap29728
+[10:45:01] ui.c:1188> UI selection0 scroll0 limit0
+[10:45:41] ui.c:1187> UI screen1 heap29728
+[10:45:41] ui.c:1188> UI selection1 scroll0 limit0
+[10:45:43] ui.c:1187> UI screen1 heap29728
+[10:45:43] ui.c:1188> UI selection2 scroll0 limit0
+[10:45:46] ui.c:1187> UI screen2 heap29728
+[10:45:46] ui.c:1188> UI selection0 scroll0 limit335
+[10:45:48] ui.c:1187> UI screen1 heap29728
+[10:45:48] ui.c:1188> UI selection2 scroll0 limit0
+[10:45:50] ui.c:1187> UI screen0 heap29728
+[10:45:50] ui.c:1188> UI selection0 scroll0 limit0
+[10:45:53] ui.c:1187> UI screen3 heap29728
+[10:45:53] ui.c:1188> UI selection0 scroll0 limit0
+[10:45:58] ui.c:1187> UI screen0 heap29728
+[10:45:58] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:00] ui.c:1187> UI screen0 heap29728
+[10:46:00] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:09] ui.c:1187> UI screen0 heap29728
+[10:46:09] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:09] ui.c:1187> UI screen0 heap29728
+[10:46:09] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:09] ui.c:1187> UI screen0 heap29728
+[10:46:09] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:09] main.c:320> Update begin v6 bytes29678 status0
+[10:46:09] ui.c:1187> UI screen0 heap29728
+[10:46:09] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:10] ui.c:1187> UI screen0 heap29728
+[10:46:10] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:18] main.c:641> Update commit session919915573 status4 heap29728
+[10:46:18] ui.c:1187> UI screen0 heap29728
+[10:46:18] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:18] ui.c:1187> UI screen0 heap29728
+[10:46:18] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:18] ui.c:1187> UI screen0 heap29728
+[10:46:18] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:18] ui.c:1187> UI screen0 heap29728
+[10:46:18] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:18] main.c:320> Update begin v5 bytes29678 status0
+[10:46:18] ui.c:1187> UI screen0 heap29728
+[10:46:18] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:27] main.c:641> Update commit session919915574 status3 heap29728
+[10:46:27] ui.c:1187> UI screen0 heap29728
+[10:46:27] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:27] ui.c:1187> UI screen0 heap29728
+[10:46:27] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:27] ui.c:1187> UI screen0 heap29728
+[10:46:27] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:27] ocess_manager.c:487> Heap Usage for App <KasugaBus>: Total Size <69944B> Used <40296B> Still allocated <300B
+[10:46:28] main.c:822> INIT entered
+[10:46:28] main.c:167> All loaded generation0 reference2 count1
+[10:46:28] main.c:103> All ids0 1
+[10:46:28] main.c:876> READY storage=1048576 heap=29948 message=0
+[10:46:28] ui.c:1187> UI screen0 heap29648
+[10:46:28] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:28] ui.c:1187> UI screen0 heap29728
+[10:46:28] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:28] ui.c:1187> UI screen0 heap29728
+[10:46:28] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:28] ui.c:1187> UI screen0 heap29728
+[10:46:28] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:28] main.c:320> Update begin v8 bytes29678 status0
+[10:46:28] ui.c:1187> UI screen0 heap29728
+[10:46:28] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:28] ui.c:1187> UI screen0 heap29728
+[10:46:29] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:29] ui.c:1187> UI screen0 heap29728
+[10:46:29] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:29] ocess_manager.c:487> Heap Usage for App <KasugaBus>: Total Size <69944B> Used <40296B> Still allocated <300B
+[10:46:29] main.c:822> INIT entered
+[10:46:29] main.c:167> All loaded generation0 reference2 count1
+[10:46:29] main.c:103> All ids0 1
+[10:46:29] main.c:876> READY storage=1048576 heap=29948 message=0
+[10:46:29] ui.c:1187> UI screen0 heap29648
+[10:46:29] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:29] ui.c:1187> UI screen0 heap29728
+[10:46:29] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:29] ui.c:1187> UI screen0 heap29728
+[10:46:29] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:29] ui.c:1187> UI screen0 heap29728
+[10:46:29] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:29] ui.c:1187> UI screen0 heap29728
+[10:46:29] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:29] ui.c:1187> UI screen0 heap29728
+[10:46:29] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:30] ui.c:1187> UI screen0 heap29728
+[10:46:30] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:30] ui.c:1187> UI screen0 heap29728
+[10:46:30] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:35] ui.c:1187> UI screen0 heap29728
+[10:46:35] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:35] ui.c:1187> UI screen0 heap29728
+[10:46:35] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:35] ui.c:1187> UI screen0 heap29728
+[10:46:35] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:35] main.c:320> Update begin v8 bytes29678 status0
+[10:46:35] ui.c:1187> UI screen0 heap29728
+[10:46:35] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:37] ui.c:1187> UI screen0 heap29728
+[10:46:37] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:46] main.c:641> Update commit session1101284589 status4 heap29728
+[10:46:46] ui.c:1187> UI screen0 heap29728
+[10:46:46] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:46] ui.c:1187> UI screen0 heap29728
+[10:46:46] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:46] ui.c:1187> UI screen0 heap29728
+[10:46:46] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:47] ui.c:1187> UI screen0 heap29728
+[10:46:47] ui.c:1188> UI selection0 scroll0 limit0
+[10:46:47] main.c:320> Update begin v7 bytes29678 status0
+[10:46:47] ui.c:1187> UI screen0 heap29728
+[10:46:47] ui.c:1188> UI selection0 scroll0 limit0
+[10:47:00] ui.c:1187> UI screen0 heap29728
+[10:47:00] ui.c:1188> UI selection0 scroll0 limit0
+[10:47:00] main.c:641> Update commit session1101284590 status3 heap29728
+[10:47:00] ui.c:1187> UI screen0 heap29728
+[10:47:00] ui.c:1188> UI selection0 scroll0 limit0
+[10:47:00] ui.c:1187> UI screen0 heap29728
+[10:47:00] ui.c:1188> UI selection0 scroll0 limit0
+[10:47:00] ui.c:1187> UI screen0 heap29728
+[10:47:00] ui.c:1188> UI selection0 scroll0 limit0
+[10:47:00] ocess_manager.c:487> Heap Usage for App <KasugaBus>: Total Size <69944B> Used <40296B> Still allocated <300B
+[10:47:00] main.c:822> INIT entered
+[10:47:00] main.c:167> All loaded generation0 reference2 count1
+[10:47:00] main.c:103> All ids0 1
+[10:47:01] main.c:876> READY storage=1048576 heap=29948 message=0
+[10:47:01] ui.c:1187> UI screen0 heap29648
+[10:47:01] ui.c:1188> UI selection0 scroll0 limit0
+[10:47:01] ui.c:1187> UI screen0 heap29728
+[10:47:01] ui.c:1188> UI selection0 scroll0 limit0
+[10:47:01] ui.c:1187> UI screen0 heap29728
+[10:47:01] ui.c:1188> UI selection0 scroll0 limit0
+[10:47:01] ui.c:1187> UI screen0 heap29728
+[10:47:01] ui.c:1188> UI selection0 scroll0 limit0
+[10:47:01] ui.c:1187> UI screen0 heap29728
+[10:47:01] ui.c:1188> UI selection0 scroll0 limit0
+[10:47:01] main.c:320> Update begin v10 bytes29678 status0
+[10:47:01] ui.c:1187> UI screen0 heap29728
+[10:47:01] ui.c:1188> UI selection0 scroll0 limit0
+[10:47:02] ui.c:1187> UI screen0 heap29728
+[10:47:02] ui.c:1188> UI selection0 scroll0 limit0
+[10:47:02] ui.c:1187> UI screen0 heap29728
+[10:47:02] ui.c:1188> UI selection0 scroll0 limit0
+[10:47:02] ocess_manager.c:487> Heap Usage for App <KasugaBus>: Total Size <69944B> Used <40296B> Still allocated <300B
+[10:47:02] main.c:822> INIT entered
+[10:47:02] main.c:167> All loaded generation0 reference2 count1
+[10:47:02] main.c:103> All ids0 1
+[10:47:02] main.c:876> READY storage=1048576 heap=29948 message=0
+[10:47:02] ui.c:1187> UI screen0 heap29648
+[10:47:02] ui.c:1188> UI selection0 scroll0 limit0
+[10:47:02] ui.c:1187> UI screen0 heap29728
+[10:47:02] ui.c:1188> UI selection0 scroll0 limit0
+[10:47:02] ui.c:1187> UI screen0 heap29728
+[10:47:02] ui.c:1188> UI selection0 scroll0 limit0
+[10:47:03] ui.c:1187> UI screen0 heap29728
+[10:47:03] ui.c:1188> UI selection0 scroll0 limit0
+[10:47:03] ui.c:1187> UI screen0 heap29728
+[10:47:03] ui.c:1188> UI selection0 scroll0 limit0
+[10:47:03] ui.c:1187> UI screen0 heap29728
+[10:47:03] ui.c:1188> UI selection0 scroll0 limit0
+[10:47:03] ui.c:1187> UI screen0 heap29728
+[10:47:03] ui.c:1188> UI selection0 scroll0 limit0
+[10:47:03] ui.c:1187> UI screen0 heap29728
+[10:47:03] ui.c:1188> UI selection0 scroll0 limit0
+[10:47:13] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:47:13] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:47:13] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:47:13] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:47:13] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:47:13] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:47:14] ui.c:1187> UI screen3 heap29728
+[10:47:14] ui.c:1188> UI selection0 scroll0 limit0
+[10:47:19] ui.c:1187> UI screen3 heap29728
+[10:47:19] ui.c:1188> UI selection1 scroll0 limit0
+[10:47:21] ui.c:1187> UI screen3 heap29728
+[10:47:21] ui.c:1188> UI selection2 scroll0 limit0
+[10:47:24] ui.c:1187> UI screen3 heap29728
+[10:47:24] ui.c:1188> UI selection3 scroll0 limit0
+[10:47:26] ui.c:1187> UI screen3 heap29728
+[10:47:26] ui.c:1188> UI selection4 scroll0 limit0
+[10:47:29] ui.c:1187> UI screen3 heap29728
+[10:47:29] ui.c:1188> UI selection5 scroll0 limit0
+[10:47:31] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:47:31] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:47:31] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:47:31] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:47:31] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:47:33] ui.c:1187> UI screen27 heap29728
+[10:47:33] ui.c:1188> UI selection0 scroll0 limit39
+[10:47:36] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:47:36] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:47:36] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:47:36] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:47:36] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:47:36] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:47:38] ui.c:1187> UI screen27 heap29728
+[10:47:38] ui.c:1188> UI selection0 scroll0 limit39
+[10:47:42] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:47:42] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:47:42] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:47:42] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:47:42] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:47:42] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:47:48] ui.c:1187> UI screen3 heap29728
+[10:47:48] ui.c:1188> UI selection0 scroll0 limit0
+[10:47:50] ui.c:1187> UI screen3 heap29728
+[10:47:50] ui.c:1188> UI selection1 scroll0 limit0
+[10:47:53] ui.c:1187> UI screen3 heap29728
+[10:47:53] ui.c:1188> UI selection2 scroll0 limit0
+[10:47:55] ui.c:1187> UI screen3 heap29728
+[10:47:55] ui.c:1188> UI selection3 scroll0 limit0
+[10:47:58] ui.c:1187> UI screen10 heap29728
+[10:47:58] ui.c:1188> UI selection0 scroll0 limit0
+[10:48:00] ui.c:1187> UI screen10 heap29728
+[10:48:00] ui.c:1188> UI selection0 scroll0 limit0
+[10:48:00] ui.c:1187> UI screen16 heap29728
+[10:48:00] ui.c:1188> UI selection1 scroll0 limit0
+[10:48:02] ui.c:1187> UI screen16 heap29728
+[10:48:02] ui.c:1188> UI selection2 scroll0 limit0
+[10:48:05] ui.c:1187> UI screen10 heap29728
+[10:48:05] ui.c:1188> UI selection0 scroll0 limit0
+[10:48:08] ui.c:1187> UI screen0 heap29668
+[10:48:08] ui.c:1188> UI selection0 scroll0 limit0
+[10:48:11] ocess_manager.c:487> Heap Usage for App <KasugaBus>: Total Size <69944B> Used <40296B> Still allocated <360B
+[10:48:18] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:48:18] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:48:18] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:48:18] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:48:18] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:48:18] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:48:27] main.c:822> INIT entered
+[10:48:28] main.c:167> All loaded generation0 reference2 count1
+[10:48:28] main.c:103> All ids0 1
+[10:48:28] main.c:876> READY storage=1048576 heap=29948 message=0
+[10:48:28] ui.c:1187> UI screen0 heap29588
+[10:48:28] ui.c:1188> UI selection0 scroll0 limit0
+[10:48:28] ui.c:1187> UI screen0 heap29668
+[10:48:28] ui.c:1188> UI selection0 scroll0 limit0
+[10:48:28] ui.c:1187> UI screen0 heap29668
+[10:48:28] ui.c:1188> UI selection0 scroll0 limit0
+[10:48:29] ui.c:1187> UI screen0 heap29668
+[10:48:29] ui.c:1188> UI selection0 scroll0 limit0
+[10:48:32] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:48:32] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:48:32] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:48:32] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:48:32] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:48:32] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:48:34] ui.c:1187> UI screen3 heap29668
+[10:48:34] ui.c:1188> UI selection0 scroll0 limit0
+[10:48:38] ui.c:1187> UI screen3 heap29668
+[10:48:38] ui.c:1188> UI selection1 scroll0 limit0
+[10:48:41] ui.c:1187> UI screen3 heap29668
+[10:48:41] ui.c:1188> UI selection2 scroll0 limit0
+[10:48:43] ui.c:1187> UI screen3 heap29668
+[10:48:43] ui.c:1188> UI selection3 scroll0 limit0
+[10:48:45] ui.c:1187> UI screen3 heap29668
+[10:48:45] ui.c:1188> UI selection4 scroll0 limit0
+[10:48:48] ui.c:1187> UI screen3 heap29668
+[10:48:48] ui.c:1188> UI selection5 scroll0 limit0
+[10:48:50] ui.c:1187> UI screen27 heap29668
+[10:48:51] ui.c:1188> UI selection0 scroll0 limit123
+[10:48:54] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:48:54] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:48:54] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:48:54] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:48:54] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:48:54] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:48:56] ui.c:1187> UI screen27 heap29668
+[10:48:56] ui.c:1188> UI selection0 scroll0 limit123
+[10:49:00] ui.c:1187> UI screen27 heap29668
+[10:49:00] ui.c:1188> UI selection0 scroll0 limit123
+[10:49:00] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:49:00] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+[10:49:00] pkjs> [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
