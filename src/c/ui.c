@@ -1060,14 +1060,16 @@ static SCREEN void trains_screen(GContext *c) {
   char *s=document_buffer,a[12],b[12],x[12];
   bool kyoto=app.train_kyoto;
   unsigned n=app.train_ok?train_legs(&app.detail,kyoto,legs):0;
-  const char *title=kyoto?"Kyoto-bound":"Osaka-bound";
+  char title[32];
+  clock_text(x,sizeof(x),app.detail.minute);
+  snprintf(title,sizeof(title),"%s | bus %s",kyoto?"Kyoto":"Osaka",x);
   int top=heading(c,"Train connection",title);
   if(!n) {
     document(c,app.train_ok?"No later train today for this bus.":"No bus soon from this stop reaches JR Ibaraki or Hankyu Ibaraki-shi. Flip direction on home and try again.",top+4,"SELECT: direction | BACK");
     return;
   }
-  clock_text(x,sizeof(x),app.detail.minute);
-  size_t used=(size_t)snprintf(s,document_size,"Bus %s JST\n",x);
+  size_t used=0;
+  s[0]=0;
   bool both=n==2&&(app.extras.train_flags&KB_TRAIN_FLAG_BOTH);
   for(unsigned i=0;i<(both?2u:1u);i++) {
     const kb_leg_t *l=&legs[i];
