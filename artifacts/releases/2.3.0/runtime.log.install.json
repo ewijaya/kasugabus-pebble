@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "artifact": {
-    "sha256": "a08b5f78b81d75bf87a68566efa86a27ebadce04aad9184ca605c58dcd540974",
-    "bytes": 969034
+    "sha256": "a818d31ba56374af1c298ded12b7027ce81d1efa39ee2b10773e166b35823510",
+    "bytes": 969117
   },
   "environment": "emulator",
   "command": [
@@ -13,7 +13,7 @@
     "--logs",
     "/home/ubuntu/projects/kasugabus-pebble/build/kasugabus-pebble.pbw"
   ],
-  "started_at": "2026-10-21T01:44:50.364929+00:00",
-  "finished_at": "2026-10-21T01:49:06.411923+00:00",
-  "log_sha256": "52be99844fbb6569f9be27fd3617606200c5acddc7c21e20f9efa6ac1d5bcdf7"
+  "started_at": "2026-10-21T02:18:06.483741+00:00",
+  "finished_at": "2026-10-21T02:22:14.533212+00:00",
+  "log_sha256": "92b9d8affacd0816bfecb25de41cc5e43e79153c136cf7b95f20bb7ace55491d"
 }
