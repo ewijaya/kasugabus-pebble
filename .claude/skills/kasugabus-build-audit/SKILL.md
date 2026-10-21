@@ -20,6 +20,12 @@ Run a real clean build and inspect compiler failures/warnings, native bytes,
 static RAM, resources, timetable size, PBW bytes and digest. At least 20 percent
 headroom is targeted against 128 KiB native binary/static RAM and 256 KiB
 resources. The established RWX linker warning alone is not build failure.
+App stack depth (`scripts/stack_depth.py`, report in `build/release-stack.json`)
+is the deepest app-side call chain in the ELF and must stay within
+`max_app_stack_depth_bytes`; a build at 3,984 bytes faulted at launch on the
+watch while emulator and tests passed. If it fails, keep large per-screen
+buffers out of `draw()` (screen functions are `noinline`) rather than raising
+the budget. New recursion must be declared with its bound in that script.
 
 Generated `.lock-waf*` files can contain the inherited host environment.
 They are ignored and must be excluded from source/publication artifacts;

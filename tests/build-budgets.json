@@ -8,10 +8,11 @@
   "max_static_ram_bytes": 104857,
   "sdk_image_limit_bytes": 65535,
   "max_image_bytes": 61440,
+  "max_app_stack_depth_bytes": 3584,
   "max_resources_bytes": 209715,
   "minimum_measured_free_heap_bytes": 26215,
   "max_payload_bytes": 24576,
   "max_pbw_bytes": 2097152,
   "required_runtime_scenarios": ["launch", "navigation", "update-transfer"],
-  "notes": "Image bytes are text+data+bss of the app ELF (the build report's Total footprint in RAM). The SDK refuses an app image above sdk_image_limit_bytes (uint16 virtual_size); max_image_bytes keeps at least 4 KiB of headroom below it. PBW zip size is an engineering guard, not an SDK memory ceiling. Runtime free heap must be measured from the exact artifact after exercising these scenarios; linker free RAM is only static evidence."
+  "notes": "Image bytes are text+data+bss of the app ELF (the build report's Total footprint in RAM). The SDK refuses an app image above sdk_image_limit_bytes (uint16 virtual_size); max_image_bytes keeps at least 4 KiB of headroom below it. PBW zip size is an engineering guard, not an SDK memory ceiling. Runtime free heap must be measured from the exact artifact after exercising these scenarios; linker free RAM is only static evidence. App stack depth is the deepest app-side call chain in the ELF (scripts/stack_depth.py; firmware callees not counted). Calibrated on the watch: builds at 3,336 (742ce1b) and 3,256 (5e5e6e7) ran; 3,984 (9dc4c03) faulted at launch."
 }

@@ -11,6 +11,7 @@ import sys
 import zipfile
 from release_policy import make_policy, required_scenarios
 from release_common import ARTIFACT, ROOT, atomic_json, digest, inspect_pbw, require, source_fingerprint
+from stack_depth import analyse as analyse_stack
 
 
 def parse_metrics(output):
@@ -32,6 +33,12 @@ def check_budgets(metrics, budgets, runtime=False):
     require(isinstance(image, int) and image >= 0, "App image size (text+data+bss) was not measured")
     require(image <= budgets["sdk_image_limit_bytes"], "App image exceeds the SDK hard limit of {} bytes".format(budgets["sdk_image_limit_bytes"]))
     require(image <= budgets["max_image_bytes"], "App image exceeds its release budget; at least 4 KiB headroom below the SDK limit is required")
+    # Audits from before the stack check (frozen 2.2.2 and earlier) lack the
+    # metric; build_audit always measures it for new candidates.
+    if "stack_depth" in metrics:
+        depth = metrics["stack_depth"]
+        require(isinstance(depth, int) and 0 <= depth <= budgets["max_app_stack_depth_bytes"],
+                "App stack depth exceeds its release budget of {} bytes (a build at 3,984 faulted on the watch)".format(budgets["max_app_stack_depth_bytes"]))
     if runtime:
         require(metrics["measured_free_heap"] >= budgets["minimum_measured_free_heap_bytes"], "Measured runtime heap has less than 20 percent headroom")
 
@@ -112,6 +119,9 @@ def build_audit(static_only=False, root=ROOT, full=False):
         metrics["native_binary"] = len(archive.read("emery/pebble-app.bin"))
     metrics["pbw"] = artifact["bytes"]
     metrics["timetable"] = (root / "resources/timetable.bin").stat().st_size
+    stack = analyse_stack(root / "build/emery/pebble-app.elf")
+    (root / "build/release-stack.json").write_text(json.dumps(stack, indent=1) + "\n")
+    metrics["stack_depth"] = stack["stack_depth"]
     check_budgets(metrics, json.loads((root / "tests/build-budgets.json").read_text()))
     require(source_fingerprint(root) == {k: source[k] for k in ("fingerprint", "files")}, "Project source changed during tests/build; audit refused")
     toolchain = subprocess.run(["pebble", "--version"], cwd=root, check=True, capture_output=True, text=True).stdout.strip()
