@@ -164,7 +164,11 @@ static void footer(GContext *c,const char *s) {
   line(c,top,colors.navigation);
   text(c,s,8,top+1,184,227-top,meta_size(),colors.foreground);
 }
-static void home(GContext *c) {
+/* Each screen keeps its own large text buffers. Kept out of draw() so only
+ * the visible screen's frame is on the small app stack; inlining them all
+ * into draw() once pushed the home screen past it (fault at PC 0). */
+#define SCREEN __attribute__((noinline))
+static SCREEN void home(GContext *c) {
   time_t now=time(NULL);
   struct tm local=*localtime(&now);
   char b[112],clock[20];
@@ -705,7 +709,7 @@ static size_t info_text(size_t used,const char *s) {
   int n=snprintf(document_buffer+used,document_size-used,"%s",s);
   return n<0?used:used+(size_t)n<document_size?used+(size_t)n:document_size-1;
 }
-static void all_info(GContext *c) {
+static SCREEN void all_info(GContext *c) {
   unsigned status=all_status_now();
   bool home=app.all_prefs.reference==KB_ALL_REFERENCE_HOME;
   const char *reference=home?"Saved home location":app.all_prefs.reference==KB_ALL_REFERENCE_CURRENT?"Current phone location":"Manual";
@@ -741,7 +745,7 @@ static void nearby_disabled(GContext *c) {
   graphics_fill_rect(c,GRect(0,0,200,top),0,GCornerNone);
   heading(c,"Location is off",NULL);
 }
-static void list(GContext *c) {
+static SCREEN void list(GContext *c) {
   if(app.screen==KB_SCREEN_ALL_POINTS)ui_refresh();
   if(app.screen==KB_SCREEN_NEARBY&&!(app.prefs.bytes[1]&KB_PREF_LOCATION)) {
     nearby_disabled(c);
@@ -842,7 +846,7 @@ static void board_filter_label(char *label,size_t n) {
   if(d&&kb_operator_get(d,app.route_operator,&o))snprintf(label,n,"Scheduled | JST\n%.24s %.64s",o.short_name,app.route_number);
   else snprintf(label,n,"Scheduled | JST\nBus %.84s",app.route_number);
 }
-static void board(GContext *c) {
+static SCREEN void board(GContext *c) {
   bool merged=app.screen==KB_SCREEN_ALL_BOARD;
   if(merged)ui_refresh();
   kb_query_state_t summary={0};kb_trip_t first;int summary_result=0;
@@ -935,7 +939,7 @@ static void board(GContext *c) {
   bool override=app.override.day_type!=KB_DAY_UNKNOWN&&app.override.jst_day==kb_jst_day(time(NULL));
   footer(c,app.board_removed?"Removed | DOWN next":app.board_expired?"Earlier | DOWN next":merged?(override?(summary.coverage_limited?"Override/partial | info":"Override | hold: info"):summary.coverage_limited?"Partial | hold: info":"SELECT details | hold info"):tools?"SELECT opens stops":app.changed?"Hold SELECT: refresh":"SELECT: details");
 }
-static void details(GContext *c) {
+static SCREEN void details(GContext *c) {
   kb_query_t q=app_query();
   const kb_dataset_t *d=kb_trip_dataset(&q,&app.detail);
   kb_boarding_point_t p;
@@ -983,7 +987,7 @@ static void details(GContext *c) {
   snprintf(s,document_size,"%s\n%s\n%s\n\nRoute %s\nTo %s\n%s  %s JST%s\n%s%s | Scheduled\n%s\n%s\n%s\nSource verified %s\nData v%lu\n\n%s\nSELECT: Japanese name",p.name,p.direction,o.name,pattern.route,pattern.destination,date,tm,origin,day_name(app.detail.day_type),app.detail.overridden?" (Override)":"",walk,p.guidance,pattern.route_transitions,source,(unsigned long)d->release_version,reminder);
   document(c,s,4,"UP/DOWN | BACK");
 }
-static void reminder_screen(GContext *c) {
+static SCREEN void reminder_screen(GContext *c) {
   bool commute=app.reminder_kind>=KB_WAKE_COMMUTE;
   bool heads=app.reminder_kind==KB_WAKE_HEADS_UP||app.reminder_kind==KB_WAKE_COMMUTE_HEADS_UP;
   int64_t departure=commute?app.commute_departure:app.reminder_departure;
@@ -1010,7 +1014,7 @@ static void reminder_screen(GContext *c) {
   graphics_fill_rect(c,GRect(0,0,200,top+2),0,GCornerNone);
   heading(c,title,commute?"Commute alarm":"Reminder");
 }
-static void help(GContext *c) {
+static SCREEN void help(GContext *c) {
   /* The help text lives in a raw resource, not in the 64 KB app image. */
   size_t n=resource_load(resource_get_handle(RESOURCE_ID_HELP_TEXT),(uint8_t *)document_buffer,document_size-1);
   document_buffer[n]=0;
@@ -1021,7 +1025,7 @@ static void help(GContext *c) {
   graphics_fill_rect(c,GRect(0,0,200,top+2),0,GCornerNone);
   heading(c,"Help",NULL);
 }
-static void status(GContext *c) {
+static SCREEN void status(GContext *c) {
   char *s=document_buffer;
   char vf[20]="Unavailable",rv[20]="Unset",from[20]="?",until[20]="?",future[20]="None",feed[40]="Never",attempt[40]="Never";
   int32_t effect;
@@ -1055,7 +1059,7 @@ static void status(GContext *c) {
   snprintf(s,document_size,"Data status\nSELECT: Check updates\n\n%s\n\nActive dataset: v%lu\nSource verified: %s\nReview due: %s\n%s\nFeed success:\n%s\nAutomatic attempt:\n%s\n\nCalendar coverage\n%s to %s\nPending v%lu: %s\n\n%s\nMissing saved IDs: %u\n\nScheduled departures.\nFeed checks do not verify operator freshness.\n\nUpdates: %s\nPhone: %s\n%s",states[st],(unsigned long)(d?d->release_version:0),vf,rv,d&&d->review_by!=KB_DATE_UNKNOWN&&kb_jst_day(time(NULL))>d->review_by?"Needs timetable review":"",feed,attempt,from,until,(unsigned long)pending,future,kb_store_has_staging(&app.store,kb_jst_day(time(NULL)))?"Safe staging available":app.store.capacity_ok?"Storage full: pending data kept":"Insufficient firmware storage",missing,app.prefs.bytes[1]&KB_PREF_AUTO?"Daily on launch":"Manual only",app.phone_ready?"Ready":"Not connected",app.notice);
   document(c,s,4,"SELECT: check");
 }
-static void japanese(GContext *c) {
+static SCREEN void japanese(GContext *c) {
   const kb_dataset_t *d=app_dataset();
   kb_boarding_point_t p;
   kb_stop_group_t group;
