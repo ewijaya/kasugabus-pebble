@@ -91,6 +91,13 @@ python3 tools/test_feed.py --serve --real-data --port 8910 \
 node tests/run_emulator_feed.js http://127.0.0.1:8910 2
 ```
 
+Add `--dataset data/timetable_v5.json` to serve schema 2 snapshots instead of
+copies of the baseline (the harness reads the app's data level from
+`src/pkjs/feed-config.js`). The phone rejects an upcoming release whose
+activation date is not in the future, so choose `--future-date` after today's
+real date; a fresh emulator also downloads the live feed on first launch, so
+`--current-version` must exceed that (v4 at the time of writing).
+
 These files are isolated copies of the baseline with artificial release and
 activation dates. Choose a current version higher than the emulator's installed
 release. The harness uses the locally installed Pebble Python and existing

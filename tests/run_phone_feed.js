@@ -17,7 +17,7 @@ function fetch(url,maximum,isBinary,timeout,cb){
   return function(){request.destroy();finish(new Error('Cancelled'));};
 }
 async function scenario(name,path,expected,dropAck){
-  var config={manifestUrl:base+'/'+path,coverage:'minami-kasugaoka-v1',appVersion:1,maxPayload:32768,manifestMaxBytes:8192,requestTimeout:15000};
+  var config={manifestUrl:base+'/'+path,coverage:'minami-kasugaoka-v1',appVersion:require('../src/pkjs/feed-config').appVersion,maxPayload:32768,manifestMaxBytes:8192,requestTimeout:15000};
   var watch={current:1,pending:0,staging:null,received:[],commitOrder:[]},messages=[],phone,timers=[];
   return new Promise(function(resolve,reject){
     function ack(message,status){if(dropAck)return;setImmediate(function(){phone.receive({TYPE:8,SESSION:message.SESSION,SEQ:message.TYPE===7?65535:message.SEQ||0,STATUS:status,FLAGS:message.TYPE});});}

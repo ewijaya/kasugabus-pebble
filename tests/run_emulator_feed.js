@@ -65,7 +65,7 @@ async function restart(){
 async function runFeed(name,path,expected,interrupt){
   var previousSuccess=watchState.lastSuccess;
   interrupted=!!interrupt;chunkCount=0;var statuses=[];
-  var phone=updater({config:{manifestUrl:base+'/'+path,coverage:'minami-kasugaoka-v1',appVersion:1,maxPayload:32768,manifestMaxBytes:8192,requestTimeout:15000},testInsecure:true,fetch:fetch,send:function(message,success,failure){if(message.TYPE===4){statuses.push(message.STATUS);if([2,3,5,6].indexOf(message.STATUS)!==-1)setImmediate(done);}send(message,success,failure);},now:Date.now,schedule:setTimeout,cancel:clearTimeout});
+  var phone=updater({config:{manifestUrl:base+'/'+path,coverage:'minami-kasugaoka-v1',appVersion:require('../src/pkjs/feed-config').appVersion,maxPayload:32768,manifestMaxBytes:8192,requestTimeout:15000},testInsecure:true,fetch:fetch,send:function(message,success,failure){if(message.TYPE===4){statuses.push(message.STATUS);if([2,3,5,6].indexOf(message.STATUS)!==-1)setImmediate(done);}send(message,success,failure);},now:Date.now,schedule:setTimeout,cancel:clearTimeout});
   activePhone=phone;phone.state(watchState);
   var done=function(){};
   var outcome=new Promise(function(resolve,reject){function clean(){clearTimeout(timer);listeners=listeners.filter(function(x){return x!==failed;});}function failed(event){if(event.event==='error'&&event.fatal){clean();reject(new Error(event.message));}}var timer=setTimeout(function(){clean();reject(new Error(name+' timeout'));},120000);listeners.push(failed);done=function(){clean();try{assert.strictEqual(statuses[statuses.length-1],expected);resolve();}catch(e){reject(e);}};});

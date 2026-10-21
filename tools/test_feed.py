@@ -33,10 +33,10 @@ const interrupted=JSON.parse(JSON.stringify(feed));interrupted.upcoming=null;int
     subprocess.run(["node", "-e", script, str(ROOT), str(directory), origin], check=True)
 
 
-def generate_real(directory, origin, current_version, today, future_date):
+def generate_real(directory, origin, current_version, today, future_date, dataset="data/timetable.json"):
     from compile_timetable import compile_dataset
     from publish_feed import release_metadata
-    baseline = json.loads((ROOT / "data/timetable.json").read_text())
+    baseline = json.loads((ROOT / dataset).read_text())
     def payload(version, effective, name):
         doc = copy.deepcopy(baseline)
         doc["release_version"] = version
@@ -67,7 +67,7 @@ def generate_real(directory, origin, current_version, today, future_date):
         "replacementCurrentVersion": current_version+2, "replacementFutureVersion": current_version+3}))
 
 
-def serve(directory, port, real_data=False, current_version=2, today="2026-10-01", future_date="2026-10-03"):
+def serve(directory, port, real_data=False, current_version=2, today="2026-10-01", future_date="2026-10-03", dataset="data/timetable.json"):
     class Handler(http.server.SimpleHTTPRequestHandler):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, directory=str(directory), **kwargs)
@@ -92,7 +92,7 @@ def serve(directory, port, real_data=False, current_version=2, today="2026-10-01
     server = http.server.ThreadingHTTPServer(("127.0.0.1", port), Handler)
     origin = f"http://127.0.0.1:{server.server_port}"
     if real_data:
-        generate_real(directory, origin, current_version, today, future_date)
+        generate_real(directory, origin, current_version, today, future_date, dataset)
     else:
         generate(directory, origin)
     return server, origin
@@ -104,6 +104,7 @@ def main():
     parser.add_argument("--port", type=int, default=0)
     parser.add_argument("--directory", type=Path)
     parser.add_argument("--real-data", action="store_true", help="Use isolated copies of the validated baseline for emulator transfers")
+    parser.add_argument("--dataset", default="data/timetable.json", help="Dataset the --real-data copies are made from, e.g. data/timetable_v5.json for schema 2")
     parser.add_argument("--current-version", type=int, default=2)
     parser.add_argument("--today", default="2026-10-01")
     parser.add_argument("--future-date", default="2026-10-03")
@@ -117,7 +118,7 @@ def main():
     with tempfile.TemporaryDirectory(prefix="kasugabus-test-feed-") as temporary:
         directory = args.directory or Path(temporary)
         directory.mkdir(parents=True, exist_ok=True)
-        server, origin = serve(directory, args.port, args.real_data, args.current_version, args.today, args.future_date)
+        server, origin = serve(directory, args.port, args.real_data, args.current_version, args.today, args.future_date, args.dataset)
         print(json.dumps({"testOnly": True, "origin": origin, "manifest": origin+"/manifest.json", "fixtures": str(directory)}), flush=True)
         if args.serve:
             try:
