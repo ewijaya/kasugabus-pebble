@@ -17,11 +17,19 @@
 #define KB_ACTION_ALL 6
 #define KB_ACTION_BOARD 7
 #define KB_ACTION_WATCHFACE 8
-#define KB_ACTION_COUNT 9
+#define KB_ACTION_TRAIN 9
+#define KB_ACTION_COUNT 10
 #define KB_EXTRAS_PROFILES 1
 #define KB_EXTRAS_COMMUTE 2
 /* Back on home returns to the app list instead of the watchface. */
 #define KB_EXTRAS_BACK_LAUNCHER 4
+/* Train screen settings (wire bytes 21-23). Walk bytes hold minutes + 1, so
+ * 0, which every record saved before the Train screen has, means the default. */
+#define KB_TRAIN_FLAG_KYOTO 1     /* open towards Kyoto, not Osaka */
+#define KB_TRAIN_FLAG_BOTH 2      /* always show both stations */
+#define KB_TRAIN_FLAG_TAKATSUKI 4 /* Kyoto-bound view ends at Takatsuki */
+#define KB_TRAIN_WALK_DEFAULT 4
+#define KB_TRAIN_WALK(raw) ((raw)?(unsigned)(raw)-1:KB_TRAIN_WALK_DEFAULT)
 #define KB_BUTTON_UP 0
 #define KB_BUTTON_DOWN 1
 #define KB_BUTTON_HOLD_UP 2
@@ -35,6 +43,7 @@ typedef struct {
   uint8_t profile_a_hour,profile_b_hour;
   uint16_t commute_point,commute_minute;
   uint8_t commute_days; /* bit 0 Sunday .. bit 6 Saturday */
+  uint8_t train_flags,walk_jr,walk_hankyu; /* KB_TRAIN_FLAG_*, walk bytes 0..31 */
 } kb_extras_t;
 void kb_extras_default(kb_extras_t *);
 /* Rejects unknown actions, out-of-range values, non-zero reserved bytes and,

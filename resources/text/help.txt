@@ -27,6 +27,11 @@ Trip context: walking time from your saved origin
 Data status: timetable dates and update check
 Settings: text size, colour theme and more
 
+TRAIN CONNECTION
+Menu > Train connection: the soonest bus that reaches JR Ibaraki or Hankyu Ibaraki-shi, the train to catch there and when it arrives. The station that gets you there first is shown, with how much later the other is.
+SELECT: Osaka or Kyoto. UP/DOWN: scroll.
+Walking times to each platform and the Kyoto-bound destination are in phone settings. Scheduled times only.
+
 PHONE
 In the Pebble app, open KasugaBus settings for favourites, buttons, commute alarm, time profiles, walking times, location and display.
 

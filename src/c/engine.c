@@ -17,21 +17,21 @@ static const uint8_t *find_id(const kb_dataset_t *d,unsigned table,uint8_t id) {
 static const char *str(const kb_dataset_t *d,uint16_t off) { return (const char *)(d->bytes+d->strings_offset+off); }
 static int64_t floor_div(int64_t n,int64_t divisor) { int64_t q=n/divisor,r=n%divisor; return q-(r<0); }
 
-uint32_t kb_crc32(const uint8_t *p,size_t n) {
+uint32_t kb_crc32_update(uint32_t crc,const uint8_t *p,size_t n) {
   static const uint32_t nibble[16] = {
     UINT32_C(0x00000000), UINT32_C(0x1db71064), UINT32_C(0x3b6e20c8), UINT32_C(0x26d930ac),
     UINT32_C(0x76dc4190), UINT32_C(0x6b6b51f4), UINT32_C(0x4db26158), UINT32_C(0x5005713c),
     UINT32_C(0xedb88320), UINT32_C(0xf00f9344), UINT32_C(0xd6d6a3e8), UINT32_C(0xcb61b38c),
     UINT32_C(0x9b64c2b0), UINT32_C(0x86d3d2d4), UINT32_C(0xa00ae278), UINT32_C(0xbdbdf21c)
   };
-  uint32_t crc=UINT32_MAX;
   while(n--) {
     crc^=*p++;
     crc=(crc>>4)^nibble[crc&15];
     crc=(crc>>4)^nibble[crc&15];
   }
-  return ~crc;
+  return crc;
 }
+uint32_t kb_crc32(const uint8_t *p,size_t n) { return ~kb_crc32_update(UINT32_MAX,p,n); }
 int32_t kb_jst_day(int64_t epoch) { return (int32_t)floor_div(epoch+32400,86400); }
 int64_t kb_service_epoch(int32_t day,uint16_t minute) { return (int64_t)day*86400+(int64_t)minute*60-32400; }
 bool kb_date_from_ymd(int y,unsigned m,unsigned dom,int32_t *out) {

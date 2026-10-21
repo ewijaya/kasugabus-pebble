@@ -37,7 +37,8 @@ bool kb_extras_parse(kb_extras_t *out,const uint8_t *b,unsigned n,kb_id_exists_f
   for(unsigned i=1;i<=4;i++)if(b[i]>=KB_ACTION_COUNT)return false;
   if(b[5]&~(KB_EXTRAS_PROFILES|KB_EXTRAS_COMMUTE|KB_EXTRAS_BACK_LAUNCHER)||b[6]>2||b[7]>30)return false;
   if(b[10]>23||b[11]||b[14]>23||b[15]||b[20]>127)return false;
-  for(unsigned i=21;i<KB_EXTRAS_WIRE_BYTES;i++)if(b[i])return false;
+  if(b[21]&~7||b[22]>31||b[23]>31)return false;
+  for(unsigned i=24;i<KB_EXTRAS_WIRE_BYTES;i++)if(b[i])return false;
   kb_extras_t e;
   memset(&e,0,sizeof(e));
   memcpy(e.buttons,b+1,4);
@@ -45,6 +46,7 @@ bool kb_extras_parse(kb_extras_t *out,const uint8_t *b,unsigned n,kb_id_exists_f
   e.profile_a=u16(b+8);e.profile_a_hour=b[10];
   e.profile_b=u16(b+12);e.profile_b_hour=b[14];
   e.commute_point=u16(b+16);e.commute_minute=u16(b+18);e.commute_days=b[20];
+  e.train_flags=b[21];e.walk_jr=b[22];e.walk_hankyu=b[23];
   if(e.commute_minute>=24*60)return false;
   if(e.flags&KB_EXTRAS_PROFILES) {
     if(!e.profile_a||!e.profile_b||e.profile_a_hour==e.profile_b_hour)return false;
@@ -65,6 +67,7 @@ void kb_extras_encode(const kb_extras_t *e,uint8_t *b) {
   put16(b+8,e->profile_a);b[10]=e->profile_a_hour;
   put16(b+12,e->profile_b);b[14]=e->profile_b_hour;
   put16(b+16,e->commute_point);put16(b+18,e->commute_minute);b[20]=e->commute_days;
+  b[21]=e->train_flags;b[22]=e->walk_jr;b[23]=e->walk_hankyu;
 }
 bool kb_extras_load(kb_extras_t *out,uint32_t *generation,uint8_t *slot,kb_pref_read_fn read,void *context) {
   kb_extras_default(out);

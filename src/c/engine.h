@@ -68,6 +68,8 @@ typedef struct {
 
 kb_error_t kb_dataset_open(kb_dataset_t *out, const uint8_t *bytes, size_t size);
 uint32_t kb_crc32(const uint8_t *bytes, size_t size);
+/* Running CRC32: start from UINT32_MAX, finish with ~state. */
+uint32_t kb_crc32_update(uint32_t state, const uint8_t *bytes, size_t size);
 const char *kb_coverage_id(const kb_dataset_t *data);
 size_t kb_operator_count(const kb_dataset_t *data);
 size_t kb_stop_group_count(const kb_dataset_t *data);

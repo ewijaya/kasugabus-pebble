@@ -2,8 +2,11 @@
 import importlib.util
 import json
 from pathlib import Path
+import random
 import struct
+import subprocess
 import sys
+import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -125,6 +128,87 @@ class CommittedDataTests(unittest.TestCase):
         self.assertEqual(rows[0][0], 5 * 60 + 6)
         page = (ROOT / "data/sources/trains/jr_osaka_weekday.html").read_text(encoding="utf-8")
         self.assertIn('departure-time">5:06', page)
+
+    def _compile_c(self):
+        directory = tempfile.TemporaryDirectory(prefix="kasugabus-trains-")
+        self.addCleanup(directory.cleanup)
+        executable = Path(directory.name) / "test-trains"
+        subprocess.run(["cc", "-std=c99", "-Wall", "-Wextra", "-Werror", "-pedantic", str(ROOT / "src/c/engine.c"),
+                        str(ROOT / "src/c/trains.c"), str(ROOT / "tests/test_trains.c"), "-o", str(executable)], check=True)
+        return executable
+
+    def _hm(self, minute):
+        return f"{minute // 60}:{minute % 60:02}"
+
+    def _expected_next(self, key, ready, target, skip):
+        rows = [r for r in self.sections[key] if r[3 + target] and r[0] >= ready]
+        if skip >= len(rows):
+            return "none"
+        minute, kind, destination, *durations = rows[skip]
+        return f"{self._hm(minute)}|{self._hm(minute + durations[target])}|{kind}|{destination}"
+
+    def test_c_reader_self_checks(self):
+        result = subprocess.run([str(self._compile_c()), str(ROOT / "data/trains.bin")], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("self-checks passed", result.stdout)
+
+    def test_c_next_train_matches_the_python_decoder(self):
+        networks, directions = ("JR", "Hankyu"), ("Osaka", "Kyoto")
+        rng = random.Random(20261021)
+        queries, expected = [], []
+        for _ in range(600):
+            n, d, day = rng.randrange(2), rng.randrange(2), rng.choice((1, 2))
+            ready = rng.choice((0, 300, 306, 1469, 1470, 1500)) if rng.random() < 0.2 else rng.randrange(280, 1500)
+            target, skip = rng.randrange(2), rng.choice((0, 0, 0, 1, 2, 40, 400))
+            queries.append(f"{n} {d} {day} {ready} {target} {skip}")
+            expected.append(self._expected_next((networks[n], directions[d], day), ready, target, skip))
+        result = subprocess.run([str(self._compile_c()), str(ROOT / "data/trains.bin"), "next"], input="\n".join(queries),
+                                capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.split("\n")[:-1], expected)
+        self.assertGreater(sum(1 for e in expected if e != "none"), 250)
+
+    def test_c_connection_matches_the_python_decoder(self):
+        networks, directions = ("JR", "Hankyu"), ("Osaka", "Kyoto")
+        rng = random.Random(7)
+        queries, expected = [], []
+        for _ in range(500):
+            day, d = rng.choice((1, 2)), rng.randrange(2)
+            target = rng.randrange(2) if d else 0
+            trip = rng.randrange(330, 1380)
+            jr = rng.choice((0, rng.randrange(1, 32)))
+            hk = 0 if not jr or rng.random() < 0.15 else jr + rng.choice((5, 6, 8))
+            walk = (rng.choice((0, 4, 10)), rng.choice((0, 4, 10)))
+            queries.append(f"{day} {d} {target} {trip} {jr} {hk} {walk[0]} {walk[1]}")
+            legs = []
+            for s, minutes in enumerate((jr, hk)):
+                if not minutes:
+                    continue
+                at = trip + minutes
+                line = self._expected_next((networks[s], directions[d], day), at + walk[s], target, 0)
+                if line != "none":
+                    dep, arr, kind, dest = line.split("|")
+                    legs.append((self._arrival(arr), s, f"{s}@{self._hm(at)}:{dep}|{arr}|{kind}|{dest}"))
+            legs.sort(key=lambda leg: (leg[0], leg[1]))
+            expected.append(" ".join([str(len(legs))] + [leg[2] for leg in legs]))
+        result = subprocess.run([str(self._compile_c()), str(ROOT / "data/trains.bin"), "connect"], input="\n".join(queries),
+                                capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.split("\n")[:-1], expected)
+        self.assertGreater(sum(1 for e in expected if e.startswith("2")), 100)
+
+    @staticmethod
+    def _arrival(text):
+        hours, minutes = text.split(":")
+        return int(hours) * 60 + int(minutes)
+
+    def test_bundled_resource_is_the_verified_data_file(self):
+        self.assertEqual((ROOT / "resources/trains.bin").read_bytes(), self.blob)
+        package = json.loads((ROOT / "package.json").read_text())
+        media = package["pebble"]["resources"]["media"]
+        self.assertEqual([m for m in media if m["name"] == "TRAINS"], [{"type": "raw", "name": "TRAINS", "file": "trains.bin"}])
+        # Appended last so existing resource IDs never shift.
+        self.assertEqual(media[-1]["name"], "TRAINS")
 
     def test_header_dates_are_ordered(self):
         self.assertLess(self.decoded["verified"], self.decoded["review_due"])

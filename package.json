@@ -123,6 +123,11 @@
           "type": "raw",
           "name": "ALL_INFO_TEXT",
           "file": "text/all-info.txt"
+        },
+        {
+          "type": "raw",
+          "name": "TRAINS",
+          "file": "trains.bin"
         }
       ]
     }

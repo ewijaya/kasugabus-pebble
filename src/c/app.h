@@ -33,6 +33,7 @@
 #define KB_SCREEN_HELP 24
 #define KB_SCREEN_BUTTONS 25
 #define KB_SCREEN_REMINDER 26
+#define KB_SCREEN_TRAINS 27
 /* Wakeup cookies: one-shot or commute, leave time or earlier heads-up. */
 #define KB_WAKE_LEAVE 1
 #define KB_WAKE_HEADS_UP 2
@@ -93,6 +94,8 @@ typedef struct  {
   uint16_t reminder_point,commute_point;
   uint8_t reminder_pattern,commute_pattern;
   int reminder_kind;
+  int train_return; /* screen the Train connection returns to */
+  bool train_kyoto,train_ok; /* viewing Kyoto-bound; a bus with station times was found */
 }
 kb_app_t;
 extern kb_app_t app;

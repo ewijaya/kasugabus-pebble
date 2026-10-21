@@ -1,4 +1,5 @@
 #include "app.h"
+#include "trains.h"
 #include <stdio.h>
 #include <string.h>
 typedef struct {
@@ -13,7 +14,7 @@ static char *document_buffer;
 static char document_fallback[64];
 static size_t document_size;
 static const char *size_names[]={"Standard","Large","Extra Large"};
-static const char *action_names[]={"Nothing","Next departure","Previous departure","Switch favourite stop","Flip direction","Open Nearby","Open All departures","Open departure board","Exit to watchface"};
+static const char *action_names[]={"Nothing","Next departure","Previous departure","Switch favourite stop","Flip direction","Open Nearby","Open All departures","Open departure board","Exit to watchface","Train connection"};
 static const char *theme_names[]={"Neon Dark","Neon Light","High Contrast Dark","High Contrast Light"};
 static palette_t palette(unsigned theme) {
   if(theme==KB_THEME_NEON_LIGHT)return (palette_t){GColorWhite,GColorBlack,GColorDukeBlue,GColorDarkGreen,GColorDarkCandyAppleRed,GColorPurple,GColorWhite};
@@ -390,7 +391,7 @@ static void all_label(char *s,size_t n) {
 static int choices(void) {
   const kb_dataset_t *d=app_dataset();
   switch(app.screen) {
-    case KB_SCREEN_MENU:return 5;
+    case KB_SCREEN_MENU:return 6;
     case KB_SCREEN_PICKER:return 5;
     case KB_SCREEN_FAVOURITES:return app.prefs.bytes[5];
     case KB_SCREEN_GROUPS:return d?kb_stop_group_count(d):0;
@@ -449,10 +450,10 @@ static void choice(int n,choice_t *c) {
   switch(app.screen) {
     case KB_SCREEN_MENU: {
       const char *a[]= {
-        "Stops","Trip context","Data status","Settings","Help"
+        "Stops","Trip context","Data status","Settings","Help","Train connection"
       };
       const char *b[]= {
-        "Favourites / Nearby / All","Walk allowance / At stop","Source dates and updates","Calendar and display","How to use KasugaBus"
+        "Favourites / Nearby / All","Walk allowance / At stop","Source dates and updates","Calendar and display","How to use KasugaBus","JR / Hankyu after your bus"
       };
       snprintf(c->title,sizeof(c->title),"%s",a[n]);
       snprintf(c->sub,sizeof(c->sub),"%s",b[n]);
@@ -638,6 +639,7 @@ static const char *screen_title(void) {
     case KB_SCREEN_TEXT_SIZE:return "Text size";
     case KB_SCREEN_THEME:return "Colour theme";
     case KB_SCREEN_ROUTES:return "Bus numbers";
+    case KB_SCREEN_TRAINS:return "Train connection";
     case KB_SCREEN_ROUTE_POINTS:return "Board this bus";
     case KB_SCREEN_ALL_REFERENCE:return "All departures";
     case KB_SCREEN_ALL_POINTS:return "Boarding points";
@@ -939,6 +941,7 @@ static SCREEN void board(GContext *c) {
   bool override=app.override.day_type!=KB_DAY_UNKNOWN&&app.override.jst_day==kb_jst_day(time(NULL));
   footer(c,app.board_removed?"Removed | DOWN next":app.board_expired?"Earlier | DOWN next":merged?(override?(summary.coverage_limited?"Override/partial | info":"Override | hold: info"):summary.coverage_limited?"Partial | hold: info":"SELECT details | hold info"):tools?"SELECT opens stops":app.changed?"Hold SELECT: refresh":"SELECT: details");
 }
+static void train_summary(const kb_trip_t *trip,char *b,size_t n);
 static SCREEN void details(GContext *c) {
   kb_query_t q=app_query();
   const kb_dataset_t *d=kb_trip_dataset(&q,&app.detail);
@@ -978,13 +981,15 @@ static SCREEN void details(GContext *c) {
     else snprintf(walk+used,sizeof(walk)-used,"Approx. %lum\n",(unsigned long)metres);
   }
   date_string(o.source_verified_on,source,sizeof(source));
+  char train[80];
+  train_summary(&app.detail,train,sizeof(train));
   char reminder[160];
   if(app_reminder_matches(&app.detail)) {
     char lt[12];time_string(app.reminder_leave,lt,sizeof(lt));
     snprintf(reminder,sizeof(reminder),"%.60s%sReminder: leave %s JST\nHold SELECT: cancel",app.notice,app.notice[0]?"\n":"",lt);
   }
   else snprintf(reminder,sizeof(reminder),"%.60s%sHold SELECT: leave-now reminder",app.notice,app.notice[0]?"\n":"");
-  snprintf(s,document_size,"%s\n%s\n%s\n\nRoute %s\nTo %s\n%s  %s JST%s\n%s%s | Scheduled\n%s\n%s\n%s\nSource verified %s\nData v%lu\n\n%s\nSELECT: Japanese name",p.name,p.direction,o.name,pattern.route,pattern.destination,date,tm,origin,day_name(app.detail.day_type),app.detail.overridden?" (Override)":"",walk,p.guidance,pattern.route_transitions,source,(unsigned long)d->release_version,reminder);
+  snprintf(s,document_size,"%s\n%s\n%s\n\nRoute %s\nTo %s\n%s  %s JST%s\n%s%s | Scheduled\n%s\n%s\n%s%s\nSource verified %s\nData v%lu\n\n%s\nSELECT: Japanese name",p.name,p.direction,o.name,pattern.route,pattern.destination,date,tm,origin,day_name(app.detail.day_type),app.detail.overridden?" (Override)":"",walk,p.guidance,pattern.route_transitions,train,source,(unsigned long)d->release_version,reminder);
   document(c,s,4,"UP/DOWN | BACK");
 }
 static SCREEN void reminder_screen(GContext *c) {
@@ -1013,6 +1018,91 @@ static SCREEN void reminder_screen(GContext *c) {
   graphics_context_set_fill_color(c,colors.background);
   graphics_fill_rect(c,GRect(0,0,200,top+2),0,GCornerNone);
   heading(c,title,commute?"Commute alarm":"Reminder");
+}
+/* Train connection: the bundled KTR1 table is read through the resource API in
+ * small pieces (src/c/trains.c); nothing is copied into RAM. */
+static int train_read(void *ctx,size_t offset,void *buffer,size_t n) {
+  (void)ctx;
+  ResHandle h=resource_get_handle(RESOURCE_ID_TRAINS);
+  return offset<resource_size(h)?(int)resource_load_byte_range(h,offset,buffer,n):-1;
+}
+static int8_t train_data=-1; /* -1 unchecked, 0 damaged, 1 verified */
+static int32_t train_review;
+static bool train_ready(void) {
+  if(train_data<0)train_data=kb_trains_valid(train_read,NULL,resource_size(resource_get_handle(RESOURCE_ID_TRAINS)),&train_review);
+  return train_data>0;
+}
+static unsigned train_legs(const kb_trip_t *trip,bool kyoto,kb_leg_t legs[2]) {
+  uint8_t minutes[2],walk[2]={(uint8_t)KB_TRAIN_WALK(app.extras.walk_jr),(uint8_t)KB_TRAIN_WALK(app.extras.walk_hankyu)};
+  kb_query_t q=app_query();
+  const kb_dataset_t *d=kb_trip_dataset(&q,trip);
+  if(!train_ready()||!d||!kb_trip_station_minutes(d,trip,minutes))return 0;
+  return kb_train_connect(train_read,NULL,trip->day_type==KB_DAY_WEEKDAY?KB_TRAIN_WEEKDAY:KB_TRAIN_WEEKEND,
+    kyoto?KB_TRAIN_KYOTO:KB_TRAIN_OSAKA,kyoto&&(app.extras.train_flags&KB_TRAIN_FLAG_TAKATSUKI)?1:0,trip->minute,minutes,walk,legs);
+}
+static const char *arrive_name(uint8_t network,bool kyoto) {
+  if(!kyoto)return network?"Umeda":"Osaka";
+  if(app.extras.train_flags&KB_TRAIN_FLAG_TAKATSUKI)return "Takatsuki";
+  return network?"Kawaramachi":"Kyoto";
+}
+static size_t clock_text(char *b,size_t n,unsigned minute) { return (size_t)snprintf(b,n,"%u:%02u",(minute/60)%24,minute%60); }
+static void train_summary(const kb_trip_t *trip,char *b,size_t n) {
+  kb_leg_t legs[2];
+  b[0]=0;
+  bool kyoto=app.extras.train_flags&KB_TRAIN_FLAG_KYOTO;
+  if(!train_legs(trip,kyoto,legs))return;
+  char dep[12],arr[12];
+  clock_text(dep,sizeof(dep),legs[0].train.departure);clock_text(arr,sizeof(arr),legs[0].train.arrival);
+  snprintf(b,n,"\nTrain: %s %s %s\n%s %s\n",legs[0].network?"Hankyu":"JR",dep,legs[0].train.type,arrive_name(legs[0].network,kyoto),arr);
+}
+static SCREEN void trains_screen(GContext *c) {
+  kb_leg_t legs[2];
+  char *s=document_buffer,a[12],b[12],x[12];
+  bool kyoto=app.train_kyoto;
+  unsigned n=app.train_ok?train_legs(&app.detail,kyoto,legs):0;
+  const char *title=kyoto?"Kyoto-bound":"Osaka-bound";
+  int top=heading(c,"Train connection",title);
+  if(!n) {
+    document(c,app.train_ok?"No later train today for this bus.":"No bus soon from this stop reaches JR Ibaraki or Hankyu Ibaraki-shi. Flip direction on home and try again.",top+4,"SELECT: direction | BACK");
+    return;
+  }
+  clock_text(x,sizeof(x),app.detail.minute);
+  size_t used=(size_t)snprintf(s,document_size,"Bus %s JST\n",x);
+  bool both=n==2&&(app.extras.train_flags&KB_TRAIN_FLAG_BOTH);
+  for(unsigned i=0;i<(both?2u:1u);i++) {
+    const kb_leg_t *l=&legs[i];
+    kb_train_t later;
+    clock_text(x,sizeof(x),l->at);clock_text(a,sizeof(a),l->train.departure);clock_text(b,sizeof(b),l->train.arrival);
+    used+=(size_t)snprintf(s+used,document_size-used,"\n%s %s%s\n%s %s\nfor %s\n%s %s\n",
+      l->network?"Hankyu":"JR Ibaraki",x,l->network?" (stay on)":"",a,l->train.type,l->train.destination,arrive_name(l->network,kyoto),b);
+    if(kb_trains_next(train_read,NULL,l->network,kyoto,app.detail.day_type==KB_DAY_WEEKDAY?KB_TRAIN_WEEKDAY:KB_TRAIN_WEEKEND,
+        l->train.departure,kyoto&&(app.extras.train_flags&KB_TRAIN_FLAG_TAKATSUKI)?1:0,1,&later)&&used<document_size) {
+      clock_text(a,sizeof(a),later.departure);clock_text(b,sizeof(b),later.arrival);
+      used+=(size_t)snprintf(s+used,document_size-used,"then %s %s > %s\n",a,later.type,b);
+    }
+  }
+  if(n==2&&!both&&used<document_size)
+    used+=(size_t)snprintf(s+used,document_size-used,"\n%s arrives %d min later\n",legs[1].network?"Hankyu":"JR",legs[1].train.arrival-legs[0].train.arrival);
+  if(train_review&&kb_jst_day(time(NULL))>train_review&&used<document_size)
+    snprintf(s+used,document_size-used,"\nTrain times may have changed since March.\n");
+  document(c,s,top+4,"SELECT: direction | BACK");
+  graphics_context_set_fill_color(c,colors.background);
+  graphics_fill_rect(c,GRect(0,0,200,top+2),0,GCornerNone);
+  heading(c,"Train connection",title);
+}
+static void open_trains(void) {
+  app.train_return=app.screen;
+  app.train_ok=false;
+  kb_query_t q=app_query();
+  for(size_t k=0;k<8&&!app.train_ok;k++) {
+    kb_trip_t t;
+    kb_query_state_t state;
+    uint8_t minutes[2];
+    if((k?kb_upcoming_at(&q,k,&t,&state):kb_query_home(&q,&t,&state))!=KB_QUERY_FOUND)break;
+    if(kb_trip_station_minutes(kb_trip_dataset(&q,&t),&t,minutes)) {app.detail=t;app.train_ok=true;}
+  }
+  app.train_kyoto=app.extras.train_flags&KB_TRAIN_FLAG_KYOTO;
+  ui_open(KB_SCREEN_TRAINS);
 }
 static SCREEN void help(GContext *c) {
   /* The help text lives in a raw resource, not in the 64 KB app image. */
@@ -1090,6 +1180,7 @@ static void draw(Layer *layer,GContext *c) {
   else if(app.screen==KB_SCREEN_ALL_INFO)all_info(c);
   else if(app.screen==KB_SCREEN_HELP)help(c);
   else if(app.screen==KB_SCREEN_REMINDER)reminder_screen(c);
+  else if(app.screen==KB_SCREEN_TRAINS)trains_screen(c);
   else list(c);
   APP_LOG(APP_LOG_LEVEL_DEBUG,"UI screen%d heap%lu",app.screen,(unsigned long)heap_bytes_free());
   APP_LOG(APP_LOG_LEVEL_DEBUG,"UI selection%d scroll%d limit%d",app.selected,app.scroll,scroll_limit);
@@ -1167,7 +1258,7 @@ void ui_refresh(void) {
   app.selected=1;
 }
 static bool scroll_screen(void) {
-  return app.screen==KB_SCREEN_DETAILS||app.screen==KB_SCREEN_STATUS||app.screen==KB_SCREEN_HELP||app.screen==KB_SCREEN_REMINDER||app.screen==KB_SCREEN_JAPANESE||app.screen==KB_SCREEN_ALL_INFO||
+  return app.screen==KB_SCREEN_DETAILS||app.screen==KB_SCREEN_STATUS||app.screen==KB_SCREEN_HELP||app.screen==KB_SCREEN_REMINDER||app.screen==KB_SCREEN_JAPANESE||app.screen==KB_SCREEN_ALL_INFO||app.screen==KB_SCREEN_TRAINS||
     (app.screen==KB_SCREEN_NEARBY&&!(app.prefs.bytes[1]&KB_PREF_LOCATION));
 }
 static void scroll_by(int amount) {
@@ -1232,6 +1323,7 @@ static void home_action(unsigned action) {
     case KB_ACTION_ALL:ui_open(KB_SCREEN_ALL_REFERENCE);break;
     case KB_ACTION_BOARD:ui_open(KB_SCREEN_BOARD);break;
     case KB_ACTION_WATCHFACE:exit_to_watchface();break;
+    case KB_ACTION_TRAIN:open_trains();break;
     default:break;
   }
 }
@@ -1329,7 +1421,9 @@ static void select(ClickRecognizerRef r,void *ctx) {
     }
   }
   else if(app.screen==KB_SCREEN_DETAILS)ui_open(KB_SCREEN_JAPANESE);
+  else if(app.screen==KB_SCREEN_TRAINS) {app.train_kyoto=!app.train_kyoto;app.scroll=0;app_redraw();}
   else if(app.screen==KB_SCREEN_STATUS)app_check_updates(true);
+  else if(app.screen==KB_SCREEN_MENU&&app.selected==5)open_trains();
   else if(app.screen==KB_SCREEN_MENU) {
     int a[]= {
       KB_SCREEN_PICKER,KB_SCREEN_CONTEXT,KB_SCREEN_STATUS,KB_SCREEN_SETTINGS,KB_SCREEN_HELP
@@ -1499,6 +1593,8 @@ static void back(ClickRecognizerRef r,void *ctx) {
     ui_apply_appearance();ui_refresh();app_redraw();
     break;
     case KB_SCREEN_JAPANESE:ui_open(KB_SCREEN_DETAILS);
+    break;
+    case KB_SCREEN_TRAINS:ui_open(app.train_return==KB_SCREEN_HOME?KB_SCREEN_HOME:KB_SCREEN_MENU);
     break;
     case KB_SCREEN_POINTS:ui_open(KB_SCREEN_GROUPS);
     break;

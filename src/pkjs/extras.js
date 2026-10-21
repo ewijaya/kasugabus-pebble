@@ -1,14 +1,17 @@
 'use strict';
 // Mirrors src/c/extras.c: 28 wire bytes sent after the 80 preference bytes.
 var settings = require('./settings'), integer = settings.integer, u16 = settings.u16, put16 = settings.put16;
-var BYTES = 28, ACTIONS = 9, PROFILES = 1, COMMUTE = 2, BACK_LAUNCHER = 4;
+var BYTES = 28, ACTIONS = 10, PROFILES = 1, COMMUTE = 2, BACK_LAUNCHER = 4;
+// Train screen (watch: KB_TRAIN_FLAG_*). Walk bytes on the wire hold minutes + 1; 0 means the default.
+var TRAIN_KYOTO = 1, TRAIN_BOTH = 2, TRAIN_TAKATSUKI = 4, DEFAULT_WALK = 4;
 var ACTION_LABELS = ['Nothing', 'Next departure', 'Previous departure', 'Switch favourite stop',
-  'Flip direction', 'Open Nearby', 'Open All departures', 'Open departure board', 'Exit to watchface'];
+  'Flip direction', 'Open Nearby', 'Open All departures', 'Open departure board', 'Exit to watchface', 'Train connection'];
 var BUTTON_KEYS = ['ButtonUp', 'ButtonDown', 'ButtonHoldUp', 'ButtonHoldDown'];
 var DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 function defaults() {
   return { buttons: [3, 1, 4, 5], flags: 0, more: 2, headsUp: 0, profileA: 0, profileAHour: 4,
-    profileB: 0, profileBHour: 15, commutePoint: 0, commuteMinute: 480, commuteDays: 0x3e };
+    profileB: 0, profileBHour: 15, commutePoint: 0, commuteMinute: 480, commuteDays: 0x3e,
+    trainFlags: 0, walkJr: DEFAULT_WALK, walkHankyu: DEFAULT_WALK };
 }
 function validate(e, catalog) {
   var known = {};
@@ -17,7 +20,8 @@ function validate(e, catalog) {
       !integer(e.flags, 0, PROFILES | COMMUTE | BACK_LAUNCHER) || !integer(e.more, 0, 2) || !integer(e.headsUp, 0, 30) ||
       !integer(e.profileA, 0, 65535) || !integer(e.profileB, 0, 65535) ||
       !integer(e.profileAHour, 0, 23) || !integer(e.profileBHour, 0, 23) ||
-      !integer(e.commutePoint, 0, 65535) || !integer(e.commuteMinute, 0, 1439) || !integer(e.commuteDays, 0, 127)) {
+      !integer(e.commutePoint, 0, 65535) || !integer(e.commuteMinute, 0, 1439) || !integer(e.commuteDays, 0, 127) ||
+      !integer(e.trainFlags, 0, 7) || !integer(e.walkJr, 0, 30) || !integer(e.walkHankyu, 0, 30)) {
     throw new Error('Invalid extra settings');
   }
   if (e.flags & PROFILES) {
@@ -40,15 +44,17 @@ function encode(e, catalog) {
   put16(b, 8, e.profileA); b[10] = e.profileAHour;
   put16(b, 12, e.profileB); b[14] = e.profileBHour;
   put16(b, 16, e.commutePoint); put16(b, 18, e.commuteMinute); b[20] = e.commuteDays;
+  b[21] = e.trainFlags; b[22] = e.walkJr + 1; b[23] = e.walkHankyu + 1;
   return b;
 }
 // Watch records are checked structurally; points removed by a timetable
 // update are reported by the form instead of discarding every extra.
 function decode(b) {
   if (!Array.isArray(b) || b.length !== BYTES || b[0] !== 1 || !b.every(function(v) { return integer(v, 0, 255); }) ||
-      b[11] || b[15] || b.slice(21).some(function(v) { return v; })) throw new Error('Invalid extra settings envelope');
+      b[11] || b[15] || b[21] > 7 || b[22] > 31 || b[23] > 31 || b.slice(24).some(function(v) { return v; })) throw new Error('Invalid extra settings envelope');
   var e = { buttons: b.slice(1, 5), flags: b[5], more: b[6], headsUp: b[7], profileA: u16(b, 8), profileAHour: b[10],
-    profileB: u16(b, 12), profileBHour: b[14], commutePoint: u16(b, 16), commuteMinute: u16(b, 18), commuteDays: b[20] };
+    profileB: u16(b, 12), profileBHour: b[14], commutePoint: u16(b, 16), commuteMinute: u16(b, 18), commuteDays: b[20],
+    trainFlags: b[21], walkJr: b[22] ? b[22] - 1 : DEFAULT_WALK, walkHankyu: b[23] ? b[23] - 1 : DEFAULT_WALK };
   return validate(e, []
     .concat(e.flags & PROFILES ? [{ id: e.profileA }, { id: e.profileB }] : [])
     .concat(e.flags & COMMUTE ? [{ id: e.commutePoint }] : []));
@@ -88,6 +94,10 @@ function fromClay(values, catalog, base) {
   e.commuteDays = days.reduce(function(mask, on, i) { return mask | (toggle(on) ? 1 << i : 0); }, 0);
   e.flags = (toggle(values.ProfilesEnabled) ? PROFILES : 0) | (toggle(values.CommuteEnabled) ? COMMUTE : 0) |
     (toggle(values.BackToAppList) ? BACK_LAUNCHER : 0);
+  e.trainFlags = (number(values.TrainDirection, 0, 1, 'Invalid train direction') ? TRAIN_KYOTO : 0) |
+    (toggle(values.TrainBoth) ? TRAIN_BOTH : 0) | (number(values.TrainDestination, 0, 1, 'Invalid Kyoto-bound destination') ? TRAIN_TAKATSUKI : 0);
+  e.walkJr = number(values.TrainWalkJr === '' ? DEFAULT_WALK : values.TrainWalkJr, 0, 30, 'Walking time to JR must be 0 to 30 minutes');
+  e.walkHankyu = number(values.TrainWalkHankyu === '' ? DEFAULT_WALK : values.TrainWalkHankyu, 0, 30, 'Walking time to Hankyu must be 0 to 30 minutes');
   return validate(e, catalog);
 }
 function pad(n) { return (n < 10 ? '0' : '') + n; }
@@ -97,7 +107,9 @@ function toClay(e) {
     ProfileBHour: String(e.profileBHour), CommuteEnabled: !!(e.flags & COMMUTE), CommutePoint: String(e.commutePoint),
     CommuteTime: pad(Math.floor(e.commuteMinute / 60)) + ':' + pad(e.commuteMinute % 60),
     CommuteDays: DAY_NAMES.map(function(name, i) { return !!(e.commuteDays & (1 << i)); }),
-    BackToAppList: !!(e.flags & BACK_LAUNCHER) };
+    BackToAppList: !!(e.flags & BACK_LAUNCHER),
+    TrainDirection: String(e.trainFlags & TRAIN_KYOTO ? 1 : 0), TrainDestination: String(e.trainFlags & TRAIN_TAKATSUKI ? 1 : 0),
+    TrainBoth: !!(e.trainFlags & TRAIN_BOTH), TrainWalkJr: String(e.walkJr), TrainWalkHankyu: String(e.walkHankyu) };
   BUTTON_KEYS.forEach(function(key, i) { v[key] = String(e.buttons[i]); });
   return v;
 }

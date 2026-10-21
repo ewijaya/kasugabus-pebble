@@ -29,17 +29,21 @@ int main(void) {
   assert(e.buttons[KB_BUTTON_UP]==KB_ACTION_FAVOURITE&&e.buttons[KB_BUTTON_DOWN]==KB_ACTION_NEXT);
   assert(e.buttons[KB_BUTTON_HOLD_UP]==KB_ACTION_FLIP&&e.buttons[KB_BUTTON_HOLD_DOWN]==KB_ACTION_NEARBY);
   assert(e.more==2&&!e.flags);
+  /* Train settings default to Osaka, one station, and the default walk. */
+  assert(!e.train_flags&&!e.walk_jr&&!e.walk_hankyu);
+  assert(KB_TRAIN_WALK(0)==4&&KB_TRAIN_WALK(1)==0&&KB_TRAIN_WALK(31)==30&&KB_ACTION_TRAIN<KB_ACTION_COUNT);
   /* Round trip, including enabled features with known points. */
   e.flags=KB_EXTRAS_PROFILES|KB_EXTRAS_COMMUTE;
   e.profile_a=1;e.profile_b=2;e.commute_point=101;e.commute_minute=7*60+40;e.heads_up=5;
+  e.train_flags=KB_TRAIN_FLAG_KYOTO|KB_TRAIN_FLAG_BOTH|KB_TRAIN_FLAG_TAKATSUKI;e.walk_jr=1;e.walk_hankyu=31;
   kb_extras_encode(&e,b);
   assert(kb_extras_parse(&out,b,sizeof(b),exists,NULL));
   assert(!memcmp(&out,&e,sizeof(e)));
   /* Rejections: length, schema, action, reserved, ranges, unknown points. */
   assert(!kb_extras_parse(&out,b,sizeof(b)-1,exists,NULL));
   uint8_t bad[KB_EXTRAS_WIRE_BYTES];
-  unsigned offsets[]={0,1,5,6,7,10,11,14,15,20,21,27};
-  uint8_t values[]={2,KB_ACTION_COUNT,8,3,31,24,1,24,1,128,1,1};
+  unsigned offsets[]={0,1,5,6,7,10,11,14,15,20,21,22,23,24,27};
+  uint8_t values[]={2,KB_ACTION_COUNT,8,3,31,24,1,24,1,128,8,32,32,1,1};
   for(unsigned i=0;i<sizeof(offsets)/sizeof(offsets[0]);i++) {
     memcpy(bad,b,sizeof(b));bad[offsets[i]]=values[i];
     assert(!kb_extras_parse(&out,bad,sizeof(bad),exists,NULL));
