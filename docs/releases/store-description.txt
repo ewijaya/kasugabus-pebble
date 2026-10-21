@@ -5,6 +5,7 @@ KasugaBus shows the next scheduled Kintetsu and Hankyu buses at eight stops arou
 - Works offline; timetables update through your phone without reinstalling.
 - Favourites, Nearby (approximate distance from your phone's location), departure board and full trip details.
 - Leave-now reminders and a daily commute alarm.
+- Train connection: the JR or Hankyu train to catch after your bus and when it reaches Osaka or Kyoto.
 - Configurable Up/Down buttons, three text sizes and four themes.
 - Times follow the weekday, Saturday and Sunday/holiday timetables in Japan time.
 

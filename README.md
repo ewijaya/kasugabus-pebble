@@ -23,6 +23,8 @@ Version **2.2.1** is a maintenance release that frees about 5.7 KB of app space 
 
 Version **2.2.2** fixes phone settings so stops added by timetable updates appear in the stop lists and saving is never blocked by a slow connection. See [the 2.2.2 notes](docs/releases/2.2.2.md).
 
+Version **2.3.0** adds **Train connection** (hold Select → Train connection): for the soonest bus that reaches JR Ibaraki or Hankyu Ibaraki-shi, the JR or Hankyu train to catch and when it reaches Osaka or Kyoto. It needs timetable **v5**, published after this release. See [the 2.3.0 notes](docs/releases/2.3.0.md), [the design](docs/TRAIN_CONNECTIONS_DESIGN.md) and [the v5 data notes](docs/DATA_RELEASE_5.md).
+
 The Neon Transit home screen leads with the next scheduled bus: route, departure time, countdown and later buses, with a compact clock at Standard text size or the time in the footer at Large and Extra Large. Up and Down browse later buses and switch stops; hold Select on a departure for a leave-now buzz, or in a stop list to add a favourite. The departure board, full details, all-stop picker, Nearby, trip context and data status work through the watch buttons. Timetables run offline; phone location, Clay settings and timetable downloads add optional connected functions.
 
 ![KasugaBus 2.1.0 home at Large text](docs/releases/assets/2.1.0/1-home-large.png) ![Leave-now reminder](docs/releases/assets/2.1.0/3-leave-now.png) ![Adding a favourite on the watch](docs/releases/assets/2.1.0/4-favourites.png)

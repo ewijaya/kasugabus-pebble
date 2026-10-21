@@ -1,5 +1,25 @@
 # Changelog
 
+## 2.3.0
+
+- New **Train connection** screen (hold Select → Train connection): for the
+  soonest bus that reaches JR Ibaraki or Hankyu Ibaraki-shi, the train to catch
+  and its arrival in Osaka/Umeda or Kyoto/Kawaramachi (or Takatsuki), with the
+  earlier station first and how much later the other is. Select switches
+  Osaka/Kyoto. Details shows a "Train:" line; a home-button action can open
+  the screen. Phone settings gain a Train connection section (direction,
+  Kyoto-bound destination, show both stations, walking minutes to each
+  platform, default 4).
+- Timetable format schema 2 (bus minutes to JR Ibaraki and Hankyu Ibaraki-shi)
+  with data level 2. This version reads schema 1 and 2; older apps refuse
+  schema 2. Timetable v5 uses it and is published after this release.
+- Bundled JR and Hankyu train times (read 20 October 2026, review due
+  1 March 2027), read from a resource without using RAM.
+- The All-departures information text moved to a resource.
+- The release audit measures worst-case app stack depth (limit 3,584 bytes);
+  a code layout change once raised it to 3,984 bytes and stopped the app from
+  starting on the watch.
+
 ## 2.2.2
 
 - Phone settings now list stops added by timetable updates (Nihon Teien-mae,
