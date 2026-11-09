@@ -1,0 +1,14 @@
+{
+  "previousVersion": 5,
+  "version": 6,
+  "departuresAdded": [],
+  "departuresRemoved": [],
+  "changedSections": [],
+  "stationMinutes": {
+    "previous": 1199,
+    "current": 1199,
+    "added": 0,
+    "removed": 0,
+    "changed": 0
+  }
+}

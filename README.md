@@ -82,6 +82,7 @@ Source extraction additionally uses the pinned packages in `data/requirements-ex
 
 ## Timetable maintenance and releases
 
+- The November source review prepares **timetable v6**: verification on **9 November 2026**, next review **1 December**, coverage through **27 December**. All 1,939 departures from v5 are unchanged. See [the review and publication status](docs/DATA_RELEASE_6.md). The bundled recovery dataset retains its original dates.
 - [Source evidence and reconciliation](docs/DATA_RECONCILIATION.md), [editable dataset](data/timetable.json), and [audit proof](data/reconciliation.json).
 - [Timetable publishing](docs/PUBLISHING.md) covers immutable payloads, the review gate, current/future manifests and the controlled feed tests. Timetable release numbers are independent of the app version.
 - [App release workflow](docs/releasing.md) freezes and publishes one physically approved PBW. The [project release skill](.agents/skills/kasugabus-publish-release/SKILL.md) coordinates it.

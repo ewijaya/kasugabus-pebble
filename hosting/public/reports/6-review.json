@@ -1,0 +1,240 @@
+{
+  "releaseVersion": 6,
+  "sourceSha256": "0848372493cf0be4cda00931d23238aad46785bc6fa3b6a10e46481fde2c6429",
+  "departureCount": 1939,
+  "reconciled": true,
+  "reviewer": "Codex, owner-requested monthly source review; byte and structured comparisons against official current sources; no new human visual review claimed",
+  "reviewedAt": "2026-11-09",
+  "counts": [
+    {
+      "boarding_point_id": 1,
+      "service_id": 1,
+      "count": 46
+    },
+    {
+      "boarding_point_id": 1,
+      "service_id": 2,
+      "count": 37
+    },
+    {
+      "boarding_point_id": 2,
+      "service_id": 1,
+      "count": 46
+    },
+    {
+      "boarding_point_id": 2,
+      "service_id": 2,
+      "count": 37
+    },
+    {
+      "boarding_point_id": 3,
+      "service_id": 1,
+      "count": 46
+    },
+    {
+      "boarding_point_id": 3,
+      "service_id": 2,
+      "count": 37
+    },
+    {
+      "boarding_point_id": 4,
+      "service_id": 3,
+      "count": 81
+    },
+    {
+      "boarding_point_id": 4,
+      "service_id": 4,
+      "count": 50
+    },
+    {
+      "boarding_point_id": 4,
+      "service_id": 5,
+      "count": 43
+    },
+    {
+      "boarding_point_id": 5,
+      "service_id": 3,
+      "count": 83
+    },
+    {
+      "boarding_point_id": 5,
+      "service_id": 4,
+      "count": 52
+    },
+    {
+      "boarding_point_id": 5,
+      "service_id": 5,
+      "count": 45
+    },
+    {
+      "boarding_point_id": 6,
+      "service_id": 3,
+      "count": 81
+    },
+    {
+      "boarding_point_id": 6,
+      "service_id": 4,
+      "count": 50
+    },
+    {
+      "boarding_point_id": 6,
+      "service_id": 5,
+      "count": 43
+    },
+    {
+      "boarding_point_id": 7,
+      "service_id": 3,
+      "count": 80
+    },
+    {
+      "boarding_point_id": 7,
+      "service_id": 4,
+      "count": 50
+    },
+    {
+      "boarding_point_id": 7,
+      "service_id": 5,
+      "count": 43
+    },
+    {
+      "boarding_point_id": 8,
+      "service_id": 3,
+      "count": 81
+    },
+    {
+      "boarding_point_id": 8,
+      "service_id": 4,
+      "count": 50
+    },
+    {
+      "boarding_point_id": 8,
+      "service_id": 5,
+      "count": 43
+    },
+    {
+      "boarding_point_id": 9,
+      "service_id": 3,
+      "count": 80
+    },
+    {
+      "boarding_point_id": 9,
+      "service_id": 4,
+      "count": 50
+    },
+    {
+      "boarding_point_id": 9,
+      "service_id": 5,
+      "count": 43
+    },
+    {
+      "boarding_point_id": 10,
+      "service_id": 3,
+      "count": 81
+    },
+    {
+      "boarding_point_id": 10,
+      "service_id": 4,
+      "count": 50
+    },
+    {
+      "boarding_point_id": 10,
+      "service_id": 5,
+      "count": 43
+    },
+    {
+      "boarding_point_id": 11,
+      "service_id": 3,
+      "count": 84
+    },
+    {
+      "boarding_point_id": 11,
+      "service_id": 4,
+      "count": 52
+    },
+    {
+      "boarding_point_id": 11,
+      "service_id": 5,
+      "count": 45
+    },
+    {
+      "boarding_point_id": 12,
+      "service_id": 3,
+      "count": 80
+    },
+    {
+      "boarding_point_id": 12,
+      "service_id": 4,
+      "count": 50
+    },
+    {
+      "boarding_point_id": 12,
+      "service_id": 5,
+      "count": 43
+    },
+    {
+      "boarding_point_id": 101,
+      "service_id": 6,
+      "count": 19
+    },
+    {
+      "boarding_point_id": 102,
+      "service_id": 6,
+      "count": 19
+    },
+    {
+      "boarding_point_id": 103,
+      "service_id": 6,
+      "count": 19
+    },
+    {
+      "boarding_point_id": 104,
+      "service_id": 6,
+      "count": 19
+    },
+    {
+      "boarding_point_id": 105,
+      "service_id": 6,
+      "count": 19
+    },
+    {
+      "boarding_point_id": 106,
+      "service_id": 6,
+      "count": 19
+    }
+  ],
+  "matrixCellCount": 1825,
+  "independentPoleDayCount": 1936,
+  "hankyuTripCount": 114,
+  "sourceCount": 86,
+  "verifiedCoordinateCount": 9,
+  "checks": [
+    "all source checksums",
+    "all extraction checksums",
+    "every numeric matrix cell",
+    "every independent pole minute and marker",
+    "every Hankyu trip and boarded route",
+    "full ordered patterns and loop transitions",
+    "all Hankyu downstream calls",
+    "actual pole IDs and coordinates",
+    "complete official holiday CSV coverage",
+    "operator and calendar coverage",
+    "no weekday fallback on Hankyu weekends",
+    "19 Kintetsu PDFs, national calendar, line directory and loop notice byte-identical",
+    "Current Kintetsu directory links resolve to all five matrices and all 12 boarding-pole sheets",
+    "All six Hankyu schedules and 38 individual trips checked for November 9; route IDs, times, calls and service days unchanged",
+    "Six Hankyu poles have no announced future generation; all three community-mapped boarding nodes unchanged",
+    "Operator notice decisions and retained year-end coverage documented in docs/DATA_RELEASE_6.md"
+  ],
+  "releasePurpose": "monthly_source_review",
+  "baseReleaseVersion": 5,
+  "baseSourceSha256": "1b5e1f935e5b58a1b3c3ad07c15eaa0d3a1af610e13d0730c4380220e6bf3036",
+  "reviewEvidence": "data/reviews/2026-11-09/fetch.json",
+  "evidenceArchiveSha256": "ccf70dfba4e31aca80811cb349e40dae297c3a15830342c506b436f33f26b7aa",
+  "limitations": [
+    "No 2026-27 operator year-end schedule verified; coverage remains through 2026-12-27.",
+    "Original source entries retain their extraction provenance; fresh review evidence is archived separately.",
+    "The old supplementary Hankyu route PDF now redirects to the search site; current pole timetables and individual trips supply the evidence.",
+    "Station minutes retain v5's line-matrix-only verification; no new independent station-arrival evidence.",
+    "Train timetable resources bundled in the PBW are outside this bus-feed release."
+  ]
+}

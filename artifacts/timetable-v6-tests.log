@@ -1,0 +1,189 @@
+.....................................................................................................Registration intent saved before UI submission. Use Dashboard New once with the frozen PBW/listing/assets; immediately record the returned App ID. This command never submits or uploads.
+....Assigned listing recorded: bbbbbbbbbbbbbbbbbbbbbbbb https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb
+.Assigned listing recorded: bbbbbbbbbbbbbbbbbbbbbbbb https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb
+.....{
+  "uuid": "d7ba77b0-d528-4cc8-b35c-7052798152c9",
+  "github_repo": "fixture-owner/kasugabus",
+  "app_id": "bbbbbbbbbbbbbbbbbbbbbbbb",
+  "listing_url": "https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb",
+  "public_verification": "not checked",
+  "releases": []
+}
+{
+  "uuid": "d7ba77b0-d528-4cc8-b35c-7052798152c9",
+  "github_repo": "fixture-owner/kasugabus",
+  "app_id": "bbbbbbbbbbbbbbbbbbbbbbbb",
+  "listing_url": "https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb",
+  "public_verification": "not checked",
+  "releases": [],
+  "saved_locally": true
+}
+Assigned listing recorded: bbbbbbbbbbbbbbbbbbbbbbbb https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb
+..Candidate frozen: /tmp/kasugabus-release-fixtures-2imut_rw/.release/1.0.0 {"sha256": "da830105df18aade1a00330686e9e6bf230177836c138813aa955abd08d62384", "bytes": 567}
+Installation is recorded. Explicit physical approval of this SHA-256 and these destinations is still required.
+..Registration intent saved before UI submission. Use Dashboard New once with the frozen PBW/listing/assets; immediately record the returned App ID. This command never submits or uploads.
+.Assigned listing recorded: bbbbbbbbbbbbbbbbbbbbbbbb https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb
+.Registration intent saved before UI submission. Use Dashboard New once with the frozen PBW/listing/assets; immediately record the returned App ID. This command never submits or uploads.
+Assigned listing recorded: bbbbbbbbbbbbbbbbbbbbbbbb https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb
+.Registration intent saved before UI submission. Use Dashboard New once with the frozen PBW/listing/assets; immediately record the returned App ID. This command never submits or uploads.
+Assigned listing recorded: bbbbbbbbbbbbbbbbbbbbbbbb https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb
+.Registration intent saved before UI submission. Use Dashboard New once with the frozen PBW/listing/assets; immediately record the returned App ID. This command never submits or uploads.
+Assigned listing recorded: bbbbbbbbbbbbbbbbbbbbbbbb https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb
+.....Registration intent saved before UI submission. Use Dashboard New once with the frozen PBW/listing/assets; immediately record the returned App ID. This command never submits or uploads.
+Assigned listing recorded: bbbbbbbbbbbbbbbbbbbbbbbb https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb
+Assigned listing recorded: bbbbbbbbbbbbbbbbbbbbbbbb https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb
+..Registration intent saved before UI submission. Use Dashboard New once with the frozen PBW/listing/assets; immediately record the returned App ID. This command never submits or uploads.
+Assigned listing recorded: bbbbbbbbbbbbbbbbbbbbbbbb https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb
+.Registration intent saved before UI submission. Use Dashboard New once with the frozen PBW/listing/assets; immediately record the returned App ID. This command never submits or uploads.
+Assigned listing recorded: bbbbbbbbbbbbbbbbbbbbbbbb https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb
+.Registration intent saved before UI submission. Use Dashboard New once with the frozen PBW/listing/assets; immediately record the returned App ID. This command never submits or uploads.
+{
+  "uuid": "d7ba77b0-d528-4cc8-b35c-7052798152c9",
+  "github_repo": "fixture-owner/kasugabus",
+  "app_id": "bbbbbbbbbbbbbbbbbbbbbbbb",
+  "listing_url": "https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb",
+  "public_verification": "not checked",
+  "releases": []
+}
+Assigned listing recorded: bbbbbbbbbbbbbbbbbbbbbbbb https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb
+..Registration intent saved before UI submission. Use Dashboard New once with the frozen PBW/listing/assets; immediately record the returned App ID. This command never submits or uploads.
+.Registration intent saved before UI submission. Use Dashboard New once with the frozen PBW/listing/assets; immediately record the returned App ID. This command never submits or uploads.
+Assigned listing recorded: bbbbbbbbbbbbbbbbbbbbbbbb https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb
+.Registration intent saved before UI submission. Use Dashboard New once with the frozen PBW/listing/assets; immediately record the returned App ID. This command never submits or uploads.
+Assigned listing recorded: bbbbbbbbbbbbbbbbbbbbbbbb https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb
+Assigned listing recorded: bbbbbbbbbbbbbbbbbbbbbbbb https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb
+Assigned listing recorded: bbbbbbbbbbbbbbbbbbbbbbbb https://apps.repebble.com/bbbbbbbbbbbbbbbbbbbbbbbb
+....................................Runtime log captured: /tmp/kasugabus-release-fixtures-ejp788iw/artifacts/capture-fixture.log receipt: /tmp/kasugabus-release-fixtures-ejp788iw/artifacts/capture-fixture.log.install.json PBW: 8b26cd240264843b7c486ae9567c986f036aed64a1edfddcf112d4f9b9bd403a
+usage: python3 -m unittest [-h]
+                           {plan,prepare,publish,verify,begin-registration,record-registration,reconcile-registration,discover-registration}
+                           ...
+
+Freeze, publish and verify one approved KasugaBus PBW. Never auto-register.
+Imports and help are offline and unauthenticated. Publication is a separate,
+explicit command and never builds or rewrites its approved artifact.
+
+positional arguments:
+  {plan,prepare,publish,verify,begin-registration,record-registration,reconcile-registration,discover-registration}
+    plan                Read-only release/version context; no build, bump or
+                        publication
+    prepare             Freeze an already audited exact PBW and install it
+                        physically; no public mutation
+    publish             Explicitly publish the frozen artifact; no build or
+                        auto-registration
+    verify              Read-only bounded verification, preserving partial
+                        status
+    begin-registration  Approve frozen first listing and journal intent before
+                        Dashboard New; never submit/upload
+    record-registration
+                        Immediately persist assigned ID, verify
+                        ownership/UUID, and record optional listing read-back
+    reconcile-registration
+                        Discover a possibly created owned UUID; never resubmit
+                        Dashboard New
+    discover-registration
+                        Read-only owned UUID/repository/release preflight;
+                        optional verified local ID adoption, never creation
+
+options:
+  -h, --help            show this help message and exit
+Candidate frozen: /tmp/kasugabus-release-fixtures-i7wfvayr/.release/1.0.0 {"sha256": "8b26cd240264843b7c486ae9567c986f036aed64a1edfddcf112d4f9b9bd403a", "bytes": 567}
+Installation is recorded. Explicit physical approval of this SHA-256 and these destinations is still required.
+.<frozen importlib._bootstrap>:914: ImportWarning: _SixMetaPathImporter.find_spec() not found; falling back to find_module()
+<frozen importlib._bootstrap>:671: ImportWarning: _SixMetaPathImporter.exec_module() not found; falling back to load_module()
+<frozen importlib._bootstrap>:914: ImportWarning: _SixMetaPathImporter.find_spec() not found; falling back to find_module()
+<frozen importlib._bootstrap>:914: ImportWarning: _SixMetaPathImporter.find_spec() not found; falling back to find_module()
+.........Verification attempt 1 {"github": {"state": "verified", "details": {"fixture": "ok"}}, "appstore": {"state": "pending verification", "reason": "fixture propagation"}}
+Verification attempt 2 {"github": {"state": "verified", "details": {"fixture": "ok"}}, "appstore": {"state": "pending verification", "reason": "fixture propagation"}}
+......................................................
+----------------------------------------------------------------------
+Ran 232 tests in 43.310s
+
+OK
+PASS protocol preserves unsigned words through signed PebbleKit tuples
+PASS shared sender waits for transport callback after an early application ACK
+PASS shared sender bounds FIFO and handles NACK without concurrent transactions
+PASS shared sender timeout blocks new transactions until callback or reconnect
+PASS shared sender reports immediate SDK exceptions once
+PASS standard CRC32 and SHA256 vectors
+PASS valid complete binary and manifest agree
+PASS reject malformed dates, versions, hosts, lengths, compatibility and future current
+PASS binary rejects corrupt payload, references, sort, flags, time and UTF8
+PASS fixed80B atomic preference roundtrip, explicit unset versus zero
+PASS raw startup Nearby requires phone location while Clay turns startup off with location
+PASS all Clay Nearby dependency combinations preserve the other80B fields and never imply OS permission
+PASS invalid duplicate/unknown/outofrange/padded preferences reject
+PASS all three text sizes and four themes roundtrip without changing other preferences
+PASS v1 migration preserves flags and boarding allowances while selecting Large and the legacy theme
+PASS theme canonicalizes the contrast mirror without mutating the caller or dropping flags
+PASS appearance choices reject unknown schemas, invalid bytes and malformed Clay selections
+PASS portable C and phone agree on the complete80B appearance contract, migration and rejection
+PASS Nearby good, stale, poor, outside, missing and stable uncertainty ties
+PASS Nearby stale and poor fixes retain real bounded metadata without ranking rows
+KasugaBus Nearby location error 1 (precise)
+KasugaBus Nearby location error 2 (precise)
+KasugaBus Nearby location error 2 (network)
+KasugaBus Nearby location error 3 (precise)
+KasugaBus Nearby location error 3 (network)
+PASS Nearby denied, unavailable, timeout, missing/throwing API and NaN fix use explicit error states
+PASS one-shot geolocation timeout and obsolete request suppression
+KasugaBus Nearby location error 2 (precise)
+KasugaBus Nearby location error 3 (precise)
+KasugaBus Nearby location error 1 (precise)
+PASS Nearby retries one coarse network fix when precise GPS has no position or times out
+PASS Nearby accepts companion fix times as Date, string, seconds, micro/nanoseconds or missing
+PASS transfer ignores old session/sequence, acknowledges chunks, retries same bytes
+PASS transfer gives up after bounded retries without COMMIT
+PASS unconfigured feed never makes network attempt or successful stamp
+PASS watch-owned one-inflight and no downgrade/rewrite
+PASS transfer requires the explicit watch request including zero
+PASS Restore during manifest or payload download aborts once and suppresses obsolete callbacks
+PASS Restore during transfer rejects old ACKs after a new check and binds BEGIN to its request
+PASS Restore between future and current downloads prevents the remaining current transfer
+PASS synchronous fetch completion cannot retain an obsolete abort handle
+PASS private home persists only on the phone and ranks a fixed reference without aging or another GPS request
+PASS current reference preserves all Nearby outcomes and never saves a current fix implicitly
+PASS home save rejects stale poor denied unavailable timeout and disabled fixes without replacing the old home
+PASS atomic private-storage failures preserve the old home and never emit a false home-changed notification
+PASS explicitly saving a home outside service coverage succeeds but its later distance query reports Outside without GPS
+PASS corrupt or unavailable private home storage is safely unset and never invokes GPS during load or a home query
+PASS new requests disable version invalidation and clear suppress every obsolete reference or home-save completion
+PASS home notifications retry a dropped failed or full sender within a bound and resume without GPS
+PASS pending home clear survives worker restart without storing coordinates and late older-worker callbacks cannot resurrect home
+PASS overlapping Save Clear Save notifications retain only the latest durable mutation despite stale success and failure callbacks
+PASS notification acknowledgement storage failures retain private pending status for a later retry without changing home
+PASS a real shared sender with a dropped SDK callback preserves pending home notification and succeeds after reconnect reset
+45 phone unit scenarios passed
+PASS Clay startup dependency clears and disables when main is OFF without requesting location
+PASS Clay page prevents duplicate, invalid and excessive walking preferences
+PASS Clay validates all12 size/theme choices and rejects malformed selections
+PASS Clay home actions require location only for an explicit save and allow clearing while OFF
+PASS new Clay defaults are Large and Neon Dark with no legacy contrast toggle
+PASS phone configuration cancellation, invalid responses, atomic confirmation and reconnect handshake
+PASS v1 watch migration, unavailable IDs and watch-owned preferences survive appearance edits
+PASS location OFF, manual-only and startup ON settings roundtrip without requesting a fix
+PASS phone Nearby respects location opt-in independently of startup
+PASS disabling location suppresses an in-flight result
+PASS Restore STATE cancels downloading and permits a new explicit check
+PASS explicit home save waits for correlated durable ACK and matching state; home query keeps coordinates private
+PASS home save rejects malformed state, failed or expired ACK and disabled location without replacing the saved home
+PASS OFF suppresses both references, explicit Clear persists immediately, and failed Clear preserves home without false notification
+PASS current/home/Nearby generations cancel across actors, version changes and disabling, without coordinate leakage
+PASS home notification retries are bounded, resume on STATE/ready after restart, and never acquire or expose coordinates
+PASS catalogue store validates, round-trips and tolerates broken storage
+PASS live list opens settings with every stop and is remembered for next time
+PASS a slow watch falls back to the remembered list, not the bundled baseline
+PASS without any remembered list, stops the watch uses stay selectable and saveable
+{"testOnly": true, "origin": "http://127.0.0.1:33965", "manifest": "http://127.0.0.1:33965/manifest.json", "fixtures": "/tmp/kasugabus-test-feed-sxcq87j3"}
+PASS controlled HTTP current + future staged before current; commits 3,2
+PASS controlled HTTP corrupt checksum; commits 
+PASS controlled HTTP incompatible schema; commits 
+PASS controlled HTTP interrupted HTTP payload; commits 
+PASS controlled HTTP lost ACK bounded transfer; commits 
+5 real HTTP integration scenarios passed; production endpoint unchanged
+preferences/control: atomic banks, schema 1-to-2 appearance migration, all 12 size/theme combinations, invalid-value rejection, torn appearance writes, durable requests and retained settings, KBW2/KBW1/KBP1 compatibility, two-read load PASS
+all preferences: two-read/no-write load, empty-selection preservation, 32 IDs and references, all79 torn-write boundaries, CRC/schema/duplicate validation and generation protection PASS
+automatic eligibility: offline defer, disabled, busy, rolling24h, backward clock PASS
+extras: defaults, round trip, 16 rejections, profiles, two-bank persistence PASS
+storage: transfer/recovery, 7 lazy-validation regressions, and 6 atomic-directory/migration suites PASS
+storage resource: 7 single-cache/init/alternation/recovery/read-count/transfer/merged-query suites PASS
+All local KasugaBus test suites passed
