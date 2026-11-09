@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "environment": "emulator",
+  "worker": "exact cached PBW pypkjs/XHR",
+  "artifact": {
+    "sha256": "a818d31ba56374af1c298ded12b7027ce81d1efa39ee2b10773e166b35823510",
+    "bytes": 969117,
+    "version": "2.3.0"
+  },
+  "sdkVersion": "4.33.1",
+  "live": {
+    "manifest": {
+      "url": "https://ewijaya.github.io/kasugabus-pebble/timetables/manifest.json",
+      "bytes": 565,
+      "sha256": "475d59b869efc6fb3560558df9a2e8298c15fec7d28540c44044bfbe0f9dcb54",
+      "headers": {
+        "content-length": "565",
+        "content-type": "application/json; charset=utf-8",
+        "last-modified": "Mon, 09 Nov 2026 02:07:59 GMT",
+        "access-control-allow-origin": "*",
+        "etag": "\"6af12aff-235\"",
+        "cache-control": "max-age=600"
+      }
+    },
+    "payload": {
+      "url": "https://ewijaya.github.io/kasugabus-pebble/timetables/releases/6-e3db6a033ccb4ea3.bin",
+      "bytes": 29678,
+      "sha256": "e3db6a033ccb4ea312e977e8f7c6dce57f4f86d093e65337617e208318d2db56",
+      "headers": {
+        "content-length": "29678",
+        "content-type": "application/octet-stream",
+        "last-modified": "Mon, 09 Nov 2026 02:07:59 GMT",
+        "access-control-allow-origin": "*",
+        "etag": "\"6af12aff-73ee\"",
+        "cache-control": "max-age=600"
+      }
+    }
+  },
+  "transfer": {
+    "request": 3,
+    "session": 1706141310,
+    "version": 6,
+    "uniqueChunks": 155,
+    "chunksSent": 155,
+    "nativeChunkAcks": 155,
+    "bytes": 29678,
+    "sha256": "e3db6a033ccb4ea312e977e8f7c6dce57f4f86d093e65337617e208318d2db56",
+    "crc32": 2045909828,
+    "successStamp": 1794190236
+  },
+  "nativeManualCheck": true,
+  "persisted": {
+    "activeVersion": 6,
+    "pendingVersion": 0,
+    "lastSuccess": 1794190236
+  },
+  "pbwReinstalled": false,
+  "preferencesChanged": false,
+  "limits": [
+    "Emery emulator; not Poco/PT2 physical evidence",
+    "No upcoming production release in this focused check",
+    "Android companion HTTPS/CORS, GPS and seven-day use remain separate"
+  ]
+}

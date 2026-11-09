@@ -34,6 +34,13 @@ def sha(raw):
     return hashlib.sha256(raw).hexdigest()
 
 
+def require_preferences(prefs):
+    # 2.1+ appends the 28-byte extras record to the original 80 preferences.
+    # Keep the entire wire snapshot so restart also proves extras preservation.
+    require(len(prefs) in (80, 108) and (prefs[2] or prefs[3]),
+            "Expected preferences with a nonzero default point so launch opens Home")
+
+
 class NoRedirect(HTTPRedirectHandler):
     def redirect_request(self, request, fp, code, message, headers, new_url):
         return None
@@ -229,12 +236,14 @@ def verify(args):
         require(not (before.get("13", 0) & 1), "Turn automatic checks off natively before this manual acceptance check")
         require(before.get("3", 0) < release["version"] and before.get("12", 0) == 0, "Restore bundled data first; production release must be newer and pending fixtures absent")
         prefs = before.get("6", [])
-        require(len(prefs) == 80 and (prefs[2] or prefs[3]), "Set a nonzero default point so launch opens Home")
+        require_preferences(prefs)
         # Wait for the first frame/click provider after the actual worker STATE.
         time.sleep(.5)
         emulator.button("select", durationMs=800)
         emulator.button("down", repeat=2)
         emulator.button("select")
+        # The button command ACK precedes the new screen's click-provider setup.
+        time.sleep(.5)
         emulator.button("select") # Native Data status requests a manual CHECK.
         emulator.wait(lambda e: proof.success_stamp is not None, seconds=120)
         transferred = proof.result()

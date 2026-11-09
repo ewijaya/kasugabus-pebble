@@ -1,0 +1,29 @@
+{
+  "conclusion": "success",
+  "createdAt": "2026-11-09T02:07:25Z",
+  "headSha": "75b38d2d8dfe7e3cef8403ccd56591a2c899ed10",
+  "status": "completed",
+  "updatedAt": "2026-11-09T02:08:07Z",
+  "url": "https://github.com/ewijaya/kasugabus-pebble/actions/runs/42549158839",
+  "dataVersion": 6,
+  "appVersion": "2.3.0",
+  "publishedDate": "2026-11-09",
+  "sourceVerified": "2026-11-09",
+  "reviewDue": "2026-12-01",
+  "coverageThrough": "2026-12-27",
+  "payloadSha256": "e3db6a033ccb4ea312e977e8f7c6dce57f4f86d093e65337617e208318d2db56",
+  "httpEvidence": "artifacts/hosting-v6-http.json",
+  "preservationEvidence": "artifacts/hosting-v6-live-validation.json",
+  "transferEvidence": "artifacts/timetable-v6-production-transfer.json",
+  "physicalWatch": {
+    "checked": false,
+    "reason": "CloudPebble ping timed out after 30 seconds; no physical update observed"
+  },
+  "emulatorSetup": {
+    "pbw": "released 2.3.0, installed before verification",
+    "automaticChecks": "disabled through native Settings",
+    "baseline": "restored through native Settings",
+    "additionalNativeSelect": true,
+    "reason": "The first verifier sent Select before the Data status click provider was ready; an additional native Select triggered the single observed manual CHECK. The verifier now waits for the screen."
+  }
+}

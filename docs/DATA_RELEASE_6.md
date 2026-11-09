@@ -1,8 +1,10 @@
 # Timetable v6 — November source review
 
-Prepared on **9 November 2026**, at the owner's request, for the existing
+**Published on 9 November 2026**, at the owner's request, to the existing
 [GitHub Pages feed](https://ewijaya.github.io/kasugabus-pebble/timetables/manifest.json).
-Publication and delivery evidence are recorded below once observed.
+[Deployment 42549158839](https://github.com/ewijaya/kasugabus-pebble/actions/runs/42549158839)
+succeeded from commit `75b38d2`. The [publication receipt](../artifacts/timetable-v6-publication.json)
+links the exact source revision, payload and validation evidence.
 
 v6 retains all **1,939 departures, 18 boarding points, eight stop groups,
 39 route patterns and 1,199 station-minute records** from v5. Only the release
@@ -103,3 +105,34 @@ against the existing v5 feed.
 
 The candidate is **29,678 bytes**, SHA-256
 `e3db6a033ccb4ea312e977e8f7c6dce57f4f86d093e65337617e208318d2db56`.
+
+## Published-feed and delivery checks
+
+[Live HTTP checks](../artifacts/hosting-v6-http.json) passed for the manifest,
+inventory and every v1–v6 payload: HTTP 200 without redirects, exact prepared
+bytes, MIME types and wildcard CORS. The manifest names v6 as current, with no
+upcoming snapshot. [Post-deployment preservation validation](../artifacts/hosting-v6-live-validation.json)
+also passed. Pages retains its ten-minute cache.
+
+The exact released 2.3.0 PBW (`a818d31b…`, 969,117 bytes) was installed in Emery
+for setup. Its shipped pypkjs worker then downloaded v6 over the production
+HTTPS path. Native watch C acknowledged **155 of 155 chunks**, committed the
+exact 29,678-byte payload and retained v6 and the successful-check timestamp
+after restart. The full preferences and extras record remained unchanged;
+no PBW was reinstalled during the transfer.
+[Transfer proof](../artifacts/timetable-v6-production-transfer.json) and
+[observed log](../artifacts/timetable-v6-production-transfer.log) record this.
+
+The old production verifier expected only 80 preference bytes; current apps
+send 80 preference bytes plus 28 extras bytes. It now accepts both complete
+forms and still compares the entire record after restart. Its
+[10 focused tests](../artifacts/timetable-v6-verifier-tests.log) pass, including
+rejection of truncated records. It also waits after opening Data status before
+pressing Select. During the successful observation an additional native Select
+was sent once that screen was ready; no substitute fetcher, payload or settings
+message was injected into the transfer.
+
+This is emulator delivery evidence. A physical CloudPebble ping timed out after
+30 seconds, so delivery to the owner's watch is not claimed. On KasugaBus
+2.3.0, hold Select → Data status → Select; confirm active dataset **v6** and
+review due **2026-12-01**. Automatic checks can also obtain it on launch.

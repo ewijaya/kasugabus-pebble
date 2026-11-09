@@ -18,6 +18,19 @@ PYTHON = Path(os.environ.get("KASUGABUS_PEBBLE_PYTHON", str(Path.home() / ".loca
 
 
 class ProductionFeedTests(unittest.TestCase):
+    def test_preferences_accept_current_extras_and_reject_incomplete_state(self):
+        for size in (80, 108):
+            prefs = [0] * size
+            prefs[2] = 1
+            production.require_preferences(prefs)
+            prefs[2] = 0
+            with self.assertRaisesRegex(ValueError, "nonzero default"):
+                production.require_preferences(prefs)
+        for size in (0, 79, 81, 107, 109):
+            prefs = [1] * size
+            with self.assertRaises(ValueError):
+                production.require_preferences(prefs)
+
     def setUp(self):
         self.raw = bytes(range(256)) + b"test-only remaining bytes"
         self.release = {"version": 2, "bytes": len(self.raw), "sha256": production.sha(self.raw), "crc32": zlib.crc32(self.raw) & 0xffffffff}

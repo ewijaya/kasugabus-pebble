@@ -1,0 +1,93 @@
+{
+  "checkedAt": "2026-11-09",
+  "currentVersion": 6,
+  "manifestMatchesPrepared": true,
+  "retainedReleases": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "responses": [
+    {
+      "url": "https://ewijaya.github.io/kasugabus-pebble/timetables/manifest.json",
+      "status": 200,
+      "bytes": 565,
+      "sha256": "475d59b869efc6fb3560558df9a2e8298c15fec7d28540c44044bfbe0f9dcb54",
+      "contentType": "application/json; charset=utf-8",
+      "cors": "*",
+      "cacheControl": "max-age=600"
+    },
+    {
+      "url": "https://ewijaya.github.io/kasugabus-pebble/timetables/inventory.json",
+      "status": 200,
+      "bytes": 1074,
+      "sha256": "3da7de34706358dcf4e90476009bed711cefdaf0ce2cb49c5ddaaf7544f55f21",
+      "contentType": "application/json; charset=utf-8",
+      "cors": "*",
+      "cacheControl": "max-age=600"
+    },
+    {
+      "url": "https://ewijaya.github.io/kasugabus-pebble/timetables/releases/1-cb75a4f850d74c45.bin",
+      "status": 200,
+      "bytes": 24203,
+      "sha256": "cb75a4f850d74c45db26f62f569737e0d9346b4817ba502777608ff7a5ed56b8",
+      "contentType": "application/octet-stream",
+      "cors": "*",
+      "cacheControl": "max-age=600",
+      "crc32": 1478585781
+    },
+    {
+      "url": "https://ewijaya.github.io/kasugabus-pebble/timetables/releases/2-5c7adc806702a76e.bin",
+      "status": 200,
+      "bytes": 24203,
+      "sha256": "5c7adc806702a76ea4e97e35fc41227c1b1bcf6ca6daec28ca7a0b1d24cbff61",
+      "contentType": "application/octet-stream",
+      "cors": "*",
+      "cacheControl": "max-age=600",
+      "crc32": 4116084579
+    },
+    {
+      "url": "https://ewijaya.github.io/kasugabus-pebble/timetables/releases/3-4ccdf5967127de1c.bin",
+      "status": 200,
+      "bytes": 26578,
+      "sha256": "4ccdf5967127de1c925fa6b673465ab188a14109dce779d73d00f9da84a26fe6",
+      "contentType": "application/octet-stream",
+      "cors": "*",
+      "cacheControl": "max-age=600",
+      "crc32": 2289905742
+    },
+    {
+      "url": "https://ewijaya.github.io/kasugabus-pebble/timetables/releases/4-a16eb4c750a2bf2f.bin",
+      "status": 200,
+      "bytes": 27845,
+      "sha256": "a16eb4c750a2bf2ffdec6ee8072e8e2dd6f6e771fc6dc282e0523f5eacbe1080",
+      "contentType": "application/octet-stream",
+      "cors": "*",
+      "cacheControl": "max-age=600",
+      "crc32": 140815181
+    },
+    {
+      "url": "https://ewijaya.github.io/kasugabus-pebble/timetables/releases/5-1bbd5a87fca4d66c.bin",
+      "status": 200,
+      "bytes": 29678,
+      "sha256": "1bbd5a87fca4d66cbae7cc43388bae6db03ae62c858c218773d355055b1f6b48",
+      "contentType": "application/octet-stream",
+      "cors": "*",
+      "cacheControl": "max-age=600",
+      "crc32": 2761973890
+    },
+    {
+      "url": "https://ewijaya.github.io/kasugabus-pebble/timetables/releases/6-e3db6a033ccb4ea3.bin",
+      "status": 200,
+      "bytes": 29678,
+      "sha256": "e3db6a033ccb4ea312e977e8f7c6dce57f4f86d093e65337617e208318d2db56",
+      "contentType": "application/octet-stream",
+      "cors": "*",
+      "cacheControl": "max-age=600",
+      "crc32": 2045909828
+    }
+  ]
+}

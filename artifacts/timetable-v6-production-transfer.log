@@ -1,0 +1,19 @@
+WATCH {"0": 2, "12": 0, "13": 0, "3": 1, "4": 32768, "8": 2, "9": 1794189988}
+PHONE {"0": 1}
+WATCH {"0": 2, "12": 0, "13": 0, "3": 1, "4": 32768, "8": 2, "9": 1794189988}
+PKJS [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+PKJS [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+PKJS [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+PKJS [PHONESIM] [WARNING] Exception decoding QemuInboundPacket.footer
+WATCH {"0": 3, "7": 1, "8": 3}
+PHONE {"0": 4, "7": 0, "8": 3}
+PHONE {"0": 4, "7": 1, "8": 3}
+PHONE {"0": 4, "7": 8, "8": 3}
+PHONE {"0": 5, "1": 1706141310, "3": 6, "4": 29678, "5": 2045909828, "8": 3}
+NATIVE Update begin v6 bytes29678 status0
+PHONE {"0": 7, "1": 1706141310}
+NATIVE Update commit session1706141310 status3 heap29648
+PHONE {"0": 4, "7": 3, "8": 3, "9": 1794190236}
+PHONE {"0": 1}
+WATCH {"0": 2, "12": 0, "13": 0, "3": 6, "4": 32768, "8": 3, "9": 1794190236}
+PASS production HTTPS installed-worker/native transfer + persistence: artifacts/timetable-v6-production-transfer.json

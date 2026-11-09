@@ -2,13 +2,19 @@
 
 The owner selected GitHub Pages at
 `https://ewijaya.github.io/kasugabus-pebble/timetables/` and authorized deployment
-on 1 October 2026. The reviewed production feed is live at data **v2**; the
+on 1 October 2026. The reviewed production feed is live at data **v6**; the
 published app's bundled baseline remains **v1**. The pinned phone URL is unchanged;
 timetable-only revisions require no PBW reinstall. Exact HTTPS payload checks,
 MIME types and wildcard CORS passed; Pages caches responses for up to ten minutes.
 See [hosting evidence](../hosting/README.md). Keep actual companion/watch transfer
 results separate from these host checks. There are no hosting credentials in the
 app, and the local preparation tools themselves do not upload anything.
+
+The [November review](DATA_RELEASE_6.md) records v6's source comparisons,
+publication and exact released-app emulator delivery. It refreshes source
+verification to 9 November and review due to 1 December without changing
+departures or extending coverage beyond 27 December. Its archived evidence
+can be checked with `python3 data/reviews/2026-11-09/verify.py`.
 
 Serve the manifest and immutable payloads on the same exact
 HTTPS origin, without redirects. Apply the vendor-neutral header rules in
