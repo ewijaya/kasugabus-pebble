@@ -1,0 +1,45 @@
+{
+  "checkedAt": "2026-11-09",
+  "environment": "physical Pebble Time 2 through CloudPebble",
+  "appUuid": "d7ba77b0-d528-4cc8-b35c-7052798152c9",
+  "manualUpdate": "Owner pressed Select on Data status and reported Downloading / Timetable received",
+  "screenshot": {
+    "path": "artifacts/screenshots/physical-timetable-v6-data-status.png",
+    "sha256": "578275bbd83b884ec2684454808331be9c9e3c75320614103fe07961309a8e94",
+    "observedText": [
+      "Timetable received",
+      "Active dataset: v6",
+      "Source verified: 2026-11-09"
+    ]
+  },
+  "before": {
+    "0": 2,
+    "3": 5,
+    "4": 32768,
+    "8": 2,
+    "9": 1794133782,
+    "12": 0,
+    "13": 1,
+    "settingsBytes": 108,
+    "settingsSha256": "a53e12507e066a171dd3c62b40aa03cd8f38eed6cdba8a4e16ad6d2cd6d7eddc"
+  },
+  "afterAppRestart": {
+    "0": 2,
+    "3": 6,
+    "4": 32768,
+    "8": 3,
+    "9": 1794190712,
+    "12": 0,
+    "13": 1,
+    "settingsBytes": 108,
+    "settingsSha256": "a53e12507e066a171dd3c62b40aa03cd8f38eed6cdba8a4e16ad6d2cd6d7eddc"
+  },
+  "activeVersionPersisted": true,
+  "preferencesAndExtrasUnchanged": true,
+  "settingsBytesCompared": 108,
+  "pbwReinstalled": false,
+  "limitations": [
+    "Transfer packets and payload digest were not reconstructed on the physical connection; v6 installation is evidenced by the watch screenshot and native STATE after app restart.",
+    "Physical PBW download/hash was not reverified in this check."
+  ]
+}

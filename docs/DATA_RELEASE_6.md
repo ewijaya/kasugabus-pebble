@@ -132,7 +132,15 @@ pressing Select. During the successful observation an additional native Select
 was sent once that screen was ready; no substitute fetcher, payload or settings
 message was injected into the transfer.
 
-This is emulator delivery evidence. A physical CloudPebble ping timed out after
-30 seconds, so delivery to the owner's watch is not claimed. On KasugaBus
-2.3.0, hold Select → Data status → Select; confirm active dataset **v6** and
-review due **2026-12-01**. Automatic checks can also obtain it on launch.
+The owner subsequently enabled Dev Connection and triggered a manual update
+on the physical Pebble Time 2. A [watch screenshot](../artifacts/screenshots/physical-timetable-v6-data-status.png)
+shows **Timetable received**, **active dataset v6** and verification on
+**2026-11-09**. Native STATE reported v5 before the update and v6 after an
+app stop/start, with a newer successful-check timestamp, no pending dataset
+and the same SHA-256 of all 108 preferences/extras bytes. No PBW was reinstalled.
+[Physical evidence](../artifacts/timetable-v6-physical.json) records the result;
+physical transfer packets and the installed PBW digest were not reconstructed.
+The earlier connection timeout was resolved when the owner enabled Dev Connection.
+
+On KasugaBus 2.3.0, hold Select → Data status → Select to update. Automatic
+checks can also obtain v6 on launch; the next source review is **2026-12-01**.

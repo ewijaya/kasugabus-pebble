@@ -16,8 +16,12 @@
   "preservationEvidence": "artifacts/hosting-v6-live-validation.json",
   "transferEvidence": "artifacts/timetable-v6-production-transfer.json",
   "physicalWatch": {
-    "checked": false,
-    "reason": "CloudPebble ping timed out after 30 seconds; no physical update observed"
+    "checked": true,
+    "activeVersion": 6,
+    "retainedAfterAppRestart": true,
+    "preferencesAndExtrasUnchanged": true,
+    "evidence": "artifacts/timetable-v6-physical.json",
+    "initialAttempt": "Ping timed out before the owner enabled Dev Connection; subsequent connection succeeded."
   },
   "emulatorSetup": {
     "pbw": "released 2.3.0, installed before verification",
